@@ -150,7 +150,9 @@ av_cold void ff_flacdsp_init(FLACDSPContext *c, enum AVSampleFormat fmt, int cha
         break;
     }
 
-#if ARCH_ARM
+#if ARCH_AARCH64
+    ff_flacdsp_init_aarch64(c, fmt, channels);
+#elif ARCH_ARM
     ff_flacdsp_init_arm(c, fmt, channels);
 #elif ARCH_RISCV
     ff_flacdsp_init_riscv(c, fmt, channels);
