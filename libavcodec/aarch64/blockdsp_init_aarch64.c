@@ -36,8 +36,8 @@ av_cold void ff_blockdsp_init_aarch64(BlockDSPContext *c)
     int cpu_flags = av_get_cpu_flags();
 
     if (have_neon(cpu_flags)) {
-        c->clear_block      = ff_clear_block_neon;
-        c->clear_blocks     = ff_clear_blocks_neon;
+        // clear_block/clear_blocks intentionally left as C (glibc memset with
+        // stp-q or DC ZVA is faster than sequential st1 stores for these sizes)
         c->fill_block_tab[0] = ff_fill_block16_neon;
         c->fill_block_tab[1] = ff_fill_block8_neon;
     }
