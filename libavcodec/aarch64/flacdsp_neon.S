@@ -27,7 +27,7 @@
 function ff_flac_wasted_32_neon, export=1
         dup             v0.4s,  w1
 1:
-        ld1             {v1.4s, v2.4s, v3.4s, v4.4s}, [x0], #64
+        ld1             {v1.4s, v2.4s, v3.4s, v4.4s}, [x0]
         sshl            v1.4s,  v1.4s,  v0.4s
         sshl            v2.4s,  v2.4s,  v0.4s
         sshl            v3.4s,  v3.4s,  v0.4s
@@ -142,8 +142,8 @@ function ff_flac_decorrelate_ls_16_neon, export=1
         sub             v3.4s,  v1.4s,  v2.4s
         sshl            v1.4s,  v1.4s,  v0.4s
         sshl            v3.4s,  v3.4s,  v0.4s
-        sqxtn           v1.4h,  v1.4s
-        sqxtn           v3.4h,  v3.4s
+        xtn             v1.4h,  v1.4s
+        xtn             v3.4h,  v3.4s
         zip1            v4.4h,  v1.4h,  v3.4h
         zip2            v5.4h,  v1.4h,  v3.4h
         st1             {v4.4h, v5.4h}, [x0], #16
@@ -164,8 +164,8 @@ function ff_flac_decorrelate_rs_16_neon, export=1
         add             v3.4s,  v1.4s,  v2.4s
         sshl            v3.4s,  v3.4s,  v0.4s
         sshl            v2.4s,  v2.4s,  v0.4s
-        sqxtn           v3.4h,  v3.4s
-        sqxtn           v2.4h,  v2.4s
+        xtn             v3.4h,  v3.4s
+        xtn             v2.4h,  v2.4s
         zip1            v4.4h,  v3.4h,  v2.4h
         zip2            v5.4h,  v3.4h,  v2.4h
         st1             {v4.4h, v5.4h}, [x0], #16
@@ -188,8 +188,8 @@ function ff_flac_decorrelate_ms_16_neon, export=1
         add             v3.4s,  v1.4s,  v2.4s
         sshl            v3.4s,  v3.4s,  v0.4s
         sshl            v1.4s,  v1.4s,  v0.4s
-        sqxtn           v3.4h,  v3.4s
-        sqxtn           v1.4h,  v1.4s
+        xtn             v3.4h,  v3.4s
+        xtn             v1.4h,  v1.4s
         zip1            v4.4h,  v3.4h,  v1.4h
         zip2            v5.4h,  v3.4h,  v1.4h
         st1             {v4.4h, v5.4h}, [x0], #16
