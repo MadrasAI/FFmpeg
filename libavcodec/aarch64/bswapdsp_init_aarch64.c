@@ -1,4 +1,7 @@
 /*
+ * AArch64 NEON optimised byte-swap DSP functions
+ * Copyright (c) 2025 FFmpeg contributors
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -16,19 +19,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_BSWAPDSP_H
-#define AVCODEC_BSWAPDSP_H
-
 #include <stdint.h>
 
-typedef struct BswapDSPContext {
-    void (*bswap_buf)(uint32_t *dst, const uint32_t *src, int w);
-    void (*bswap16_buf)(uint16_t *dst, const uint16_t *src, int len);
-} BswapDSPContext;
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavcodec/bswapdsp.h"
 
-void ff_bswapdsp_init(BswapDSPContext *c);
-void ff_bswapdsp_init_aarch64(BswapDSPContext *c);
-void ff_bswapdsp_init_riscv(BswapDSPContext *c);
-void ff_bswapdsp_init_x86(BswapDSPContext *c);
+void ff_bswap_buf_neon(uint32_t *dst, const uint32_t *src, int w);
+void ff_bswap16_buf_neon(uint16_t *dst, const uint16_t *src, int len);
 
-#endif /* AVCODEC_BSWAPDSP_H */
+av_cold void ff_bswapdsp_init_aarch64(BswapDSPContext *c)
+{
+    int cpu_flags = av_get_cpu_flags();
+
+    if (have_neon(cpu_flags)) {
+        c->bswap_buf   = ff_bswap_buf_neon;
+        c->bswap16_buf = ff_bswap16_buf_neon;
+    }
+}

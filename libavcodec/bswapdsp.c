@@ -39,7 +39,9 @@ av_cold void ff_bswapdsp_init(BswapDSPContext *c)
     c->bswap_buf   = bswap_buf;
     c->bswap16_buf = bswap16_buf;
 
-#if ARCH_RISCV
+#if ARCH_AARCH64
+    ff_bswapdsp_init_aarch64(c);
+#elif ARCH_RISCV
     ff_bswapdsp_init_riscv(c);
 #elif ARCH_X86 && HAVE_X86ASM
     ff_bswapdsp_init_x86(c);
