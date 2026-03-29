@@ -30,6 +30,33 @@
 void ff_flac_wasted_32_neon(int32_t *decoded, int wasted, int len);
 void ff_flac_wasted_33_neon(int64_t *decoded, const int32_t *residual,
                             int wasted, int len);
+void ff_flac_lpc_16_neon(int32_t *decoded, const int coeffs[32],
+                         int pred_order, int qlevel, int len);
+void ff_flac_lpc_32_neon(int32_t *decoded, const int coeffs[32],
+                         int pred_order, int qlevel, int len);
+
+/* Saved C fallbacks — written once at init, read-only thereafter. */
+static void (*s_lpc16_c)(int32_t *, const int [32], int, int, int);
+static void (*s_lpc32_c)(int32_t *, const int [32], int, int, int);
+
+/* NEON is only profitable for pred_order >= 20; delegate smaller orders to C. */
+static void flac_lpc_16_aarch64(int32_t *decoded, const int coeffs[32],
+                                int pred_order, int qlevel, int len)
+{
+    if (pred_order >= 20)
+        ff_flac_lpc_16_neon(decoded, coeffs, pred_order, qlevel, len);
+    else
+        s_lpc16_c(decoded, coeffs, pred_order, qlevel, len);
+}
+
+static void flac_lpc_32_aarch64(int32_t *decoded, const int coeffs[32],
+                                int pred_order, int qlevel, int len)
+{
+    if (pred_order >= 20)
+        ff_flac_lpc_32_neon(decoded, coeffs, pred_order, qlevel, len);
+    else
+        s_lpc32_c(decoded, coeffs, pred_order, qlevel, len);
+}
 
 void ff_flac_decorrelate_ls_32_neon(uint8_t **out, int32_t **in, int channels,
                                     int len, int shift);
@@ -52,6 +79,10 @@ av_cold void ff_flacdsp_init_aarch64(FLACDSPContext *c, enum AVSampleFormat fmt,
     if (have_neon(cpu_flags)) {
         c->wasted32 = ff_flac_wasted_32_neon;
         c->wasted33 = ff_flac_wasted_33_neon;
+        s_lpc16_c   = c->lpc16;          /* save C ptr before overwriting */
+        s_lpc32_c   = c->lpc32;
+        c->lpc16    = flac_lpc_16_aarch64;
+        c->lpc32    = flac_lpc_32_aarch64;
 
         if (fmt == AV_SAMPLE_FMT_S32) {
             c->decorrelate[1] = ff_flac_decorrelate_ls_32_neon;

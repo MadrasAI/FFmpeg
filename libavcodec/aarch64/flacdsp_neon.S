@@ -197,3 +197,94 @@ function ff_flac_decorrelate_ms_16_neon, export=1
         b.gt            1b
         ret
 endfunc
+
+// void ff_flac_lpc_32_neon(int32_t *decoded, const int coeffs[32],
+//                          int pred_order, int qlevel, int len)
+// x0=decoded, x1=coeffs, w2=pred_order, w3=qlevel, w4=len
+// Vectorizes the inner dot-product loop across pred_order coefficients.
+// smlal  v0.2d, vA.2s, vB.2s: v0.d[0] += sext(vA.s[0])*sext(vB.s[0]);
+//                              v0.d[1] += sext(vA.s[1])*sext(vB.s[1])
+// smlal2 v0.2d, vA.4s, vB.4s: v0.d[0] += sext(vA.s[2])*sext(vB.s[2]);
+//                              v0.d[1] += sext(vA.s[3])*sext(vB.s[3])
+// Together they process all 4 loaded lanes into v0.2d per SIMD iteration.
+// addp d0, v0.2d: d0 = v0.d[0]+v0.d[1] (fold 2-lane int64 accumulator to scalar)
+function ff_flac_lpc_32_neon, export=1
+        subs    w4,  w4,  w2            // output_count = len - pred_order; sets flags
+        b.le    9f
+        sxtw    x2,  w2                 // sign-extend pred_order for addr arith
+        add     x0,  x0,  x2,  lsl #2  // x0 -> decoded[pred_order] (first output)
+1:      movi    v0.2d,  #0              // clear 2-lane int64 SIMD accumulator
+        mov     x5,  x1                 // x5 = &coeffs[0], reset each outer iter
+        sub     x6,  x0,  x2,  lsl #2  // x6 = &decoded[i-pred_order]
+        mov     x7,  x2                 // x7 = remaining coeff count
+        mov     x8,  #0                 // x8 = scalar int64 accumulator (tail)
+        subs    x7,  x7,  #4
+        b.lt    3f
+2:      ld1     {v1.4s},  [x5], #16    // 4 coefficients
+        ld1     {v2.4s},  [x6], #16    // 4 history samples
+        smlal   v0.2d,  v1.2s,  v2.2s // v0.d[0]+=c[0]*h[0]; v0.d[1]+=c[1]*h[1]
+        smlal2  v0.2d,  v1.4s,  v2.4s // v0.d[0]+=c[2]*h[2]; v0.d[1]+=c[3]*h[3]
+        subs    x7,  x7,  #4
+        b.ge    2b
+3:      adds    x7,  x7,  #4
+        b.eq    5f
+4:      ldr     w9,   [x5], #4
+        ldr     w10,  [x6], #4
+        smull   x9,   w9,  w10          // x9 = (int64)coeff * (int64)hist
+        add     x8,  x8,  x9
+        subs    x7,  x7,  #1
+        b.ne    4b
+5:      addp    d0,  v0.2d             // d0 = v0.d[0]+v0.d[1]
+        fmov    x9,  d0               // move 64-bit result to GP register
+        add     x8,  x8,  x9         // combine SIMD and scalar tail sums
+        asr     x8,  x8,  x3         // >> qlevel
+        ldr     w9,   [x0]
+        add     w9,  w9,  w8         // decoded[i] += (int32)(sum >> qlevel)
+        str     w9,   [x0], #4
+        subs    w4,  w4,  #1
+        b.ne    1b
+9:      ret
+endfunc
+
+// void ff_flac_lpc_16_neon(int32_t *decoded, const int coeffs[32],
+//                          int pred_order, int qlevel, int len)
+// x0=decoded, x1=coeffs, w2=pred_order, w3=qlevel, w4=len
+// Vectorizes the inner dot-product loop across pred_order coefficients.
+// mla v0.4s,v1.4s,v2.4s: v0.s[k] += v1.s[k]*v2.s[k] mod 2^32 for k=0..3
+//   matches C behavior: int s0 += (SUINT)c * (SUINT)d  (wraps mod 2^32)
+// addv s0, v0.4s: horizontal 32-bit sum of all 4 lanes into scalar s0 (wraps mod 2^32)
+function ff_flac_lpc_16_neon, export=1
+        subs    w4,  w4,  w2            // output_count = len - pred_order; sets flags
+        b.le    9f
+        sxtw    x2,  w2
+        add     x0,  x0,  x2,  lsl #2
+1:      movi    v0.4s,  #0              // clear 4-lane int32 SIMD accumulator
+        mov     x5,  x1
+        sub     x6,  x0,  x2,  lsl #2
+        mov     x7,  x2
+        mov     w8,  #0                 // w8 = scalar int32 accumulator (tail)
+        subs    x7,  x7,  #4
+        b.lt    3f
+2:      ld1     {v1.4s},  [x5], #16
+        ld1     {v2.4s},  [x6], #16
+        mla     v0.4s,  v1.4s,  v2.4s // v0.s[k] += coeff[k]*hist[k] mod 2^32
+        subs    x7,  x7,  #4
+        b.ge    2b
+3:      adds    x7,  x7,  #4
+        b.eq    5f
+4:      ldr     w9,   [x5], #4
+        ldr     w10,  [x6], #4
+        madd    w8,  w9,  w10,  w8    // w8 += coeff*hist (32-bit wrapping)
+        subs    x7,  x7,  #1
+        b.ne    4b
+5:      addv    s0,  v0.4s            // horizontal 32-bit sum into scalar s0
+        fmov    w9,  s0              // move 32-bit result to GP register
+        add     w8,  w8,  w9        // combine SIMD and scalar tail sums
+        asr     w8,  w8,  w3        // >> qlevel (32-bit arithmetic right shift)
+        ldr     w9,   [x0]
+        add     w9,  w9,  w8
+        str     w9,   [x0], #4
+        subs    w4,  w4,  #1
+        b.ne    1b
+9:      ret
+endfunc
