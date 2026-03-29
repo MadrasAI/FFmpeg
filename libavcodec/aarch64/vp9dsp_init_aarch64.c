@@ -99,6 +99,54 @@ define_8tap_2d_funcs(16)
 define_8tap_2d_funcs(8)
 define_8tap_2d_funcs(4)
 
+/* ---- VP9 intra prediction NEON declarations ---- */
+#define decl_ipred_fn(mode, sz) \
+void ff_vp9_ipred_##mode##_##sz##x##sz##_neon(uint8_t *dst, ptrdiff_t stride, \
+                                               const uint8_t *left,            \
+                                               const uint8_t *top)
+
+#define decl_ipred_fns(sz)                \
+    decl_ipred_fn(v,       sz);           \
+    decl_ipred_fn(h,       sz);           \
+    decl_ipred_fn(dc,      sz);           \
+    decl_ipred_fn(dc_left, sz);           \
+    decl_ipred_fn(dc_top,  sz);           \
+    decl_ipred_fn(dc_128,  sz);           \
+    decl_ipred_fn(dc_127,  sz);           \
+    decl_ipred_fn(dc_129,  sz);           \
+    decl_ipred_fn(tm,      sz)
+
+decl_ipred_fns(4);
+decl_ipred_fns(8);
+decl_ipred_fns(16);
+decl_ipred_fns(32);
+
+static av_cold void vp9dsp_intrapred_init_aarch64(VP9DSPContext *dsp)
+{
+    int cpu_flags = av_get_cpu_flags();
+
+    if (!have_neon(cpu_flags))
+        return;
+
+#define init_ipred(tx, sz)                                                           \
+    dsp->intra_pred[tx][VERT_PRED]    = ff_vp9_ipred_v_##sz##x##sz##_neon;          \
+    dsp->intra_pred[tx][HOR_PRED]     = ff_vp9_ipred_h_##sz##x##sz##_neon;          \
+    dsp->intra_pred[tx][DC_PRED]      = ff_vp9_ipred_dc_##sz##x##sz##_neon;         \
+    dsp->intra_pred[tx][LEFT_DC_PRED] = ff_vp9_ipred_dc_left_##sz##x##sz##_neon;    \
+    dsp->intra_pred[tx][TOP_DC_PRED]  = ff_vp9_ipred_dc_top_##sz##x##sz##_neon;     \
+    dsp->intra_pred[tx][DC_128_PRED]  = ff_vp9_ipred_dc_128_##sz##x##sz##_neon;     \
+    dsp->intra_pred[tx][DC_127_PRED]  = ff_vp9_ipred_dc_127_##sz##x##sz##_neon;     \
+    dsp->intra_pred[tx][DC_129_PRED]  = ff_vp9_ipred_dc_129_##sz##x##sz##_neon;     \
+    dsp->intra_pred[tx][TM_VP8_PRED]  = ff_vp9_ipred_tm_##sz##x##sz##_neon
+
+    init_ipred(TX_4X4,   4);
+    init_ipred(TX_8X8,   8);
+    init_ipred(TX_16X16, 16);
+    init_ipred(TX_32X32, 32);
+
+#undef init_ipred
+}
+
 static av_cold void vp9dsp_mc_init_aarch64(VP9DSPContext *dsp)
 {
     int cpu_flags = av_get_cpu_flags();
@@ -253,6 +301,7 @@ av_cold void ff_vp9dsp_init_aarch64(VP9DSPContext *dsp, int bpp)
     } else if (bpp != 8)
         return;
 
+    vp9dsp_intrapred_init_aarch64(dsp);
     vp9dsp_mc_init_aarch64(dsp);
     vp9dsp_loopfilter_init_aarch64(dsp);
     vp9dsp_itxfm_init_aarch64(dsp);

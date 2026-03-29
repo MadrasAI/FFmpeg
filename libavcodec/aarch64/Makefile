@@ -78,7 +78,8 @@ NEON-OBJS-$(CONFIG_AAC_DECODER)         += aarch64/aacpsdsp_neon.o
 NEON-OBJS-$(CONFIG_DCA_DECODER)         += aarch64/synth_filter_neon.o
 NEON-OBJS-$(CONFIG_OPUS_DECODER)        += aarch64/opusdsp_neon.o
 NEON-OBJS-$(CONFIG_VORBIS_DECODER)      += aarch64/vorbisdsp_neon.o
-NEON-OBJS-$(CONFIG_VP9_DECODER)         += aarch64/vp9itxfm_16bpp_neon.o       \
+NEON-OBJS-$(CONFIG_VP9_DECODER)         += aarch64/vp9intrapred_neon.o          \
+                                           aarch64/vp9itxfm_16bpp_neon.o       \
                                            aarch64/vp9itxfm_neon.o             \
                                            aarch64/vp9lpf_16bpp_neon.o         \
                                            aarch64/vp9lpf_neon.o               \
