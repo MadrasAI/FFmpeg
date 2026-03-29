@@ -30,7 +30,7 @@
  * left[0]   is the bottom-most pixel of the left column.
  * top[-1]   is the top-left corner pixel (used by TM mode).
  *
- * Modes implemented:
+ * Modes implemented (Phase 1):
  *   VERT (v)      — fill each row from the top row
  *   HOR  (h)      — fill each row with the corresponding left pixel
  *   DC            — average of left + top, rounded, broadcast
@@ -40,6 +40,18 @@
  *   DC_127        — fill with constant 127
  *   DC_129        — fill with constant 129
  *   TM            — true-motion: clip_u8(top[x] + left[N-1-y] - top[-1])
+ *
+ * Phase 2: 6 diagonal intra prediction modes x 4 block sizes = 24 functions
+ *
+ * left[] ordering for Phase 2 modes:
+ *   Standard modes (DIAG_DOWN_LEFT, DIAG_DOWN_RIGHT, VERT_RIGHT, HOR_DOWN,
+ *   VERT_LEFT): left[0]=bottommost, left[N-1]=topmost  (same as Phase 1)
+ *   HOR_UP: left[0]=topmost, left[N-1]=bottommost  (invert_left=1 in decoder)
+ *
+ * Modes implemented (Phase 2):
+ *   DIAG_DOWN_LEFT  — 3-tap filter along top row, sliding diagonal
+ *   VERT_LEFT       — even/odd 2-tap and 3-tap interleaved from top row
+ *   HOR_UP          — interleaved 2-tap/3-tap from left column (inverted order)
  */
 
 #include "libavutil/aarch64/asm.S"
@@ -652,5 +664,483 @@ function ff_vp9_ipred_tm_32x32_neon, export=1
         st1     {v4.16b,  v5.16b},  [x0],  x1
         subs    w5,  w5,  #1
         b.ne    1b
+        ret
+endfunc
+
+/* ------------------------------------------------------------------ */
+/* Phase 2A: DIAG_DOWN_LEFT                                            */
+/*                                                                     */
+/* dst[y][x] = filter3(top[x+y], top[x+y+1], top[x+y+2])             */
+/*           = (top[x+y] + 2*top[x+y+1] + top[x+y+2] + 2) >> 2      */
+/* with top[N] = top[N-1] clamped.                                     */
+/* Output row y is a sliding window: result[y .. y+N-1].               */
+/*                                                                     */
+/* 4x4 reads top[0..7] (2N); 8x8/16x16/32x32 read top[0..N-1].       */
+/* v_pad = dup(top[N-1]) supplies clamped extension.                   */
+/* ------------------------------------------------------------------ */
+
+// 4x4: top[0..7] loaded; filter3 over 8 positions with dup padding;
+// ins v_result.b[6] = top[7] to match C reference (DST(3,3) = a7).
+function ff_vp9_ipred_diag_downleft_4x4_neon, export=1
+        ldr     d0,  [x3]                       // v0 = top[0..7]
+        ldrb    w4,  [x3, #7]
+        dup     v4.8b,  w4                       // v4 = all top[7]
+        ext     v1.8b,  v0.8b,  v4.8b,  #1      // top[1..7, top7]
+        ext     v2.8b,  v0.8b,  v4.8b,  #2      // top[2..7, top7, top7]
+        movi    v5.8b,  #2
+        uaddl   v3.8h,  v0.8b,  v2.8b
+        umlal   v3.8h,  v1.8b,  v5.8b
+        rshrn   v0.8b,  v3.8h,  #2              // v0[i] = filter3(top[i..i+2])
+        ins     v0.b[6],  w4                     // v0[6] = top[7]  (not filtered)
+        st1     {v0.s}[0],  [x0],  x1           // row 0: v0[0..3]
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        st1     {v1.s}[0],  [x0],  x1           // row 1: v0[1..4]
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        st1     {v2.s}[0],  [x0],  x1           // row 2: v0[2..5]
+        ext     v1.8b,  v0.8b,  v4.8b,  #3
+        st1     {v1.s}[0],  [x0]                // row 3: v0[3..5], top[7]
+        ret
+endfunc
+
+// 8x8: v0[7] = filter3(top7,top7,top7) = top7, so no ins needed.
+function ff_vp9_ipred_diag_downleft_8x8_neon, export=1
+        ldr     d0,  [x3]
+        ldrb    w4,  [x3, #7]
+        dup     v4.8b,  w4
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        movi    v5.8b,  #2
+        uaddl   v3.8h,  v0.8b,  v2.8b
+        umlal   v3.8h,  v1.8b,  v5.8b
+        rshrn   v0.8b,  v3.8h,  #2
+        st1     {v0.8b},  [x0],  x1
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        st1     {v1.8b},  [x0],  x1
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        st1     {v2.8b},  [x0],  x1
+        ext     v1.8b,  v0.8b,  v4.8b,  #3
+        st1     {v1.8b},  [x0],  x1
+        ext     v2.8b,  v0.8b,  v4.8b,  #4
+        st1     {v2.8b},  [x0],  x1
+        ext     v1.8b,  v0.8b,  v4.8b,  #5
+        st1     {v1.8b},  [x0],  x1
+        ext     v2.8b,  v0.8b,  v4.8b,  #6
+        st1     {v2.8b},  [x0],  x1
+        st1     {v4.8b},  [x0]                  // row 7 = all top[7]
+        ret
+endfunc
+
+function ff_vp9_ipred_diag_downleft_16x16_neon, export=1
+        ld1     {v0.16b},  [x3]
+        ldrb    w4,  [x3, #15]
+        dup     v4.16b,  w4
+        ext     v1.16b,  v0.16b,  v4.16b,  #1
+        ext     v2.16b,  v0.16b,  v4.16b,  #2
+        movi    v5.16b,  #2
+        uaddl   v6.8h,   v0.8b,   v2.8b
+        uaddl2  v7.8h,   v0.16b,  v2.16b
+        umlal   v6.8h,   v1.8b,   v5.8b
+        umlal2  v7.8h,   v1.16b,  v5.16b
+        rshrn   v0.8b,   v6.8h,   #2
+        rshrn2  v0.16b,  v7.8h,   #2
+        st1     {v0.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #1
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #2
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #3
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #4
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #5
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #6
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #7
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #8
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #9
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #10
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #11
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #12
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #13
+        st1     {v1.16b},  [x0],  x1
+        ext     v1.16b,  v0.16b,  v4.16b,  #14
+        st1     {v1.16b},  [x0],  x1
+        st1     {v4.16b},  [x0]                 // row 15 = all top[15]
+        ret
+endfunc
+
+// 32x32: compute 32-byte filter result on stack with 32 bytes of padding,
+// then do a sliding 1-byte-per-row load loop (unaligned loads, AArch64 safe).
+function ff_vp9_ipred_diag_downleft_32x32_neon, export=1
+        ld1     {v0.16b,  v1.16b},  [x3]        // top[0..31]
+        ldrb    w4,  [x3, #31]
+        dup     v2.16b,  w4                      // padding = all top[31]
+        ext     v3.16b,  v0.16b,  v1.16b,  #1
+        ext     v4.16b,  v1.16b,  v2.16b,  #1
+        ext     v5.16b,  v0.16b,  v1.16b,  #2
+        ext     v6.16b,  v1.16b,  v2.16b,  #2
+        movi    v7.16b,  #2
+        // filter3 for low 16
+        uaddl   v16.8h,  v0.8b,   v5.8b
+        uaddl2  v17.8h,  v0.16b,  v5.16b
+        umlal   v16.8h,  v3.8b,   v7.8b
+        umlal2  v17.8h,  v3.16b,  v7.16b
+        rshrn   v0.8b,   v16.8h,  #2
+        rshrn2  v0.16b,  v17.8h,  #2
+        // filter3 for high 16
+        uaddl   v16.8h,  v1.8b,   v6.8b
+        uaddl2  v17.8h,  v1.16b,  v6.16b
+        umlal   v16.8h,  v4.8b,   v7.8b
+        umlal2  v17.8h,  v4.16b,  v7.16b
+        rshrn   v1.8b,   v16.8h,  #2
+        rshrn2  v1.16b,  v17.8h,  #2
+        // stack: result[0..31] at sp+0, padding at sp+32..63
+        sub     sp,  sp,  #64
+        st1     {v0.16b,  v1.16b},  [sp]
+        add     x5,  sp,  #32
+        st1     {v2.16b},  [x5]
+        add     x5,  x5,  #16
+        st1     {v2.16b},  [x5]
+        mov     x5,  sp
+        mov     w6,  #32
+1:      ld1     {v3.16b,  v4.16b},  [x5]
+        st1     {v3.16b,  v4.16b},  [x0],  x1
+        add     x5,  x5,  #1
+        subs    w6,  w6,  #1
+        b.ne    1b
+        add     sp,  sp,  #64
+        ret
+endfunc
+
+/* ------------------------------------------------------------------ */
+/* Phase 2A: VERT_LEFT                                                 */
+/*                                                                     */
+/* Even rows 2j: dst[2j][x] = (top[x+j] + top[x+j+1] + 1) >> 1      */
+/* Odd rows 2j+1: dst[2j+1][x] = filter3(top[x+j..x+j+2])            */
+/*                                                                     */
+/* ve[i] = urhadd(top[i], top[i+1])                                   */
+/* vo[i] = (top[i] + 2*top[i+1] + top[i+2] + 2) >> 2                 */
+/* Row 2j: ext(ve, pad, j);  Row 2j+1: ext(vo, pad, j)                */
+/* ------------------------------------------------------------------ */
+
+// 4x4: 4 rows (j=0,1 → rows 0-3). top[0..7] read for coverage.
+function ff_vp9_ipred_vert_left_4x4_neon, export=1
+        ldr     d0,  [x3]
+        ldrb    w4,  [x3, #7]
+        dup     v4.8b,  w4
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        movi    v5.8b,  #2
+        urhadd  v6.8b,  v0.8b,  v1.8b           // ve[0..7]
+        uaddl   v3.8h,  v0.8b,  v2.8b
+        umlal   v3.8h,  v1.8b,  v5.8b
+        rshrn   v7.8b,  v3.8h,  #2              // vo[0..7]
+        st1     {v6.s}[0],  [x0],  x1           // row 0: ve[0..3]
+        st1     {v7.s}[0],  [x0],  x1           // row 1: vo[0..3]
+        ext     v0.8b,  v6.8b,  v4.8b,  #1
+        st1     {v0.s}[0],  [x0],  x1           // row 2: ve[1..4]
+        ext     v1.8b,  v7.8b,  v4.8b,  #1
+        st1     {v1.s}[0],  [x0]                // row 3: vo[1..4]
+        ret
+endfunc
+
+function ff_vp9_ipred_vert_left_8x8_neon, export=1
+        ldr     d0,  [x3]
+        ldrb    w4,  [x3, #7]
+        dup     v4.8b,  w4
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        movi    v5.8b,  #2
+        urhadd  v6.8b,  v0.8b,  v1.8b
+        uaddl   v3.8h,  v0.8b,  v2.8b
+        umlal   v3.8h,  v1.8b,  v5.8b
+        rshrn   v7.8b,  v3.8h,  #2
+        st1     {v6.8b},  [x0],  x1             // row 0 (j=0 even)
+        st1     {v7.8b},  [x0],  x1             // row 1 (j=0 odd)
+        ext     v0.8b,  v6.8b,  v4.8b,  #1
+        ext     v1.8b,  v7.8b,  v4.8b,  #1
+        st1     {v0.8b},  [x0],  x1             // row 2 (j=1 even)
+        st1     {v1.8b},  [x0],  x1             // row 3 (j=1 odd)
+        ext     v0.8b,  v6.8b,  v4.8b,  #2
+        ext     v1.8b,  v7.8b,  v4.8b,  #2
+        st1     {v0.8b},  [x0],  x1             // row 4
+        st1     {v1.8b},  [x0],  x1             // row 5
+        ext     v0.8b,  v6.8b,  v4.8b,  #3
+        ext     v1.8b,  v7.8b,  v4.8b,  #3
+        st1     {v0.8b},  [x0],  x1             // row 6
+        st1     {v1.8b},  [x0]                  // row 7
+        ret
+endfunc
+
+function ff_vp9_ipred_vert_left_16x16_neon, export=1
+        ld1     {v0.16b},  [x3]
+        ldrb    w4,  [x3, #15]
+        dup     v4.16b,  w4
+        ext     v1.16b,  v0.16b,  v4.16b,  #1
+        ext     v2.16b,  v0.16b,  v4.16b,  #2
+        movi    v5.16b,  #2
+        urhadd  v6.16b,  v0.16b,  v1.16b
+        uaddl   v16.8h,  v0.8b,   v2.8b
+        uaddl2  v17.8h,  v0.16b,  v2.16b
+        umlal   v16.8h,  v1.8b,   v5.8b
+        umlal2  v17.8h,  v1.16b,  v5.16b
+        rshrn   v7.8b,   v16.8h,  #2
+        rshrn2  v7.16b,  v17.8h,  #2
+        st1     {v6.16b},  [x0],  x1
+        st1     {v7.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #1
+        ext     v1.16b,  v7.16b,  v4.16b,  #1
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #2
+        ext     v1.16b,  v7.16b,  v4.16b,  #2
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #3
+        ext     v1.16b,  v7.16b,  v4.16b,  #3
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #4
+        ext     v1.16b,  v7.16b,  v4.16b,  #4
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #5
+        ext     v1.16b,  v7.16b,  v4.16b,  #5
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #6
+        ext     v1.16b,  v7.16b,  v4.16b,  #6
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0],  x1
+        ext     v0.16b,  v6.16b,  v4.16b,  #7
+        ext     v1.16b,  v7.16b,  v4.16b,  #7
+        st1     {v0.16b},  [x0],  x1
+        st1     {v1.16b},  [x0]
+        ret
+endfunc
+
+// 32x32: compute ve/vo (32 bytes each) on stack with 16-byte padding each;
+// loop reads 32 bytes at sp+j (ve) and sp+64+j (vo) per row pair.
+function ff_vp9_ipred_vert_left_32x32_neon, export=1
+        ld1     {v0.16b,  v1.16b},  [x3]
+        ldrb    w4,  [x3, #31]
+        dup     v2.16b,  w4
+        ext     v3.16b,  v0.16b,  v1.16b,  #1
+        ext     v4.16b,  v1.16b,  v2.16b,  #1
+        ext     v5.16b,  v0.16b,  v1.16b,  #2
+        ext     v6.16b,  v1.16b,  v2.16b,  #2
+        movi    v7.16b,  #2
+        // ve
+        urhadd  v16.16b,  v0.16b,  v3.16b
+        urhadd  v17.16b,  v1.16b,  v4.16b
+        // vo
+        uaddl   v18.8h,  v0.8b,   v5.8b
+        uaddl2  v19.8h,  v0.16b,  v5.16b
+        umlal   v18.8h,  v3.8b,   v7.8b
+        umlal2  v19.8h,  v3.16b,  v7.16b
+        rshrn   v20.8b,  v18.8h,  #2
+        rshrn2  v20.16b, v19.8h,  #2
+        uaddl   v18.8h,  v1.8b,   v6.8b
+        uaddl2  v19.8h,  v1.16b,  v6.16b
+        umlal   v18.8h,  v4.8b,   v7.8b
+        umlal2  v19.8h,  v4.16b,  v7.16b
+        rshrn   v21.8b,  v18.8h,  #2
+        rshrn2  v21.16b, v19.8h,  #2
+        // stack layout (128 bytes):
+        //   sp+0..31:  ve[0..31]; sp+32..47:  ve-pad (16 bytes)
+        //   sp+64..95: vo[0..31]; sp+96..111: vo-pad (16 bytes)
+        sub     sp,  sp,  #128
+        st1     {v16.16b,  v17.16b},  [sp]
+        add     x5,  sp,  #32
+        st1     {v2.16b},  [x5]
+        add     x5,  sp,  #64
+        st1     {v20.16b,  v21.16b},  [x5]
+        add     x5,  sp,  #96
+        st1     {v2.16b},  [x5]
+        mov     x5,  sp
+        add     x6,  sp,  #64
+        mov     w7,  #16
+1:      ld1     {v0.16b,  v1.16b},  [x5]
+        st1     {v0.16b,  v1.16b},  [x0],  x1
+        ld1     {v0.16b,  v1.16b},  [x6]
+        st1     {v0.16b,  v1.16b},  [x0],  x1
+        add     x5,  x5,  #1
+        add     x6,  x6,  #1
+        subs    w7,  w7,  #1
+        b.ne    1b
+        add     sp,  sp,  #128
+        ret
+endfunc
+
+/* ------------------------------------------------------------------ */
+/* Phase 2A: HOR_UP                                                    */
+/*                                                                     */
+/* IMPORTANT: left[] uses invert_left ordering: left[0]=topmost row,  */
+/* left[N-1]=bottommost row (opposite of all other modes).             */
+/*                                                                     */
+/* v[2i]   = ve[i] = (left[i] + left[i+1] + 1) >> 1                  */
+/* v[2i+1] = vo[i] = (left[i] + 2*left[i+1] + left[i+2] + 2) >> 2   */
+/* with left[N] = left[N-1] clamped.                                   */
+/*                                                                     */
+/* Interleave: v_lo = zip1(ve, vo); v_hi = zip2(ve, vo)               */
+/* Row j < N/2:  ext(v_lo, v_hi, 2j)[0..N-1]                         */
+/* Row j >= N/2: ext(v_hi, v_pad, 2j-N)[0..N-1]                      */
+/* ------------------------------------------------------------------ */
+
+function ff_vp9_ipred_hor_up_4x4_neon, export=1
+        // Load only 4 valid bytes; clamp l[4..7] to l[3] for filter padding.
+        ldrb    w4,  [x2, #3]
+        dup     v4.8b,  w4                       // v4 = all l[3]
+        ldr     s0,  [x2]                        // v0[0..3]=l[0..3], v0[4..15]=0
+        ins     v0.s[1],  v4.s[1]                // v0[4..7] = l[3] (clamped)
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        movi    v5.8b,  #2
+        urhadd  v6.8b,  v0.8b,  v1.8b
+        uaddl   v3.8h,  v0.8b,  v2.8b
+        umlal   v3.8h,  v1.8b,  v5.8b
+        rshrn   v7.8b,  v3.8h,  #2
+        zip1    v0.8b,  v6.8b,  v7.8b           // v_lo = {ve0,vo0,ve1,vo1,...,ve3=l3,vo3=l3}
+        st1     {v0.s}[0],  [x0],  x1           // row 0: v_lo[0..3]
+        ext     v1.8b,  v0.8b,  v4.8b,  #2
+        st1     {v1.s}[0],  [x0],  x1           // row 1: v_lo[2..5]
+        ext     v1.8b,  v0.8b,  v4.8b,  #4
+        st1     {v1.s}[0],  [x0],  x1           // row 2: v_lo[4..7]={ve2,vo2,l3,l3}
+        st1     {v4.s}[0],  [x0]                // row 3: all l3
+        ret
+endfunc
+
+function ff_vp9_ipred_hor_up_8x8_neon, export=1
+        ldr     d0,  [x2]
+        ldrb    w4,  [x2, #7]
+        dup     v4.8b,  w4
+        ext     v1.8b,  v0.8b,  v4.8b,  #1
+        ext     v2.8b,  v0.8b,  v4.8b,  #2
+        movi    v5.8b,  #2
+        urhadd  v6.8b,  v0.8b,  v1.8b
+        uaddl   v3.8h,  v0.8b,  v2.8b
+        umlal   v3.8h,  v1.8b,  v5.8b
+        rshrn   v7.8b,  v3.8h,  #2
+        zip1    v0.8b,  v6.8b,  v7.8b           // v_lo = v[0..7]
+        zip2    v1.8b,  v6.8b,  v7.8b           // v_hi = v[8..15]; v_hi[6]=l7, v_hi[7]=l7
+        st1     {v0.8b},  [x0],  x1             // row 0: v[0..7]
+        ext     v2.8b,  v0.8b,  v1.8b,  #2
+        st1     {v2.8b},  [x0],  x1             // row 1: v[2..9]
+        ext     v2.8b,  v0.8b,  v1.8b,  #4
+        st1     {v2.8b},  [x0],  x1             // row 2: v[4..11]
+        ext     v2.8b,  v0.8b,  v1.8b,  #6
+        st1     {v2.8b},  [x0],  x1             // row 3: v[6..13]
+        st1     {v1.8b},  [x0],  x1             // row 4: v[8..15]
+        ext     v2.8b,  v1.8b,  v4.8b,  #2
+        st1     {v2.8b},  [x0],  x1             // row 5: v[10..17]
+        ext     v2.8b,  v1.8b,  v4.8b,  #4
+        st1     {v2.8b},  [x0],  x1             // row 6: v[12..19]
+        ext     v2.8b,  v1.8b,  v4.8b,  #6
+        st1     {v2.8b},  [x0]                  // row 7: all l7
+        ret
+endfunc
+
+function ff_vp9_ipred_hor_up_16x16_neon, export=1
+        ld1     {v0.16b},  [x2]
+        ldrb    w4,  [x2, #15]
+        dup     v4.16b,  w4
+        ext     v1.16b,  v0.16b,  v4.16b,  #1
+        ext     v2.16b,  v0.16b,  v4.16b,  #2
+        movi    v5.16b,  #2
+        urhadd  v6.16b,  v0.16b,  v1.16b
+        uaddl   v16.8h,  v0.8b,   v2.8b
+        uaddl2  v17.8h,  v0.16b,  v2.16b
+        umlal   v16.8h,  v1.8b,   v5.8b
+        umlal2  v17.8h,  v1.16b,  v5.16b
+        rshrn   v7.8b,   v16.8h,  #2
+        rshrn2  v7.16b,  v17.8h,  #2
+        zip1    v0.16b,  v6.16b,  v7.16b        // v_lo = v[0..15]
+        zip2    v1.16b,  v6.16b,  v7.16b        // v_hi = v[16..31]
+        st1     {v0.16b},  [x0],  x1            // row 0
+        ext     v2.16b,  v0.16b,  v1.16b,  #2
+        st1     {v2.16b},  [x0],  x1            // row 1
+        ext     v2.16b,  v0.16b,  v1.16b,  #4
+        st1     {v2.16b},  [x0],  x1            // row 2
+        ext     v2.16b,  v0.16b,  v1.16b,  #6
+        st1     {v2.16b},  [x0],  x1            // row 3
+        ext     v2.16b,  v0.16b,  v1.16b,  #8
+        st1     {v2.16b},  [x0],  x1            // row 4
+        ext     v2.16b,  v0.16b,  v1.16b,  #10
+        st1     {v2.16b},  [x0],  x1            // row 5
+        ext     v2.16b,  v0.16b,  v1.16b,  #12
+        st1     {v2.16b},  [x0],  x1            // row 6
+        ext     v2.16b,  v0.16b,  v1.16b,  #14
+        st1     {v2.16b},  [x0],  x1            // row 7
+        st1     {v1.16b},  [x0],  x1            // row 8
+        ext     v2.16b,  v1.16b,  v4.16b,  #2
+        st1     {v2.16b},  [x0],  x1            // row 9
+        ext     v2.16b,  v1.16b,  v4.16b,  #4
+        st1     {v2.16b},  [x0],  x1            // row 10
+        ext     v2.16b,  v1.16b,  v4.16b,  #6
+        st1     {v2.16b},  [x0],  x1            // row 11
+        ext     v2.16b,  v1.16b,  v4.16b,  #8
+        st1     {v2.16b},  [x0],  x1            // row 12
+        ext     v2.16b,  v1.16b,  v4.16b,  #10
+        st1     {v2.16b},  [x0],  x1            // row 13
+        ext     v2.16b,  v1.16b,  v4.16b,  #12
+        st1     {v2.16b},  [x0],  x1            // row 14
+        ext     v2.16b,  v1.16b,  v4.16b,  #14
+        st1     {v2.16b},  [x0]                 // row 15: all l15
+        ret
+endfunc
+
+// 32x32: compute interleaved v[0..63] on stack, advance by 2 per row.
+function ff_vp9_ipred_hor_up_32x32_neon, export=1
+        ld1     {v0.16b,  v1.16b},  [x2]
+        ldrb    w4,  [x2, #31]
+        dup     v2.16b,  w4
+        ext     v3.16b,  v0.16b,  v1.16b,  #1
+        ext     v4.16b,  v1.16b,  v2.16b,  #1
+        ext     v5.16b,  v0.16b,  v1.16b,  #2
+        ext     v6.16b,  v1.16b,  v2.16b,  #2
+        movi    v7.16b,  #2
+        urhadd  v16.16b,  v0.16b,  v3.16b
+        urhadd  v17.16b,  v1.16b,  v4.16b
+        uaddl   v18.8h,  v0.8b,   v5.8b
+        uaddl2  v19.8h,  v0.16b,  v5.16b
+        umlal   v18.8h,  v3.8b,   v7.8b
+        umlal2  v19.8h,  v3.16b,  v7.16b
+        rshrn   v20.8b,  v18.8h,  #2
+        rshrn2  v20.16b, v19.8h,  #2
+        uaddl   v18.8h,  v1.8b,   v6.8b
+        uaddl2  v19.8h,  v1.16b,  v6.16b
+        umlal   v18.8h,  v4.8b,   v7.8b
+        umlal2  v19.8h,  v4.16b,  v7.16b
+        rshrn   v21.8b,  v18.8h,  #2
+        rshrn2  v21.16b, v19.8h,  #2
+        // interleave ve/vo into v[0..63]
+        zip1    v0.16b,  v16.16b,  v20.16b      // v[0..15]
+        zip2    v1.16b,  v16.16b,  v20.16b      // v[16..31]
+        zip1    v3.16b,  v17.16b,  v21.16b      // v[32..47]
+        zip2    v4.16b,  v17.16b,  v21.16b      // v[48..63]
+        // stack: v[0..63] at sp+0..63, padding at sp+64..95
+        sub     sp,  sp,  #96
+        st1     {v0.16b,  v1.16b},  [sp]
+        add     x5,  sp,  #32
+        st1     {v3.16b,  v4.16b},  [x5]
+        add     x5,  sp,  #64
+        st1     {v2.16b},  [x5]
+        add     x5,  x5,  #16
+        st1     {v2.16b},  [x5]
+        mov     x5,  sp
+        mov     w6,  #32
+1:      ld1     {v0.16b,  v1.16b},  [x5]
+        st1     {v0.16b,  v1.16b},  [x0],  x1
+        add     x5,  x5,  #2
+        subs    w6,  w6,  #1
+        b.ne    1b
+        add     sp,  sp,  #96
         ret
 endfunc
