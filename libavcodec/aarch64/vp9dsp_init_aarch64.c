@@ -115,9 +115,12 @@ void ff_vp9_ipred_##mode##_##sz##x##sz##_neon(uint8_t *dst, ptrdiff_t stride, \
     decl_ipred_fn(dc_127,         sz);   \
     decl_ipred_fn(dc_129,         sz);   \
     decl_ipred_fn(tm,             sz);   \
-    decl_ipred_fn(diag_downleft,  sz);   \
-    decl_ipred_fn(vert_left,      sz);   \
-    decl_ipred_fn(hor_up,         sz)
+    decl_ipred_fn(diag_downleft,   sz);   \
+    decl_ipred_fn(diag_downright,  sz);   \
+    decl_ipred_fn(vert_right,      sz);   \
+    decl_ipred_fn(hor_down,        sz);   \
+    decl_ipred_fn(vert_left,       sz);   \
+    decl_ipred_fn(hor_up,          sz)
 
 decl_ipred_fns(4);
 decl_ipred_fns(8);
@@ -141,9 +144,12 @@ static av_cold void vp9dsp_intrapred_init_aarch64(VP9DSPContext *dsp)
     dsp->intra_pred[tx][DC_127_PRED]         = ff_vp9_ipred_dc_127_##sz##x##sz##_neon;             \
     dsp->intra_pred[tx][DC_129_PRED]         = ff_vp9_ipred_dc_129_##sz##x##sz##_neon;             \
     dsp->intra_pred[tx][TM_VP8_PRED]         = ff_vp9_ipred_tm_##sz##x##sz##_neon;                 \
-    dsp->intra_pred[tx][DIAG_DOWN_LEFT_PRED] = ff_vp9_ipred_diag_downleft_##sz##x##sz##_neon;      \
-    dsp->intra_pred[tx][VERT_LEFT_PRED]      = ff_vp9_ipred_vert_left_##sz##x##sz##_neon;          \
-    dsp->intra_pred[tx][HOR_UP_PRED]         = ff_vp9_ipred_hor_up_##sz##x##sz##_neon
+    dsp->intra_pred[tx][DIAG_DOWN_LEFT_PRED]  = ff_vp9_ipred_diag_downleft_##sz##x##sz##_neon;     \
+    dsp->intra_pred[tx][DIAG_DOWN_RIGHT_PRED] = ff_vp9_ipred_diag_downright_##sz##x##sz##_neon;    \
+    dsp->intra_pred[tx][VERT_RIGHT_PRED]      = ff_vp9_ipred_vert_right_##sz##x##sz##_neon;        \
+    dsp->intra_pred[tx][HOR_DOWN_PRED]        = ff_vp9_ipred_hor_down_##sz##x##sz##_neon;          \
+    dsp->intra_pred[tx][VERT_LEFT_PRED]       = ff_vp9_ipred_vert_left_##sz##x##sz##_neon;         \
+    dsp->intra_pred[tx][HOR_UP_PRED]          = ff_vp9_ipred_hor_up_##sz##x##sz##_neon
 
     init_ipred(TX_4X4,   4);
     init_ipred(TX_8X8,   8);
