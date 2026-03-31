@@ -1,4 +1,5 @@
 # subsystems
+OBJS-$(CONFIG_ALAC_DECODER)             += aarch64/alacdsp_init_aarch64.o
 OBJS-$(CONFIG_AUDIODSP)                 += aarch64/audiodsp_init_aarch64.o
 OBJS-$(CONFIG_FLAC_DECODER)             += aarch64/flacdsp_init_aarch64.o
 OBJS-$(CONFIG_LPC)                      += aarch64/lpc_init.o
@@ -46,6 +47,7 @@ ARMV8-OBJS-$(CONFIG_VIDEODSP)           += aarch64/videodsp.o
 # NEON optimizations
 
 # subsystems
+NEON-OBJS-$(CONFIG_ALAC_DECODER)        += aarch64/alacdsp_neon.o
 NEON-OBJS-$(CONFIG_AUDIODSP)            += aarch64/audiodsp_neon.o
 NEON-OBJS-$(CONFIG_FLAC_DECODER)        += aarch64/flacdsp_neon.o
 NEON-OBJS-$(CONFIG_LPC)                 += aarch64/lpc_neon.o

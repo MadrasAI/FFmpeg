@@ -58,7 +58,9 @@ av_cold void ff_alacdsp_init(ALACDSPContext *c)
     c->append_extra_bits[0] =
     c->append_extra_bits[1] = append_extra_bits;
 
-#if ARCH_RISCV
+#if ARCH_AARCH64
+    ff_alacdsp_init_aarch64(c);
+#elif ARCH_RISCV
     ff_alacdsp_init_riscv(c);
 #elif ARCH_X86 && HAVE_X86ASM
     ff_alacdsp_init_x86(c);

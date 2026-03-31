@@ -79,6 +79,7 @@ DEFAULT_THRESHOLD = 0.80   # minimum NEON speedup ratio vs C
 # ---------------------------------------------------------------------------
 
 MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
+    "alacdsp":  ["alac_"],   # test group "alacdsp" but bench names are "alac_*"
     "lpc":      ["apply_welch_window", "autocorr"],
     "llviddsp": ["add_"],
     "flacdsp":  ["flac_"],   # test group "flacdsp" but bench names are "flac_*"

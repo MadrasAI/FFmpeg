@@ -823,6 +823,33 @@
       "c": {
         "cycles": 7445.0
       }
+    },
+    "alac_append_extra_bits_mono": {
+      "c": {
+        "cycles": 438.0
+      },
+      "neon": {
+        "cycles": 97.0,
+        "ratio": 4.515
+      }
+    },
+    "alac_append_extra_bits_stereo": {
+      "c": {
+        "cycles": 855.7
+      },
+      "neon": {
+        "cycles": 182.6,
+        "ratio": 4.686
+      }
+    },
+    "alac_decorrelate_stereo": {
+      "c": {
+        "cycles": 533.3
+      },
+      "neon": {
+        "cycles": 172.2,
+        "ratio": 3.097
+      }
     }
   }
 }
