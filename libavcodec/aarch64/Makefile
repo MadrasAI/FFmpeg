@@ -1,6 +1,7 @@
 # subsystems
 OBJS-$(CONFIG_AUDIODSP)                 += aarch64/audiodsp_init_aarch64.o
 OBJS-$(CONFIG_FLAC_DECODER)             += aarch64/flacdsp_init_aarch64.o
+OBJS-$(CONFIG_LPC)                      += aarch64/lpc_init.o
 OBJS-$(CONFIG_LLVIDDSP)                 += aarch64/lossless_videodsp_init_aarch64.o
 OBJS-$(CONFIG_BLOCKDSP)                 += aarch64/blockdsp_init_aarch64.o
 OBJS-$(CONFIG_BSWAPDSP)                 += aarch64/bswapdsp_init_aarch64.o
@@ -47,6 +48,7 @@ ARMV8-OBJS-$(CONFIG_VIDEODSP)           += aarch64/videodsp.o
 # subsystems
 NEON-OBJS-$(CONFIG_AUDIODSP)            += aarch64/audiodsp_neon.o
 NEON-OBJS-$(CONFIG_FLAC_DECODER)        += aarch64/flacdsp_neon.o
+NEON-OBJS-$(CONFIG_LPC)                 += aarch64/lpc_neon.o
 NEON-OBJS-$(CONFIG_LLVIDDSP)            += aarch64/lossless_videodsp_neon.o
 NEON-OBJS-$(CONFIG_BLOCKDSP)            += aarch64/blockdsp_neon.o
 NEON-OBJS-$(CONFIG_BSWAPDSP)            += aarch64/bswapdsp_neon.o
