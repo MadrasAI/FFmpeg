@@ -309,6 +309,67 @@ function ff_flac_decorrelate_indep8_32_neon, export=1
 endfunc
 
 // ---------------------------------------------------------------------------
+// 6-channel S32: zip1/zip2 pairs + ext to extract upper D-reg halves.
+// No st6 exists; 6-channel stride is 24 bytes (non-power-of-2), so we use
+// stp d + str d for 3 pairs per sample, with ext .16b,#8 to rotate upper
+// samples into D-reg lower position.
+// v16/v17 = zip1/zip2(ch0,ch1); v18/v19 = zip1/zip2(ch2,ch3); v20/v21 = zip1/zip2(ch4,ch5)
+// Samples 0,1 from v16/v18/v20: stp lower-D, ext, stp rotated-lower-D.
+// Samples 2,3 from v17/v19/v21: same pattern.
+// 4 samples per iteration → 6*4*4 = 96 bytes output.
+function ff_flac_decorrelate_indep6_32_neon, export=1
+        ldr             x5,  [x1]           // in[0]
+        ldr             x6,  [x1, #8]       // in[1]
+        ldr             x7,  [x1, #16]      // in[2]
+        ldr             x8,  [x1, #24]      // in[3]
+        ldr             x9,  [x1, #32]      // in[4]
+        ldr             x10, [x1, #40]      // in[5]
+        ldr             x0,  [x0]           // out[0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s}, [x5],  #16
+        ld1             {v2.4s}, [x6],  #16
+        ld1             {v3.4s}, [x7],  #16
+        ld1             {v4.4s}, [x8],  #16
+        ld1             {v5.4s}, [x9],  #16
+        ld1             {v6.4s}, [x10], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        sshl            v3.4s,  v3.4s,  v0.4s
+        sshl            v4.4s,  v4.4s,  v0.4s
+        sshl            v5.4s,  v5.4s,  v0.4s
+        sshl            v6.4s,  v6.4s,  v0.4s
+        // zip1 → lower-sample pairs (samples 0,1); zip2 → upper-sample pairs (2,3)
+        zip1            v16.4s, v1.4s,  v2.4s   // [ch0[0],ch1[0],ch0[1],ch1[1]]
+        zip2            v17.4s, v1.4s,  v2.4s   // [ch0[2],ch1[2],ch0[3],ch1[3]]
+        zip1            v18.4s, v3.4s,  v4.4s   // [ch2[0],ch3[0],ch2[1],ch3[1]]
+        zip2            v19.4s, v3.4s,  v4.4s   // [ch2[2],ch3[2],ch2[3],ch3[3]]
+        zip1            v20.4s, v5.4s,  v6.4s   // [ch4[0],ch5[0],ch4[1],ch5[1]]
+        zip2            v21.4s, v5.4s,  v6.4s   // [ch4[2],ch5[2],ch4[3],ch5[3]]
+        // Sample 0: lower D-regs = {ch0[0],ch1[0]}, {ch2[0],ch3[0]}, {ch4[0],ch5[0]}
+        stp             d16, d18, [x0], #16
+        str             d20, [x0], #8
+        // Sample 1: upper D-regs via ext .16b,#8 (rotate Q-reg by 8 bytes)
+        ext             v16.16b, v16.16b, v16.16b, #8
+        ext             v18.16b, v18.16b, v18.16b, #8
+        ext             v20.16b, v20.16b, v20.16b, #8
+        stp             d16, d18, [x0], #16
+        str             d20, [x0], #8
+        // Sample 2: lower D-regs of zip2 results
+        stp             d17, d19, [x0], #16
+        str             d21, [x0], #8
+        // Sample 3: upper D-regs of zip2 results
+        ext             v17.16b, v17.16b, v17.16b, #8
+        ext             v19.16b, v19.16b, v19.16b, #8
+        ext             v21.16b, v21.16b, v21.16b, #8
+        stp             d17, d19, [x0], #16
+        str             d21, [x0], #8
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// ---------------------------------------------------------------------------
 // Independent channel decorrelate (S16 output — N-channel interleaved int16)
 // Same signature. Input is int32; sshl then xtn narrows to int16 (truncating).
 // xtn matches C cast semantics: (int16_t)(int32_t)(x << shift).
@@ -355,6 +416,74 @@ function ff_flac_decorrelate_indep4_16_neon, export=1
         xtn             v3.4h,  v3.4s
         xtn             v4.4h,  v4.4s
         st4             {v1.4h, v2.4h, v3.4h, v4.4h}, [x0], #32
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// 6-channel S16: sshl+xtn, zip pairs to .4h D-regs, stp s + str s.
+// 4 samples × 6 channels × 2 bytes = 48 bytes output per iteration.
+// Register plan (avoid callee-saved v8-v15):
+//   v0=shift, v1-v6=ch0-5 (4s then 4h), v16-v21=zip results (4h)
+// zip1 vN.4h,vA.4h,vB.4h → [a0,b0,a1,b1] in lower 64-bit D-reg, upper=zeroed
+// zip2 vN.4h,vA.4h,vB.4h → [a2,b2,a3,b3] in lower 64-bit D-reg, upper=zeroed
+// Each D-reg holds 2 samples worth of a channel pair.
+// Sample 0: sN[0]=s-reg (low 32 bits of D) = {ch0[0],ch1[0]}
+// Sample 1: ext vN.8b,#4 rotates D-reg → {ch0[1],ch1[1]} in low s-reg
+function ff_flac_decorrelate_indep6_16_neon, export=1
+        ldr             x5,  [x1]           // in[0]
+        ldr             x6,  [x1, #8]       // in[1]
+        ldr             x7,  [x1, #16]      // in[2]
+        ldr             x8,  [x1, #24]      // in[3]
+        ldr             x9,  [x1, #32]      // in[4]
+        ldr             x10, [x1, #40]      // in[5]
+        ldr             x0,  [x0]           // out[0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s}, [x5],  #16
+        ld1             {v2.4s}, [x6],  #16
+        ld1             {v3.4s}, [x7],  #16
+        ld1             {v4.4s}, [x8],  #16
+        ld1             {v5.4s}, [x9],  #16
+        ld1             {v6.4s}, [x10], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        sshl            v3.4s,  v3.4s,  v0.4s
+        sshl            v4.4s,  v4.4s,  v0.4s
+        sshl            v5.4s,  v5.4s,  v0.4s
+        sshl            v6.4s,  v6.4s,  v0.4s
+        xtn             v1.4h,  v1.4s
+        xtn             v2.4h,  v2.4s
+        xtn             v3.4h,  v3.4s
+        xtn             v4.4h,  v4.4s
+        xtn             v5.4h,  v5.4s
+        xtn             v6.4h,  v6.4s
+        // zip1 → [ch_a[0],ch_b[0],ch_a[1],ch_b[1]] (lower D — samples 0 and 1)
+        // zip2 → [ch_a[2],ch_b[2],ch_a[3],ch_b[3]] (lower D — samples 2 and 3)
+        zip1            v16.4h, v1.4h,  v2.4h
+        zip2            v17.4h, v1.4h,  v2.4h
+        zip1            v18.4h, v3.4h,  v4.4h
+        zip2            v19.4h, v3.4h,  v4.4h
+        zip1            v20.4h, v5.4h,  v6.4h
+        zip2            v21.4h, v5.4h,  v6.4h
+        // Sample 0: low S-reg = {ch0[0],ch1[0]}; etc.
+        stp             s16, s18, [x0], #8
+        str             s20, [x0], #4
+        // Sample 1: rotate each D-reg by 4 bytes to bring upper pair to low S-reg
+        ext             v16.8b, v16.8b, v16.8b, #4
+        ext             v18.8b, v18.8b, v18.8b, #4
+        ext             v20.8b, v20.8b, v20.8b, #4
+        stp             s16, s18, [x0], #8
+        str             s20, [x0], #4
+        // Sample 2: lower S-reg of zip2 results
+        stp             s17, s19, [x0], #8
+        str             s21, [x0], #4
+        // Sample 3: rotate zip2 D-regs by 4 bytes
+        ext             v17.8b, v17.8b, v17.8b, #4
+        ext             v19.8b, v19.8b, v19.8b, #4
+        ext             v21.8b, v21.8b, v21.8b, #4
+        stp             s17, s19, [x0], #8
+        str             s21, [x0], #4
         subs            w3,  w3,  #4
         b.gt            1b
         ret

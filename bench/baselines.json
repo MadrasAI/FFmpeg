@@ -78,11 +78,11 @@
     },
     "flac_decorrelate_ls_16": {
       "c": {
-        "cycles": 125.2
+        "cycles": 126.1
       },
       "neon": {
-        "cycles": 48.4,
-        "ratio": 2.587
+        "cycles": 48.2,
+        "ratio": 2.616
       }
     },
     "flac_decorrelate_ls_32": {
@@ -90,142 +90,142 @@
         "cycles": 139.5
       },
       "neon": {
-        "cycles": 50.1,
-        "ratio": 2.784
+        "cycles": 49.7,
+        "ratio": 2.807
       }
     },
     "flac_decorrelate_ms_16": {
       "c": {
-        "cycles": 140.3
+        "cycles": 141.1
       },
       "neon": {
         "cycles": 65.5,
-        "ratio": 2.142
+        "ratio": 2.154
       }
     },
     "flac_decorrelate_ms_32": {
       "c": {
-        "cycles": 145.9
+        "cycles": 146.3
       },
       "neon": {
-        "cycles": 62.4,
-        "ratio": 2.338
+        "cycles": 62.0,
+        "ratio": 2.36
       }
     },
     "flac_decorrelate_rs_16": {
       "c": {
-        "cycles": 125.6
+        "cycles": 126.0
       },
       "neon": {
-        "cycles": 47.8,
-        "ratio": 2.628
+        "cycles": 47.4,
+        "ratio": 2.658
       }
     },
     "flac_decorrelate_rs_32": {
       "c": {
-        "cycles": 132.3
+        "cycles": 134.9
       },
       "neon": {
-        "cycles": 50.1,
-        "ratio": 2.641
+        "cycles": 50.0,
+        "ratio": 2.698
       }
     },
     "flac_lpc_16_13": {
       "c": {
-        "cycles": 3481.6
+        "cycles": 3487.5
       },
       "neon": {
-        "cycles": 3485.1,
-        "ratio": 0.999,
+        "cycles": 3484.2,
+        "ratio": 1.001,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_16_16": {
       "c": {
-        "cycles": 4210.6
+        "cycles": 4190.6
       },
       "neon": {
-        "cycles": 4361.3,
-        "ratio": 0.965,
+        "cycles": 4357.2,
+        "ratio": 0.962,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_16_29": {
       "c": {
-        "cycles": 7260.4
+        "cycles": 7489.9
       },
       "neon": {
-        "cycles": 2838.7,
-        "ratio": 2.558
+        "cycles": 2838.8,
+        "ratio": 2.638
       }
     },
     "flac_lpc_16_32": {
       "c": {
-        "cycles": 8218.2
+        "cycles": 7972.9
       },
       "neon": {
-        "cycles": 5261.4,
-        "ratio": 1.562
+        "cycles": 5261.1,
+        "ratio": 1.515
       }
     },
     "flac_lpc_32_13": {
       "c": {
-        "cycles": 3459.7
+        "cycles": 3441.3
       },
       "neon": {
-        "cycles": 3490.7,
-        "ratio": 0.991,
+        "cycles": 3509.3,
+        "ratio": 0.981,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_32_16": {
       "c": {
-        "cycles": 4122.5
+        "cycles": 4150.0
       },
       "neon": {
-        "cycles": 4127.2,
-        "ratio": 0.999,
+        "cycles": 4138.8,
+        "ratio": 1.003,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_32_29": {
       "c": {
-        "cycles": 6878.2
+        "cycles": 6880.3
       },
       "neon": {
-        "cycles": 3197.8,
+        "cycles": 3198.4,
         "ratio": 2.151
       }
     },
     "flac_lpc_32_32": {
       "c": {
-        "cycles": 7486.6
+        "cycles": 7467.9
       },
       "neon": {
-        "cycles": 5452.4,
-        "ratio": 1.373
+        "cycles": 5454.7,
+        "ratio": 1.369
       }
     },
     "flac_wasted_32": {
       "c": {
-        "cycles": 326.5
+        "cycles": 314.4
       },
       "neon": {
         "cycles": 49.5,
-        "ratio": 6.596
+        "ratio": 6.352
       }
     },
     "flac_wasted_33": {
       "c": {
-        "cycles": 318.9
+        "cycles": 316.6
       },
       "neon": {
-        "cycles": 179.7,
-        "ratio": 1.775
+        "cycles": 178.7,
+        "ratio": 1.772
       }
     },
     "apply_welch_window_even": {
@@ -734,86 +734,94 @@
     },
     "flac_decorrelate_indep2_16": {
       "c": {
-        "cycles": 216.4
+        "cycles": 219.4
       },
       "neon": {
-        "cycles": 43.9,
-        "ratio": 4.929
+        "cycles": 43.5,
+        "ratio": 5.044
       }
     },
     "flac_decorrelate_indep2_32": {
       "c": {
-        "cycles": 215.2
+        "cycles": 214.1
       },
       "neon": {
-        "cycles": 44.2,
-        "ratio": 4.869
+        "cycles": 44.0,
+        "ratio": 4.866
       }
     },
     "flac_decorrelate_indep4_16": {
       "c": {
-        "cycles": 356.2
+        "cycles": 353.0
       },
       "neon": {
-        "cycles": 95.7,
-        "ratio": 3.722
+        "cycles": 94.9,
+        "ratio": 3.72
       }
     },
     "flac_decorrelate_indep4_32": {
       "c": {
-        "cycles": 345.6
+        "cycles": 343.4
       },
       "neon": {
         "cycles": 146.6,
-        "ratio": 2.357
+        "ratio": 2.342
       }
     },
     "flac_decorrelate_indep6_16": {
       "c": {
-        "cycles": 523.6
+        "cycles": 523.5
+      },
+      "neon": {
+        "cycles": 189.7,
+        "ratio": 2.76
       }
     },
     "flac_decorrelate_indep6_32": {
       "c": {
-        "cycles": 498.7
+        "cycles": 499.7
+      },
+      "neon": {
+        "cycles": 174.2,
+        "ratio": 2.869
       }
     },
     "flac_decorrelate_indep8_16": {
       "c": {
-        "cycles": 686.3
+        "cycles": 684.3
       },
       "neon": {
-        "cycles": 185.8,
-        "ratio": 3.694
+        "cycles": 185.3,
+        "ratio": 3.693
       }
     },
     "flac_decorrelate_indep8_32": {
       "c": {
-        "cycles": 661.4
+        "cycles": 659.3
       },
       "neon": {
-        "cycles": 221.3,
-        "ratio": 2.989
+        "cycles": 221.0,
+        "ratio": 2.983
       }
     },
     "flac_lpc_33_13": {
       "c": {
-        "cycles": 3442.6
+        "cycles": 3442.2
       }
     },
     "flac_lpc_33_16": {
       "c": {
-        "cycles": 4131.5
+        "cycles": 4122.6
       }
     },
     "flac_lpc_33_29": {
       "c": {
-        "cycles": 6860.4
+        "cycles": 6859.5
       }
     },
     "flac_lpc_33_32": {
       "c": {
-        "cycles": 7445.1
+        "cycles": 7445.0
       }
     }
   }

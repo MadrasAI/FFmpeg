@@ -80,7 +80,11 @@ void ff_flac_decorrelate_indep2_16_neon(uint8_t **out, int32_t **in, int channel
                                         int len, int shift);
 void ff_flac_decorrelate_indep4_16_neon(uint8_t **out, int32_t **in, int channels,
                                         int len, int shift);
+void ff_flac_decorrelate_indep6_16_neon(uint8_t **out, int32_t **in, int channels,
+                                        int len, int shift);
 void ff_flac_decorrelate_indep8_16_neon(uint8_t **out, int32_t **in, int channels,
+                                        int len, int shift);
+void ff_flac_decorrelate_indep6_32_neon(uint8_t **out, int32_t **in, int channels,
                                         int len, int shift);
 
 av_cold void ff_flacdsp_init_aarch64(FLACDSPContext *c, enum AVSampleFormat fmt,
@@ -99,6 +103,7 @@ av_cold void ff_flacdsp_init_aarch64(FLACDSPContext *c, enum AVSampleFormat fmt,
         if (fmt == AV_SAMPLE_FMT_S32) {
             if      (channels == 2) c->decorrelate[0] = ff_flac_decorrelate_indep2_32_neon;
             else if (channels == 4) c->decorrelate[0] = ff_flac_decorrelate_indep4_32_neon;
+            else if (channels == 6) c->decorrelate[0] = ff_flac_decorrelate_indep6_32_neon;
             else if (channels == 8) c->decorrelate[0] = ff_flac_decorrelate_indep8_32_neon;
             c->decorrelate[1] = ff_flac_decorrelate_ls_32_neon;
             c->decorrelate[2] = ff_flac_decorrelate_rs_32_neon;
@@ -106,6 +111,7 @@ av_cold void ff_flacdsp_init_aarch64(FLACDSPContext *c, enum AVSampleFormat fmt,
         } else if (fmt == AV_SAMPLE_FMT_S16) {
             if      (channels == 2) c->decorrelate[0] = ff_flac_decorrelate_indep2_16_neon;
             else if (channels == 4) c->decorrelate[0] = ff_flac_decorrelate_indep4_16_neon;
+            else if (channels == 6) c->decorrelate[0] = ff_flac_decorrelate_indep6_16_neon;
             else if (channels == 8) c->decorrelate[0] = ff_flac_decorrelate_indep8_16_neon;
             c->decorrelate[1] = ff_flac_decorrelate_ls_16_neon;
             c->decorrelate[2] = ff_flac_decorrelate_rs_16_neon;
