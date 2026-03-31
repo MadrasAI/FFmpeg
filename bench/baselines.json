@@ -409,9 +409,9 @@
         "cycles": 9.5,
         "ratio": 0.99,
         "skip_threshold": true,
-        "skip_note": "trivial fill — c ref is single memset; neon overhead at 8x8",
+        "skip_note": "trivial fill \u2014 c ref is single memset; neon overhead at 8x8",
         "regression": true,
-        "regression_note": "sub-10-cycle noise floor — measurements vary 8–11 cycles across runs; NEON slower than C (expected for trivial 8x8 fill)"
+        "regression_note": "sub-10-cycle noise floor \u2014 measurements vary 8\u201311 cycles across runs; NEON slower than C (expected for trivial 8x8 fill)"
       }
     },
     "vp9_dc_128_16x16_8bpp": {
@@ -440,272 +440,272 @@
     },
     "addition": {
       "c": {
-        "cycles": 10539.3
+        "cycles": 10543.7
       },
       "neon": {
-        "cycles": 501.0,
-        "ratio": 21.04
+        "cycles": 502.7,
+        "ratio": 20.974
       }
     },
     "addition_16": {
       "c": {
-        "cycles": 4958.1
+        "cycles": 4957.0
       },
       "neon": {
-        "cycles": 490.7,
-        "ratio": 10.1
+        "cycles": 492.7,
+        "ratio": 10.061
       }
     },
     "and": {
       "c": {
-        "cycles": 9226.7
+        "cycles": 9230.4
       },
       "neon": {
-        "cycles": 496.0,
-        "ratio": 18.6
+        "cycles": 497.8,
+        "ratio": 18.542
       }
     },
     "and_16": {
       "c": {
-        "cycles": 4586.9
+        "cycles": 4587.5
       },
       "neon": {
-        "cycles": 491.4,
-        "ratio": 9.33
+        "cycles": 492.8,
+        "ratio": 9.309
       }
     },
     "average": {
       "c": {
-        "cycles": 10184.2
+        "cycles": 10190.6
       },
       "neon": {
-        "cycles": 496.1,
-        "ratio": 20.53
+        "cycles": 496.8,
+        "ratio": 20.512
       }
     },
     "average_16": {
       "c": {
-        "cycles": 5095.9
+        "cycles": 5098.9
       },
       "neon": {
-        "cycles": 485.3,
-        "ratio": 10.5
+        "cycles": 487.9,
+        "ratio": 10.451
       }
     },
     "darken": {
       "c": {
-        "cycles": 10377.6
+        "cycles": 10375.9
       },
       "neon": {
-        "cycles": 495.7,
-        "ratio": 20.93
+        "cycles": 502.1,
+        "ratio": 20.665
       }
     },
     "darken_16": {
       "c": {
-        "cycles": 4934.5
+        "cycles": 4934.0
       },
       "neon": {
-        "cycles": 489.6,
-        "ratio": 10.08
+        "cycles": 489.3,
+        "ratio": 10.084
       }
     },
     "difference": {
       "c": {
-        "cycles": 10014.0
+        "cycles": 10013.7
       },
       "neon": {
-        "cycles": 507.7,
-        "ratio": 19.72
+        "cycles": 501.1,
+        "ratio": 19.983
       }
     },
     "difference_16": {
       "c": {
-        "cycles": 5217.2
+        "cycles": 5223.1
       },
       "neon": {
-        "cycles": 486.1,
-        "ratio": 10.73
+        "cycles": 488.6,
+        "ratio": 10.69
       }
     },
     "extremity": {
       "c": {
-        "cycles": 11424.5
+        "cycles": 11426.2
       },
       "neon": {
-        "cycles": 1086.9,
-        "ratio": 10.51
+        "cycles": 1090.9,
+        "ratio": 10.474
       }
     },
     "extremity_16": {
       "c": {
-        "cycles": 5700.0
+        "cycles": 5698.6
       },
       "neon": {
-        "cycles": 1086.1,
-        "ratio": 5.25
+        "cycles": 1081.9,
+        "ratio": 5.267
       }
     },
     "grainextract": {
       "c": {
-        "cycles": 14286.2
+        "cycles": 14317.4
       },
       "neon": {
-        "cycles": 1107.6,
-        "ratio": 12.9
+        "cycles": 1109.4,
+        "ratio": 12.906
       }
     },
     "grainextract_16": {
       "c": {
-        "cycles": 6804.6
+        "cycles": 6814.0
       },
       "neon": {
-        "cycles": 1108.9,
-        "ratio": 6.14
+        "cycles": 1106.6,
+        "ratio": 6.158
       }
     },
     "grainmerge": {
       "c": {
-        "cycles": 15415.2
+        "cycles": 15414.1
       },
       "neon": {
-        "cycles": 1149.3,
-        "ratio": 13.41
+        "cycles": 1151.6,
+        "ratio": 13.385
       }
     },
     "grainmerge_16": {
       "c": {
-        "cycles": 6973.7
+        "cycles": 7003.7
       },
       "neon": {
-        "cycles": 1148.4,
-        "ratio": 6.07
+        "cycles": 1150.9,
+        "ratio": 6.085
       }
     },
     "hardmix": {
       "c": {
-        "cycles": 13548.3
+        "cycles": 13555.5
       },
       "neon": {
-        "cycles": 1088.7,
-        "ratio": 12.45
+        "cycles": 1090.0,
+        "ratio": 12.436
       }
     },
     "lighten": {
       "c": {
-        "cycles": 10342.2
+        "cycles": 10383.9
       },
       "neon": {
-        "cycles": 504.3,
-        "ratio": 20.51
+        "cycles": 501.7,
+        "ratio": 20.697
       }
     },
     "lighten_16": {
       "c": {
-        "cycles": 5155.9
+        "cycles": 5156.2
       },
       "neon": {
-        "cycles": 484.8,
-        "ratio": 10.64
+        "cycles": 489.5,
+        "ratio": 10.534
       }
     },
     "multiply": {
       "c": {
-        "cycles": 11603.5
+        "cycles": 11659.4
       },
       "neon": {
-        "cycles": 1403.1,
-        "ratio": 8.27
+        "cycles": 1403.9,
+        "ratio": 8.305
       }
     },
     "negation": {
       "c": {
-        "cycles": 11840.4
+        "cycles": 11824.9
       },
       "neon": {
-        "cycles": 1201.7,
-        "ratio": 9.85
+        "cycles": 1203.6,
+        "ratio": 9.825
       }
     },
     "negation_16": {
       "c": {
-        "cycles": 5699.2
+        "cycles": 5710.0
       },
       "neon": {
-        "cycles": 1199.0,
-        "ratio": 4.75
+        "cycles": 1199.1,
+        "ratio": 4.762
       }
     },
     "or": {
       "c": {
-        "cycles": 9212.9
+        "cycles": 9216.9
       },
       "neon": {
-        "cycles": 501.8,
-        "ratio": 18.36
+        "cycles": 506.8,
+        "ratio": 18.186
       }
     },
     "or_16": {
       "c": {
-        "cycles": 4659.0
+        "cycles": 4653.5
       },
       "neon": {
-        "cycles": 482.6,
-        "ratio": 9.65
+        "cycles": 487.4,
+        "ratio": 9.548
       }
     },
     "phoenix": {
       "c": {
-        "cycles": 13794.7
+        "cycles": 13799.0
       },
       "neon": {
-        "cycles": 648.2,
-        "ratio": 21.28
+        "cycles": 645.4,
+        "ratio": 21.381
       }
     },
     "phoenix_16": {
       "c": {
-        "cycles": 6863.0
+        "cycles": 6866.1
       },
       "neon": {
-        "cycles": 645.5,
-        "ratio": 10.63
+        "cycles": 643.5,
+        "ratio": 10.67
       }
     },
     "screen": {
       "c": {
-        "cycles": 17946.3
+        "cycles": 17957.9
       },
       "neon": {
-        "cycles": 1885.2,
-        "ratio": 9.52
+        "cycles": 1877.1,
+        "ratio": 9.567
       }
     },
     "subtract": {
       "c": {
-        "cycles": 10013.7
+        "cycles": 10012.4
       },
       "neon": {
-        "cycles": 499.1,
-        "ratio": 20.06
+        "cycles": 505.5,
+        "ratio": 19.807
       }
     },
     "subtract_16": {
       "c": {
-        "cycles": 5219.1
+        "cycles": 5220.7
       },
       "neon": {
-        "cycles": 490.2,
-        "ratio": 10.65
+        "cycles": 490.6,
+        "ratio": 10.641
       }
     },
     "xor": {
       "c": {
-        "cycles": 9212.9
+        "cycles": 9228.4
       },
       "neon": {
-        "cycles": 502.2,
-        "ratio": 18.35
+        "cycles": 497.0,
+        "ratio": 18.568
       }
     },
     "add_gradient_pred": {
@@ -721,6 +721,15 @@
     "add_median_pred": {
       "c": {
         "cycles": 16714.9
+      }
+    },
+    "xor_16": {
+      "c": {
+        "cycles": 5220.7
+      },
+      "neon": {
+        "cycles": 491.7,
+        "ratio": 10.618
       }
     }
   }
