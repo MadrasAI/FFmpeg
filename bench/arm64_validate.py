@@ -81,7 +81,8 @@ DEFAULT_THRESHOLD = 0.80   # minimum NEON speedup ratio vs C
 MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "lpc":      ["apply_welch_window", "autocorr"],
     "llviddsp": ["add_"],
-    "vf_blend": [""],   # blend mode names (addition, average, …) have no shared prefix
+    "flacdsp":  ["flac_"],   # test group "flacdsp" but bench names are "flac_*"
+    "vf_blend": [""],        # blend mode names (addition, average, …) have no shared prefix
 }
 
 # ---------------------------------------------------------------------------
