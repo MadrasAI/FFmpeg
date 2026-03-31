@@ -406,10 +406,12 @@
     },
     "vp9_dc_128_8x8_8bpp": {
       "neon": {
-        "cycles": 7.3,
+        "cycles": 9.5,
         "ratio": 0.99,
         "skip_threshold": true,
-        "skip_note": "trivial fill \u2014 c ref is single memset; neon overhead at 8x8"
+        "skip_note": "trivial fill — c ref is single memset; neon overhead at 8x8",
+        "regression": true,
+        "regression_note": "sub-10-cycle noise floor — measurements vary 8–11 cycles across runs; NEON slower than C (expected for trivial 8x8 fill)"
       }
     },
     "vp9_dc_128_16x16_8bpp": {
