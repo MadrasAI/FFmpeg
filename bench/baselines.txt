@@ -1,0 +1,129 @@
+# ARM64 NEON Baseline Performance — Graviton3 (AWS Graviton3, AArch64)
+# Captured: 2026-03-31
+# Platform: Ubuntu 22.04, AWS Graviton3 (arm64)
+# Build: ./configure --enable-neon --arch=aarch64 + make -j$(nproc)
+# Tool: tests/checkasm/checkasm --bench
+# perf_event_paranoid=-1 required: sudo sysctl -w kernel.perf_event_paranoid=-1
+# Units: cycles (lower is better). Speedup = c_cycles / neon_cycles.
+# NOTE: blockdsp.fill_block_tab[0]_neon shows 0.82x regression — flagged for investigation.
+
+# ─────────────────────────────────────────────────────────────────────
+# blockdsp  (libavcodec/aarch64/blockdsp_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+blockdsp.clear_block_c:                                   5.7 ( 1.00x)
+blockdsp.clear_blocks_c:                                 22.7 ( 1.00x)
+blockdsp.fill_block_tab[0]_c:                            20.6 ( 1.00x)
+blockdsp.fill_block_tab[0]_neon:                         24.9 ( 0.82x)  ← REGRESSION
+blockdsp.fill_block_tab[1]_c:                            17.1 ( 1.00x)
+blockdsp.fill_block_tab[1]_neon:                         17.1 ( 1.00x)
+
+# ─────────────────────────────────────────────────────────────────────
+# audiodsp  (libavcodec/aarch64/audiodsp_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+audiodsp.scalarproduct_int16_c:                        4134.8 ( 1.00x)
+audiodsp.scalarproduct_int16_neon:                      688.1 ( 6.01x)
+audiodsp.vector_clip_int32_c:                          5399.6 ( 1.00x)
+audiodsp.vector_clip_int32_neon:                        996.4 ( 5.42x)
+audiodsp.vector_clipf_c:                               9070.2 ( 1.00x)
+audiodsp.vector_clipf_neon:                             996.6 ( 9.10x)
+
+# ─────────────────────────────────────────────────────────────────────
+# flacdsp   (libavcodec/aarch64/flacdsp_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+# decorrelate
+flac_decorrelate_ls_16_c:                               126.6 ( 1.00x)
+flac_decorrelate_ls_16_neon:                             47.4 ( 2.67x)
+flac_decorrelate_ls_32_c:                               140.2 ( 1.00x)
+flac_decorrelate_ls_32_neon:                             49.6 ( 2.83x)
+flac_decorrelate_ms_16_c:                               141.3 ( 1.00x)
+flac_decorrelate_ms_16_neon:                             66.0 ( 2.14x)
+flac_decorrelate_ms_32_c:                               145.5 ( 1.00x)
+flac_decorrelate_ms_32_neon:                             61.7 ( 2.36x)
+flac_decorrelate_rs_16_c:                               125.0 ( 1.00x)
+flac_decorrelate_rs_16_neon:                             47.7 ( 2.62x)
+flac_decorrelate_rs_32_c:                               132.2 ( 1.00x)
+flac_decorrelate_rs_32_neon:                             49.5 ( 2.67x)
+# lpc  — dispatch threshold pred_order >= 20 (below threshold → 0.94-1.01x by design)
+flac_lpc_16_13_c:                                      3428.6 ( 1.00x)
+flac_lpc_16_13_neon:                                   3456.9 ( 0.99x)  ← below threshold (design)
+flac_lpc_16_16_c:                                      4207.0 ( 1.00x)
+flac_lpc_16_16_neon:                                   4328.6 ( 0.97x)  ← below threshold (design)
+flac_lpc_16_29_c:                                      7318.0 ( 1.00x)
+flac_lpc_16_29_neon:                                   2825.3 ( 2.59x)
+flac_lpc_16_32_c:                                      8227.5 ( 1.00x)
+flac_lpc_16_32_neon:                                   5012.1 ( 1.64x)
+flac_lpc_32_13_c:                                      3443.2 ( 1.00x)
+flac_lpc_32_13_neon:                                   3665.9 ( 0.94x)  ← below threshold (design)
+flac_lpc_32_16_c:                                      4155.4 ( 1.00x)
+flac_lpc_32_16_neon:                                   4129.8 ( 1.01x)  ← below threshold (design)
+flac_lpc_32_29_c:                                      6894.1 ( 1.00x)
+flac_lpc_32_29_neon:                                   3200.3 ( 2.15x)
+flac_lpc_32_32_c:                                      7513.3 ( 1.00x)
+flac_lpc_32_32_neon:                                   5462.5 ( 1.38x)
+# wasted
+flac_wasted_32_c:                                       318.6 ( 1.00x)
+flac_wasted_32_neon:                                     50.5 ( 6.31x)
+flac_wasted_33_c:                                       316.1 ( 1.00x)
+flac_wasted_33_neon:                                    180.8 ( 1.75x)
+
+# ─────────────────────────────────────────────────────────────────────
+# lpc   (libavcodec/aarch64/lpc_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+apply_welch_window_even_c:                             7824.6 ( 1.00x)
+apply_welch_window_even_neon:                          7371.3 ( 1.06x)
+apply_welch_window_odd_c:                              9004.4 ( 1.00x)
+apply_welch_window_odd_neon:                           7359.9 ( 1.22x)
+autocorr_8_even_c:                                    46096.8 ( 1.00x)
+autocorr_8_even_neon:                                 23032.9 ( 2.00x)
+autocorr_8_odd_c:                                     46106.4 ( 1.00x)
+autocorr_8_odd_neon:                                  23038.1 ( 2.00x)
+autocorr_12_even_c:                                   64516.2 ( 1.00x)
+autocorr_12_even_neon:                                32236.7 ( 2.00x)
+autocorr_12_odd_c:                                    64529.8 ( 1.00x)
+autocorr_12_odd_neon:                                 32243.9 ( 2.00x)
+
+# ─────────────────────────────────────────────────────────────────────
+# bswapdsp  (libavcodec/aarch64/bswapdsp_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+bswap16_buf_c:                                          315.6 ( 1.00x)
+bswap16_buf_neon:                                        46.6 ( 6.77x)
+bswap_buf_c:                                            155.0 ( 1.00x)
+bswap_buf_neon:                                          37.8 ( 4.10x)
+
+# ─────────────────────────────────────────────────────────────────────
+# llviddsp  (libavcodec/aarch64/lossless_videodsp_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+add_bytes_c:                                            692.4 ( 1.00x)
+add_bytes_neon:                                         155.7 ( 4.45x)
+add_left_pred_rnd_acc_c:                               2136.2 ( 1.00x)
+add_left_pred_rnd_acc_neon:                             935.5 ( 2.28x)
+add_left_pred_zero_c:                                  2135.1 ( 1.00x)
+add_left_pred_zero_neon:                                935.5 ( 2.28x)
+
+# ─────────────────────────────────────────────────────────────────────
+# vp9dsp — avg (motion compensation avg, libavcodec/aarch64/vp9mc_neon.S)
+# ─────────────────────────────────────────────────────────────────────
+vp9_avg4_8bpp_c:                                         12.1 ( 1.00x)
+vp9_avg4_8bpp_neon:                                      16.3 ( 0.74x)  ← small block overhead
+vp9_avg4_10bpp_c:                                        12.9 ( 1.00x)
+vp9_avg4_10bpp_neon:                                     10.4 ( 1.24x)
+vp9_avg8_8bpp_c:                                         28.9 ( 1.00x)
+vp9_avg8_8bpp_neon:                                      12.8 ( 2.26x)
+vp9_avg16_8bpp_neon:                                     27.2 ( 3.44x)
+vp9_avg32_8bpp_neon:                                     93.8 ( 3.51x)
+vp9_avg64_8bpp_neon:                                    284.2 ( 4.44x)
+
+# ─────────────────────────────────────────────────────────────────────
+# vp9dsp — intra pred (libavcodec/aarch64/vp9intrapred_neon.S)
+# Phase 1 (9 modes × 4 sizes) + Phase 2A (DIAG_DOWN_LEFT, VERT_LEFT, HOR_UP)
+# ─────────────────────────────────────────────────────────────────────
+vp9_dc_4x4_8bpp_neon:                                     8.3 ( 1.01x)
+vp9_dc_8x8_8bpp_neon:                                    17.9 ( 1.02x)
+vp9_dc_16x16_8bpp_neon:                                  26.5 ( 2.36x)
+vp9_dc_32x32_8bpp_neon:                                  45.5 ( 2.90x)
+vp9_dc_127_4x4_8bpp_neon:                                 7.3 ( 1.00x)
+vp9_dc_128_8x8_8bpp_neon:                                 7.3 ( 0.99x)
+vp9_dc_128_16x16_8bpp_neon:                              15.3 ( 1.04x)
+vp9_dc_128_32x32_8bpp_neon:                              40.0 ( 1.61x)
+vp9_dc_left_16x16_8bpp_neon:                             23.3 ( 1.95x)
+vp9_dc_left_32x32_8bpp_neon:                             40.8 ( 2.44x)
