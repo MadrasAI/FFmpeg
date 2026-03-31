@@ -198,6 +198,237 @@ function ff_flac_decorrelate_ms_16_neon, export=1
         ret
 endfunc
 
+// ---------------------------------------------------------------------------
+// Independent channel decorrelate (S32 output — N-channel interleaved int32)
+// Signature: void fn(uint8_t **out, int32_t **in, int channels, int len, int shift)
+//            x0=out**, x1=in**, w2=channels(unused here), w3=len, w4=shift
+// Algorithm: for j in 0..len, for i in 0..N: out[0][j*N+i] = in[i][j] << shift
+// ---------------------------------------------------------------------------
+
+// 2-channel S32: st2 {v1.4s, v2.4s} interleaves as ch0,ch1,ch0,ch1,...
+// 4 samples per iteration → 2*4*4 = 32 bytes output
+function ff_flac_decorrelate_indep2_32_neon, export=1
+        ldr             x5,  [x1]           // in[0]
+        ldr             x6,  [x1, #8]       // in[1]
+        ldr             x0,  [x0]           // out[0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s}, [x5], #16
+        ld1             {v2.4s}, [x6], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        st2             {v1.4s, v2.4s}, [x0], #32
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// 4-channel S32: st4 {v1.4s..v4.4s} produces 4-way interleave of 4 samples
+// 4 samples per iteration → 4*4*4 = 64 bytes output
+function ff_flac_decorrelate_indep4_32_neon, export=1
+        ldr             x5,  [x1]
+        ldr             x6,  [x1, #8]
+        ldr             x7,  [x1, #16]
+        ldr             x8,  [x1, #24]
+        ldr             x0,  [x0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s}, [x5], #16
+        ld1             {v2.4s}, [x6], #16
+        ld1             {v3.4s}, [x7], #16
+        ld1             {v4.4s}, [x8], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        sshl            v3.4s,  v3.4s,  v0.4s
+        sshl            v4.4s,  v4.4s,  v0.4s
+        st4             {v1.4s, v2.4s, v3.4s, v4.4s}, [x0], #64
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// 8-channel S32: two-level zip transpose, then 4 paired st1 stores.
+// Registers: v0=shift, v1-v7=ch0-6, v16=ch7 (all caller-saved, avoid v8-v15).
+// Round 1 (.4s): zip pairs → v17-v24 (all caller-saved).
+// Round 2 (.2d): zip → v1-v6,v25-v26 (consecutive pairs per sample).
+// 4 samples per iteration → 8*4*4 = 128 bytes output.
+function ff_flac_decorrelate_indep8_32_neon, export=1
+        ldr             x5,  [x1]
+        ldr             x6,  [x1, #8]
+        ldr             x7,  [x1, #16]
+        ldr             x8,  [x1, #24]
+        ldr             x9,  [x1, #32]
+        ldr             x10, [x1, #40]
+        ldr             x11, [x1, #48]
+        ldr             x12, [x1, #56]
+        ldr             x0,  [x0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s},  [x5],  #16
+        ld1             {v2.4s},  [x6],  #16
+        ld1             {v3.4s},  [x7],  #16
+        ld1             {v4.4s},  [x8],  #16
+        ld1             {v5.4s},  [x9],  #16
+        ld1             {v6.4s},  [x10], #16
+        ld1             {v7.4s},  [x11], #16
+        ld1             {v16.4s}, [x12], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        sshl            v3.4s,  v3.4s,  v0.4s
+        sshl            v4.4s,  v4.4s,  v0.4s
+        sshl            v5.4s,  v5.4s,  v0.4s
+        sshl            v6.4s,  v6.4s,  v0.4s
+        sshl            v7.4s,  v7.4s,  v0.4s
+        sshl            v16.4s, v16.4s, v0.4s
+        // Round 1: pair interleave at .4s → v17-v24 (all caller-saved)
+        zip1            v17.4s, v1.4s,  v2.4s   // [ch0[0],ch1[0],ch0[1],ch1[1]]
+        zip2            v18.4s, v1.4s,  v2.4s   // [ch0[2],ch1[2],ch0[3],ch1[3]]
+        zip1            v19.4s, v3.4s,  v4.4s   // [ch2[0],ch3[0],ch2[1],ch3[1]]
+        zip2            v20.4s, v3.4s,  v4.4s   // [ch2[2],ch3[2],ch2[3],ch3[3]]
+        zip1            v21.4s, v5.4s,  v6.4s   // [ch4[0],ch5[0],ch4[1],ch5[1]]
+        zip2            v22.4s, v5.4s,  v6.4s   // [ch4[2],ch5[2],ch4[3],ch5[3]]
+        zip1            v23.4s, v7.4s,  v16.4s  // [ch6[0],ch7[0],ch6[1],ch7[1]]
+        zip2            v24.4s, v7.4s,  v16.4s  // [ch6[2],ch7[2],ch6[3],ch7[3]]
+        // Round 2: quad interleave at .2d — consecutive pairs for each sample
+        zip1            v1.2d,  v17.2d, v19.2d  // sample 0 ch0-3
+        zip1            v2.2d,  v21.2d, v23.2d  // sample 0 ch4-7
+        zip2            v3.2d,  v17.2d, v19.2d  // sample 1 ch0-3
+        zip2            v4.2d,  v21.2d, v23.2d  // sample 1 ch4-7
+        zip1            v5.2d,  v18.2d, v20.2d  // sample 2 ch0-3
+        zip1            v6.2d,  v22.2d, v24.2d  // sample 2 ch4-7
+        zip2            v25.2d, v18.2d, v20.2d  // sample 3 ch0-3
+        zip2            v26.2d, v22.2d, v24.2d  // sample 3 ch4-7
+        // Store: 4 samples x 8 channels x 4 bytes = 128 bytes
+        st1             {v1.4s,  v2.4s},  [x0], #32   // sample 0
+        st1             {v3.4s,  v4.4s},  [x0], #32   // sample 1
+        st1             {v5.4s,  v6.4s},  [x0], #32   // sample 2
+        st1             {v25.4s, v26.4s}, [x0], #32   // sample 3
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// ---------------------------------------------------------------------------
+// Independent channel decorrelate (S16 output — N-channel interleaved int16)
+// Same signature. Input is int32; sshl then xtn narrows to int16 (truncating).
+// xtn matches C cast semantics: (int16_t)(int32_t)(x << shift).
+// ---------------------------------------------------------------------------
+
+// 2-channel S16: sshl+xtn+st2 .4h — 4 samples × 2 channels × 2 bytes = 16 bytes
+function ff_flac_decorrelate_indep2_16_neon, export=1
+        ldr             x5,  [x1]
+        ldr             x6,  [x1, #8]
+        ldr             x0,  [x0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s}, [x5], #16
+        ld1             {v2.4s}, [x6], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        xtn             v1.4h,  v1.4s
+        xtn             v2.4h,  v2.4s
+        st2             {v1.4h, v2.4h}, [x0], #16
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// 4-channel S16: sshl+xtn+st4 .4h — 4 samples × 4 channels × 2 bytes = 32 bytes
+function ff_flac_decorrelate_indep4_16_neon, export=1
+        ldr             x5,  [x1]
+        ldr             x6,  [x1, #8]
+        ldr             x7,  [x1, #16]
+        ldr             x8,  [x1, #24]
+        ldr             x0,  [x0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s}, [x5], #16
+        ld1             {v2.4s}, [x6], #16
+        ld1             {v3.4s}, [x7], #16
+        ld1             {v4.4s}, [x8], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        sshl            v3.4s,  v3.4s,  v0.4s
+        sshl            v4.4s,  v4.4s,  v0.4s
+        xtn             v1.4h,  v1.4s
+        xtn             v2.4h,  v2.4s
+        xtn             v3.4h,  v3.4s
+        xtn             v4.4h,  v4.4s
+        st4             {v1.4h, v2.4h, v3.4h, v4.4h}, [x0], #32
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
+// 8-channel S16: three-level zip transpose, then 4 st1 {vN.8h} stores.
+// Registers: v0=shift, v1-v7=ch0-6, v16=ch7 (avoid callee-saved v8-v15).
+// Round 1 (pair at .8h): zip1 → v17-v20.
+// Round 2 (quad at .4s): zip1+zip2 → reuse v1-v4.
+// Round 3 (8-way at .2d): zip1+zip2 → v5-v7, v16.
+// 4 samples per iteration → 4 × 8 × 2 = 64 bytes output.
+function ff_flac_decorrelate_indep8_16_neon, export=1
+        ldr             x5,  [x1]
+        ldr             x6,  [x1, #8]
+        ldr             x7,  [x1, #16]
+        ldr             x8,  [x1, #24]
+        ldr             x9,  [x1, #32]
+        ldr             x10, [x1, #40]
+        ldr             x11, [x1, #48]
+        ldr             x12, [x1, #56]
+        ldr             x0,  [x0]
+        dup             v0.4s,  w4
+1:
+        ld1             {v1.4s},  [x5],  #16
+        ld1             {v2.4s},  [x6],  #16
+        ld1             {v3.4s},  [x7],  #16
+        ld1             {v4.4s},  [x8],  #16
+        ld1             {v5.4s},  [x9],  #16
+        ld1             {v6.4s},  [x10], #16
+        ld1             {v7.4s},  [x11], #16
+        ld1             {v16.4s}, [x12], #16
+        sshl            v1.4s,  v1.4s,  v0.4s
+        sshl            v2.4s,  v2.4s,  v0.4s
+        sshl            v3.4s,  v3.4s,  v0.4s
+        sshl            v4.4s,  v4.4s,  v0.4s
+        sshl            v5.4s,  v5.4s,  v0.4s
+        sshl            v6.4s,  v6.4s,  v0.4s
+        sshl            v7.4s,  v7.4s,  v0.4s
+        sshl            v16.4s, v16.4s, v0.4s
+        xtn             v1.4h,  v1.4s
+        xtn             v2.4h,  v2.4s
+        xtn             v3.4h,  v3.4s
+        xtn             v4.4h,  v4.4s
+        xtn             v5.4h,  v5.4s
+        xtn             v6.4h,  v6.4s
+        xtn             v7.4h,  v7.4s
+        xtn             v16.4h, v16.4s
+        // Round 1: pair interleave at .8h → v17-v20
+        // v17.8h = [ch0[0],ch1[0],ch0[1],ch1[1],ch0[2],ch1[2],ch0[3],ch1[3]]
+        zip1            v17.8h, v1.8h,  v2.8h
+        zip1            v18.8h, v3.8h,  v4.8h
+        zip1            v19.8h, v5.8h,  v6.8h
+        zip1            v20.8h, v7.8h,  v16.8h
+        // Round 2: quad interleave at .4s → reuse v1-v4
+        // v1.4s = [ch0-3 s0|s0, ch0-3 s1|s1] (2 samples, 4 channels, as .4s lanes of 2×int16)
+        zip1            v1.4s,  v17.4s, v18.4s   // ch0-3 samples 0,1
+        zip2            v2.4s,  v17.4s, v18.4s   // ch0-3 samples 2,3
+        zip1            v3.4s,  v19.4s, v20.4s   // ch4-7 samples 0,1
+        zip2            v4.4s,  v19.4s, v20.4s   // ch4-7 samples 2,3
+        // Round 3: 8-interleave at .2d → v5-v7, v16
+        zip1            v5.2d,  v1.2d,  v3.2d    // sample 0: ch0-7
+        zip2            v6.2d,  v1.2d,  v3.2d    // sample 1: ch0-7
+        zip1            v7.2d,  v2.2d,  v4.2d    // sample 2: ch0-7
+        zip2            v16.2d, v2.2d,  v4.2d    // sample 3: ch0-7
+        // Store: 4 samples x 8 channels x 2 bytes = 64 bytes
+        st1             {v5.8h},  [x0], #16
+        st1             {v6.8h},  [x0], #16
+        st1             {v7.8h},  [x0], #16
+        st1             {v16.8h}, [x0], #16
+        subs            w3,  w3,  #4
+        b.gt            1b
+        ret
+endfunc
+
 // void ff_flac_lpc_32_neon(int32_t *decoded, const int coeffs[32],
 //                          int pred_order, int qlevel, int len)
 // x0=decoded, x1=coeffs, w2=pred_order, w3=qlevel, w4=len

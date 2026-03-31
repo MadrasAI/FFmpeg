@@ -78,20 +78,20 @@
     },
     "flac_decorrelate_ls_16": {
       "c": {
-        "cycles": 125.8
+        "cycles": 125.2
       },
       "neon": {
-        "cycles": 48.6,
-        "ratio": 2.588
+        "cycles": 48.4,
+        "ratio": 2.587
       }
     },
     "flac_decorrelate_ls_32": {
       "c": {
-        "cycles": 140.5
+        "cycles": 139.5
       },
       "neon": {
         "cycles": 50.1,
-        "ratio": 2.804
+        "ratio": 2.784
       }
     },
     "flac_decorrelate_ms_16": {
@@ -105,127 +105,127 @@
     },
     "flac_decorrelate_ms_32": {
       "c": {
-        "cycles": 146.2
+        "cycles": 145.9
       },
       "neon": {
         "cycles": 62.4,
-        "ratio": 2.343
+        "ratio": 2.338
       }
     },
     "flac_decorrelate_rs_16": {
       "c": {
-        "cycles": 125.1
+        "cycles": 125.6
       },
       "neon": {
-        "cycles": 48.4,
-        "ratio": 2.585
+        "cycles": 47.8,
+        "ratio": 2.628
       }
     },
     "flac_decorrelate_rs_32": {
       "c": {
-        "cycles": 133.4
+        "cycles": 132.3
       },
       "neon": {
-        "cycles": 49.7,
-        "ratio": 2.684
+        "cycles": 50.1,
+        "ratio": 2.641
       }
     },
     "flac_lpc_16_13": {
       "c": {
-        "cycles": 3423.2
+        "cycles": 3481.6
       },
       "neon": {
-        "cycles": 3377.3,
-        "ratio": 1.014,
+        "cycles": 3485.1,
+        "ratio": 0.999,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_16_16": {
       "c": {
-        "cycles": 4260.7
+        "cycles": 4210.6
       },
       "neon": {
-        "cycles": 4345.5,
-        "ratio": 0.98,
+        "cycles": 4361.3,
+        "ratio": 0.965,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_16_29": {
       "c": {
-        "cycles": 7370.6
+        "cycles": 7260.4
       },
       "neon": {
-        "cycles": 2829.2,
-        "ratio": 2.605
+        "cycles": 2838.7,
+        "ratio": 2.558
       }
     },
     "flac_lpc_16_32": {
       "c": {
-        "cycles": 8196.5
+        "cycles": 8218.2
       },
       "neon": {
-        "cycles": 5025.4,
-        "ratio": 1.631
+        "cycles": 5261.4,
+        "ratio": 1.562
       }
     },
     "flac_lpc_32_13": {
       "c": {
-        "cycles": 3461.5
+        "cycles": 3459.7
       },
       "neon": {
-        "cycles": 3514.6,
-        "ratio": 0.985,
+        "cycles": 3490.7,
+        "ratio": 0.991,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_32_16": {
       "c": {
-        "cycles": 4155.1
+        "cycles": 4122.5
       },
       "neon": {
-        "cycles": 4134.1,
-        "ratio": 1.005,
+        "cycles": 4127.2,
+        "ratio": 0.999,
         "skip_threshold": true,
         "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
       }
     },
     "flac_lpc_32_29": {
       "c": {
-        "cycles": 6878.4
+        "cycles": 6878.2
       },
       "neon": {
-        "cycles": 3207.0,
-        "ratio": 2.145
+        "cycles": 3197.8,
+        "ratio": 2.151
       }
     },
     "flac_lpc_32_32": {
       "c": {
-        "cycles": 7621.3
+        "cycles": 7486.6
       },
       "neon": {
-        "cycles": 5451.5,
-        "ratio": 1.398
+        "cycles": 5452.4,
+        "ratio": 1.373
       }
     },
     "flac_wasted_32": {
       "c": {
-        "cycles": 317.1
+        "cycles": 326.5
       },
       "neon": {
-        "cycles": 49.8,
-        "ratio": 6.367
+        "cycles": 49.5,
+        "ratio": 6.596
       }
     },
     "flac_wasted_33": {
       "c": {
-        "cycles": 318.5
+        "cycles": 318.9
       },
       "neon": {
-        "cycles": 179.3,
-        "ratio": 1.776
+        "cycles": 179.7,
+        "ratio": 1.775
       }
     },
     "apply_welch_window_even": {
@@ -734,62 +734,86 @@
     },
     "flac_decorrelate_indep2_16": {
       "c": {
-        "cycles": 218.0
+        "cycles": 216.4
+      },
+      "neon": {
+        "cycles": 43.9,
+        "ratio": 4.929
       }
     },
     "flac_decorrelate_indep2_32": {
       "c": {
-        "cycles": 215.0
+        "cycles": 215.2
+      },
+      "neon": {
+        "cycles": 44.2,
+        "ratio": 4.869
       }
     },
     "flac_decorrelate_indep4_16": {
       "c": {
-        "cycles": 350.4
+        "cycles": 356.2
+      },
+      "neon": {
+        "cycles": 95.7,
+        "ratio": 3.722
       }
     },
     "flac_decorrelate_indep4_32": {
       "c": {
-        "cycles": 344.7
+        "cycles": 345.6
+      },
+      "neon": {
+        "cycles": 146.6,
+        "ratio": 2.357
       }
     },
     "flac_decorrelate_indep6_16": {
       "c": {
-        "cycles": 520.3
+        "cycles": 523.6
       }
     },
     "flac_decorrelate_indep6_32": {
       "c": {
-        "cycles": 495.3
+        "cycles": 498.7
       }
     },
     "flac_decorrelate_indep8_16": {
       "c": {
-        "cycles": 682.1
+        "cycles": 686.3
+      },
+      "neon": {
+        "cycles": 185.8,
+        "ratio": 3.694
       }
     },
     "flac_decorrelate_indep8_32": {
       "c": {
-        "cycles": 655.4
+        "cycles": 661.4
+      },
+      "neon": {
+        "cycles": 221.3,
+        "ratio": 2.989
       }
     },
     "flac_lpc_33_13": {
       "c": {
-        "cycles": 3441.5
+        "cycles": 3442.6
       }
     },
     "flac_lpc_33_16": {
       "c": {
-        "cycles": 4122.8
+        "cycles": 4131.5
       }
     },
     "flac_lpc_33_29": {
       "c": {
-        "cycles": 6859.7
+        "cycles": 6860.4
       }
     },
     "flac_lpc_33_32": {
       "c": {
-        "cycles": 7444.5
+        "cycles": 7445.1
       }
     }
   }
