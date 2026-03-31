@@ -9,333 +9,717 @@
     "perf_event_paranoid_required": -1,
     "units": "cycles (lower is better)",
     "speedup_formula": "c_cycles / neon_cycles",
-    "default_regression_threshold": 0.80,
+    "default_regression_threshold": 0.8,
     "notes": [
-      "blockdsp.fill_block_tab[0] neon regression is known — flagged for investigation",
+      "blockdsp.fill_block_tab[0] neon regression is known \u2014 flagged for investigation",
       "flac_lpc skip_threshold entries: dispatch threshold pred_order >= 20; slow by design",
       "vp9 intra pred entries: c baseline not captured (neon-only in this session)",
-      "vf_blend baselines: CAPTURED 2026-03-31 — 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
-    ]
+      "vf_blend baselines: CAPTURED 2026-03-31 \u2014 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
+    ],
+    "last_updated": "2026-03-31"
   },
   "functions": {
     "blockdsp.clear_block": {
-      "c": {"cycles": 5.7}
+      "c": {
+        "cycles": 5.7
+      }
     },
     "blockdsp.clear_blocks": {
-      "c": {"cycles": 22.7}
+      "c": {
+        "cycles": 22.7
+      }
     },
     "blockdsp.fill_block_tab[0]": {
-      "c":    {"cycles": 20.6},
-      "neon": {"cycles": 24.9, "ratio": 0.82,
-               "regression": true,
-               "regression_note": "flagged for investigation — 0.82x on Graviton3"}
+      "c": {
+        "cycles": 20.6
+      },
+      "neon": {
+        "cycles": 24.9,
+        "ratio": 0.82,
+        "regression": true,
+        "regression_note": "flagged for investigation \u2014 0.82x on Graviton3"
+      }
     },
     "blockdsp.fill_block_tab[1]": {
-      "c":    {"cycles": 17.1},
-      "neon": {"cycles": 17.1, "ratio": 1.00}
+      "c": {
+        "cycles": 17.1
+      },
+      "neon": {
+        "cycles": 17.1,
+        "ratio": 1.0
+      }
     },
     "audiodsp.scalarproduct_int16": {
-      "c":    {"cycles": 4134.8},
-      "neon": {"cycles": 688.1, "ratio": 6.01}
+      "c": {
+        "cycles": 4134.8
+      },
+      "neon": {
+        "cycles": 688.1,
+        "ratio": 6.01
+      }
     },
     "audiodsp.vector_clip_int32": {
-      "c":    {"cycles": 5399.6},
-      "neon": {"cycles": 996.4, "ratio": 5.42}
+      "c": {
+        "cycles": 5399.6
+      },
+      "neon": {
+        "cycles": 996.4,
+        "ratio": 5.42
+      }
     },
     "audiodsp.vector_clipf": {
-      "c":    {"cycles": 9070.2},
-      "neon": {"cycles": 996.6, "ratio": 9.10}
+      "c": {
+        "cycles": 9070.2
+      },
+      "neon": {
+        "cycles": 996.6,
+        "ratio": 9.1
+      }
     },
     "flac_decorrelate_ls_16": {
-      "c":    {"cycles": 126.6},
-      "neon": {"cycles": 47.4, "ratio": 2.67}
+      "c": {
+        "cycles": 126.6
+      },
+      "neon": {
+        "cycles": 47.4,
+        "ratio": 2.67
+      }
     },
     "flac_decorrelate_ls_32": {
-      "c":    {"cycles": 140.2},
-      "neon": {"cycles": 49.6, "ratio": 2.83}
+      "c": {
+        "cycles": 140.2
+      },
+      "neon": {
+        "cycles": 49.6,
+        "ratio": 2.83
+      }
     },
     "flac_decorrelate_ms_16": {
-      "c":    {"cycles": 141.3},
-      "neon": {"cycles": 66.0, "ratio": 2.14}
+      "c": {
+        "cycles": 141.3
+      },
+      "neon": {
+        "cycles": 66.0,
+        "ratio": 2.14
+      }
     },
     "flac_decorrelate_ms_32": {
-      "c":    {"cycles": 145.5},
-      "neon": {"cycles": 61.7, "ratio": 2.36}
+      "c": {
+        "cycles": 145.5
+      },
+      "neon": {
+        "cycles": 61.7,
+        "ratio": 2.36
+      }
     },
     "flac_decorrelate_rs_16": {
-      "c":    {"cycles": 125.0},
-      "neon": {"cycles": 47.7, "ratio": 2.62}
+      "c": {
+        "cycles": 125.0
+      },
+      "neon": {
+        "cycles": 47.7,
+        "ratio": 2.62
+      }
     },
     "flac_decorrelate_rs_32": {
-      "c":    {"cycles": 132.2},
-      "neon": {"cycles": 49.5, "ratio": 2.67}
+      "c": {
+        "cycles": 132.2
+      },
+      "neon": {
+        "cycles": 49.5,
+        "ratio": 2.67
+      }
     },
     "flac_lpc_16_13": {
-      "c":    {"cycles": 3428.6},
-      "neon": {"cycles": 3456.9, "ratio": 0.99,
-               "skip_threshold": true,
-               "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"}
+      "c": {
+        "cycles": 3428.6
+      },
+      "neon": {
+        "cycles": 3456.9,
+        "ratio": 0.99,
+        "skip_threshold": true,
+        "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
+      }
     },
     "flac_lpc_16_16": {
-      "c":    {"cycles": 4207.0},
-      "neon": {"cycles": 4328.6, "ratio": 0.97,
-               "skip_threshold": true,
-               "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"}
+      "c": {
+        "cycles": 4207.0
+      },
+      "neon": {
+        "cycles": 4328.6,
+        "ratio": 0.97,
+        "skip_threshold": true,
+        "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
+      }
     },
     "flac_lpc_16_29": {
-      "c":    {"cycles": 7318.0},
-      "neon": {"cycles": 2825.3, "ratio": 2.59}
+      "c": {
+        "cycles": 7318.0
+      },
+      "neon": {
+        "cycles": 2825.3,
+        "ratio": 2.59
+      }
     },
     "flac_lpc_16_32": {
-      "c":    {"cycles": 8227.5},
-      "neon": {"cycles": 5012.1, "ratio": 1.64}
+      "c": {
+        "cycles": 8227.5
+      },
+      "neon": {
+        "cycles": 5012.1,
+        "ratio": 1.64
+      }
     },
     "flac_lpc_32_13": {
-      "c":    {"cycles": 3443.2},
-      "neon": {"cycles": 3665.9, "ratio": 0.94,
-               "skip_threshold": true,
-               "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"}
+      "c": {
+        "cycles": 3443.2
+      },
+      "neon": {
+        "cycles": 3665.9,
+        "ratio": 0.94,
+        "skip_threshold": true,
+        "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
+      }
     },
     "flac_lpc_32_16": {
-      "c":    {"cycles": 4155.4},
-      "neon": {"cycles": 4129.8, "ratio": 1.01,
-               "skip_threshold": true,
-               "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"}
+      "c": {
+        "cycles": 4155.4
+      },
+      "neon": {
+        "cycles": 4129.8,
+        "ratio": 1.01,
+        "skip_threshold": true,
+        "skip_note": "dispatch threshold pred_order >= 20; below threshold by design"
+      }
     },
     "flac_lpc_32_29": {
-      "c":    {"cycles": 6894.1},
-      "neon": {"cycles": 3200.3, "ratio": 2.15}
+      "c": {
+        "cycles": 6894.1
+      },
+      "neon": {
+        "cycles": 3200.3,
+        "ratio": 2.15
+      }
     },
     "flac_lpc_32_32": {
-      "c":    {"cycles": 7513.3},
-      "neon": {"cycles": 5462.5, "ratio": 1.38}
+      "c": {
+        "cycles": 7513.3
+      },
+      "neon": {
+        "cycles": 5462.5,
+        "ratio": 1.38
+      }
     },
     "flac_wasted_32": {
-      "c":    {"cycles": 318.6},
-      "neon": {"cycles": 50.5, "ratio": 6.31}
+      "c": {
+        "cycles": 318.6
+      },
+      "neon": {
+        "cycles": 50.5,
+        "ratio": 6.31
+      }
     },
     "flac_wasted_33": {
-      "c":    {"cycles": 316.1},
-      "neon": {"cycles": 180.8, "ratio": 1.75}
+      "c": {
+        "cycles": 316.1
+      },
+      "neon": {
+        "cycles": 180.8,
+        "ratio": 1.75
+      }
     },
     "apply_welch_window_even": {
-      "c":    {"cycles": 7824.6},
-      "neon": {"cycles": 7371.3, "ratio": 1.06}
+      "c": {
+        "cycles": 7824.6
+      },
+      "neon": {
+        "cycles": 7371.3,
+        "ratio": 1.06
+      }
     },
     "apply_welch_window_odd": {
-      "c":    {"cycles": 9004.4},
-      "neon": {"cycles": 7359.9, "ratio": 1.22}
+      "c": {
+        "cycles": 9004.4
+      },
+      "neon": {
+        "cycles": 7359.9,
+        "ratio": 1.22
+      }
     },
     "autocorr_8_even": {
-      "c":    {"cycles": 46096.8},
-      "neon": {"cycles": 23032.9, "ratio": 2.00}
+      "c": {
+        "cycles": 46096.8
+      },
+      "neon": {
+        "cycles": 23032.9,
+        "ratio": 2.0
+      }
     },
     "autocorr_8_odd": {
-      "c":    {"cycles": 46106.4},
-      "neon": {"cycles": 23038.1, "ratio": 2.00}
+      "c": {
+        "cycles": 46106.4
+      },
+      "neon": {
+        "cycles": 23038.1,
+        "ratio": 2.0
+      }
     },
     "autocorr_12_even": {
-      "c":    {"cycles": 64516.2},
-      "neon": {"cycles": 32236.7, "ratio": 2.00}
+      "c": {
+        "cycles": 64516.2
+      },
+      "neon": {
+        "cycles": 32236.7,
+        "ratio": 2.0
+      }
     },
     "autocorr_12_odd": {
-      "c":    {"cycles": 64529.8},
-      "neon": {"cycles": 32243.9, "ratio": 2.00}
+      "c": {
+        "cycles": 64529.8
+      },
+      "neon": {
+        "cycles": 32243.9,
+        "ratio": 2.0
+      }
     },
     "bswap16_buf": {
-      "c":    {"cycles": 315.6},
-      "neon": {"cycles": 46.6, "ratio": 6.77}
+      "c": {
+        "cycles": 315.6
+      },
+      "neon": {
+        "cycles": 46.6,
+        "ratio": 6.77
+      }
     },
     "bswap_buf": {
-      "c":    {"cycles": 155.0},
-      "neon": {"cycles": 37.8, "ratio": 4.10}
+      "c": {
+        "cycles": 155.0
+      },
+      "neon": {
+        "cycles": 37.8,
+        "ratio": 4.1
+      }
     },
     "add_bytes": {
-      "c":    {"cycles": 692.4},
-      "neon": {"cycles": 155.7, "ratio": 4.45}
+      "c": {
+        "cycles": 698.0
+      },
+      "neon": {
+        "cycles": 154.7,
+        "ratio": 4.512
+      }
     },
     "add_left_pred_rnd_acc": {
-      "c":    {"cycles": 2136.2},
-      "neon": {"cycles": 935.5, "ratio": 2.28}
+      "c": {
+        "cycles": 2138.6
+      },
+      "neon": {
+        "cycles": 935.7,
+        "ratio": 2.286
+      }
     },
     "add_left_pred_zero": {
-      "c":    {"cycles": 2135.1},
-      "neon": {"cycles": 935.5, "ratio": 2.28}
+      "c": {
+        "cycles": 2139.2
+      },
+      "neon": {
+        "cycles": 936.0,
+        "ratio": 2.285
+      }
     },
     "vp9_avg4_8bpp": {
-      "c":    {"cycles": 12.1},
-      "neon": {"cycles": 16.3, "ratio": 0.74,
-               "skip_threshold": true,
-               "skip_note": "small block overhead; 4x4 neon setup cost exceeds benefit"}
+      "c": {
+        "cycles": 12.1
+      },
+      "neon": {
+        "cycles": 16.3,
+        "ratio": 0.74,
+        "skip_threshold": true,
+        "skip_note": "small block overhead; 4x4 neon setup cost exceeds benefit"
+      }
     },
     "vp9_avg4_10bpp": {
-      "c":    {"cycles": 12.9},
-      "neon": {"cycles": 10.4, "ratio": 1.24}
+      "c": {
+        "cycles": 12.9
+      },
+      "neon": {
+        "cycles": 10.4,
+        "ratio": 1.24
+      }
     },
     "vp9_avg8_8bpp": {
-      "c":    {"cycles": 28.9},
-      "neon": {"cycles": 12.8, "ratio": 2.26}
+      "c": {
+        "cycles": 28.9
+      },
+      "neon": {
+        "cycles": 12.8,
+        "ratio": 2.26
+      }
     },
     "vp9_avg16_8bpp": {
-      "neon": {"cycles": 27.2, "ratio": 3.44}
+      "neon": {
+        "cycles": 27.2,
+        "ratio": 3.44
+      }
     },
     "vp9_avg32_8bpp": {
-      "neon": {"cycles": 93.8, "ratio": 3.51}
+      "neon": {
+        "cycles": 93.8,
+        "ratio": 3.51
+      }
     },
     "vp9_avg64_8bpp": {
-      "neon": {"cycles": 284.2, "ratio": 4.44}
+      "neon": {
+        "cycles": 284.2,
+        "ratio": 4.44
+      }
     },
     "vp9_dc_4x4_8bpp": {
-      "neon": {"cycles": 8.3, "ratio": 1.01}
+      "neon": {
+        "cycles": 8.3,
+        "ratio": 1.01
+      }
     },
     "vp9_dc_8x8_8bpp": {
-      "neon": {"cycles": 17.9, "ratio": 1.02}
+      "neon": {
+        "cycles": 17.9,
+        "ratio": 1.02
+      }
     },
     "vp9_dc_16x16_8bpp": {
-      "neon": {"cycles": 26.5, "ratio": 2.36}
+      "neon": {
+        "cycles": 26.5,
+        "ratio": 2.36
+      }
     },
     "vp9_dc_32x32_8bpp": {
-      "neon": {"cycles": 45.5, "ratio": 2.90}
+      "neon": {
+        "cycles": 45.5,
+        "ratio": 2.9
+      }
     },
     "vp9_dc_127_4x4_8bpp": {
-      "neon": {"cycles": 7.3, "ratio": 1.00}
+      "neon": {
+        "cycles": 7.3,
+        "ratio": 1.0
+      }
     },
     "vp9_dc_128_8x8_8bpp": {
-      "neon": {"cycles": 7.3, "ratio": 0.99,
-               "skip_threshold": true,
-               "skip_note": "trivial fill — c ref is single memset; neon overhead at 8x8"}
+      "neon": {
+        "cycles": 7.3,
+        "ratio": 0.99,
+        "skip_threshold": true,
+        "skip_note": "trivial fill \u2014 c ref is single memset; neon overhead at 8x8"
+      }
     },
     "vp9_dc_128_16x16_8bpp": {
-      "neon": {"cycles": 15.3, "ratio": 1.04}
+      "neon": {
+        "cycles": 15.3,
+        "ratio": 1.04
+      }
     },
     "vp9_dc_128_32x32_8bpp": {
-      "neon": {"cycles": 40.0, "ratio": 1.61}
+      "neon": {
+        "cycles": 40.0,
+        "ratio": 1.61
+      }
     },
     "vp9_dc_left_16x16_8bpp": {
-      "neon": {"cycles": 23.3, "ratio": 1.95}
+      "neon": {
+        "cycles": 23.3,
+        "ratio": 1.95
+      }
     },
     "vp9_dc_left_32x32_8bpp": {
-      "neon": {"cycles": 40.8, "ratio": 2.44}
+      "neon": {
+        "cycles": 40.8,
+        "ratio": 2.44
+      }
     },
     "addition": {
-      "c":    {"cycles": 10539.3},
-      "neon": {"cycles": 501.0, "ratio": 21.04}
+      "c": {
+        "cycles": 10539.3
+      },
+      "neon": {
+        "cycles": 501.0,
+        "ratio": 21.04
+      }
     },
     "addition_16": {
-      "c":    {"cycles": 4958.1},
-      "neon": {"cycles": 490.7, "ratio": 10.10}
+      "c": {
+        "cycles": 4958.1
+      },
+      "neon": {
+        "cycles": 490.7,
+        "ratio": 10.1
+      }
     },
     "and": {
-      "c":    {"cycles": 9226.7},
-      "neon": {"cycles": 496.0, "ratio": 18.60}
+      "c": {
+        "cycles": 9226.7
+      },
+      "neon": {
+        "cycles": 496.0,
+        "ratio": 18.6
+      }
     },
     "and_16": {
-      "c":    {"cycles": 4586.9},
-      "neon": {"cycles": 491.4, "ratio": 9.33}
+      "c": {
+        "cycles": 4586.9
+      },
+      "neon": {
+        "cycles": 491.4,
+        "ratio": 9.33
+      }
     },
     "average": {
-      "c":    {"cycles": 10184.2},
-      "neon": {"cycles": 496.1, "ratio": 20.53}
+      "c": {
+        "cycles": 10184.2
+      },
+      "neon": {
+        "cycles": 496.1,
+        "ratio": 20.53
+      }
     },
     "average_16": {
-      "c":    {"cycles": 5095.9},
-      "neon": {"cycles": 485.3, "ratio": 10.50}
+      "c": {
+        "cycles": 5095.9
+      },
+      "neon": {
+        "cycles": 485.3,
+        "ratio": 10.5
+      }
     },
     "darken": {
-      "c":    {"cycles": 10377.6},
-      "neon": {"cycles": 495.7, "ratio": 20.93}
+      "c": {
+        "cycles": 10377.6
+      },
+      "neon": {
+        "cycles": 495.7,
+        "ratio": 20.93
+      }
     },
     "darken_16": {
-      "c":    {"cycles": 4934.5},
-      "neon": {"cycles": 489.6, "ratio": 10.08}
+      "c": {
+        "cycles": 4934.5
+      },
+      "neon": {
+        "cycles": 489.6,
+        "ratio": 10.08
+      }
     },
     "difference": {
-      "c":    {"cycles": 10014.0},
-      "neon": {"cycles": 507.7, "ratio": 19.72}
+      "c": {
+        "cycles": 10014.0
+      },
+      "neon": {
+        "cycles": 507.7,
+        "ratio": 19.72
+      }
     },
     "difference_16": {
-      "c":    {"cycles": 5217.2},
-      "neon": {"cycles": 486.1, "ratio": 10.73}
+      "c": {
+        "cycles": 5217.2
+      },
+      "neon": {
+        "cycles": 486.1,
+        "ratio": 10.73
+      }
     },
     "extremity": {
-      "c":    {"cycles": 11424.5},
-      "neon": {"cycles": 1086.9, "ratio": 10.51}
+      "c": {
+        "cycles": 11424.5
+      },
+      "neon": {
+        "cycles": 1086.9,
+        "ratio": 10.51
+      }
     },
     "extremity_16": {
-      "c":    {"cycles": 5700.0},
-      "neon": {"cycles": 1086.1, "ratio": 5.25}
+      "c": {
+        "cycles": 5700.0
+      },
+      "neon": {
+        "cycles": 1086.1,
+        "ratio": 5.25
+      }
     },
     "grainextract": {
-      "c":    {"cycles": 14286.2},
-      "neon": {"cycles": 1107.6, "ratio": 12.90}
+      "c": {
+        "cycles": 14286.2
+      },
+      "neon": {
+        "cycles": 1107.6,
+        "ratio": 12.9
+      }
     },
     "grainextract_16": {
-      "c":    {"cycles": 6804.6},
-      "neon": {"cycles": 1108.9, "ratio": 6.14}
+      "c": {
+        "cycles": 6804.6
+      },
+      "neon": {
+        "cycles": 1108.9,
+        "ratio": 6.14
+      }
     },
     "grainmerge": {
-      "c":    {"cycles": 15415.2},
-      "neon": {"cycles": 1149.3, "ratio": 13.41}
+      "c": {
+        "cycles": 15415.2
+      },
+      "neon": {
+        "cycles": 1149.3,
+        "ratio": 13.41
+      }
     },
     "grainmerge_16": {
-      "c":    {"cycles": 6973.7},
-      "neon": {"cycles": 1148.4, "ratio": 6.07}
+      "c": {
+        "cycles": 6973.7
+      },
+      "neon": {
+        "cycles": 1148.4,
+        "ratio": 6.07
+      }
     },
     "hardmix": {
-      "c":    {"cycles": 13548.3},
-      "neon": {"cycles": 1088.7, "ratio": 12.45}
+      "c": {
+        "cycles": 13548.3
+      },
+      "neon": {
+        "cycles": 1088.7,
+        "ratio": 12.45
+      }
     },
     "lighten": {
-      "c":    {"cycles": 10342.2},
-      "neon": {"cycles": 504.3, "ratio": 20.51}
+      "c": {
+        "cycles": 10342.2
+      },
+      "neon": {
+        "cycles": 504.3,
+        "ratio": 20.51
+      }
     },
     "lighten_16": {
-      "c":    {"cycles": 5155.9},
-      "neon": {"cycles": 484.8, "ratio": 10.64}
+      "c": {
+        "cycles": 5155.9
+      },
+      "neon": {
+        "cycles": 484.8,
+        "ratio": 10.64
+      }
     },
     "multiply": {
-      "c":    {"cycles": 11603.5},
-      "neon": {"cycles": 1403.1, "ratio": 8.27}
+      "c": {
+        "cycles": 11603.5
+      },
+      "neon": {
+        "cycles": 1403.1,
+        "ratio": 8.27
+      }
     },
     "negation": {
-      "c":    {"cycles": 11840.4},
-      "neon": {"cycles": 1201.7, "ratio": 9.85}
+      "c": {
+        "cycles": 11840.4
+      },
+      "neon": {
+        "cycles": 1201.7,
+        "ratio": 9.85
+      }
     },
     "negation_16": {
-      "c":    {"cycles": 5699.2},
-      "neon": {"cycles": 1199.0, "ratio": 4.75}
+      "c": {
+        "cycles": 5699.2
+      },
+      "neon": {
+        "cycles": 1199.0,
+        "ratio": 4.75
+      }
     },
     "or": {
-      "c":    {"cycles": 9212.9},
-      "neon": {"cycles": 501.8, "ratio": 18.36}
+      "c": {
+        "cycles": 9212.9
+      },
+      "neon": {
+        "cycles": 501.8,
+        "ratio": 18.36
+      }
     },
     "or_16": {
-      "c":    {"cycles": 4659.0},
-      "neon": {"cycles": 482.6, "ratio": 9.65}
+      "c": {
+        "cycles": 4659.0
+      },
+      "neon": {
+        "cycles": 482.6,
+        "ratio": 9.65
+      }
     },
     "phoenix": {
-      "c":    {"cycles": 13794.7},
-      "neon": {"cycles": 648.2, "ratio": 21.28}
+      "c": {
+        "cycles": 13794.7
+      },
+      "neon": {
+        "cycles": 648.2,
+        "ratio": 21.28
+      }
     },
     "phoenix_16": {
-      "c":    {"cycles": 6863.0},
-      "neon": {"cycles": 645.5, "ratio": 10.63}
+      "c": {
+        "cycles": 6863.0
+      },
+      "neon": {
+        "cycles": 645.5,
+        "ratio": 10.63
+      }
     },
     "screen": {
-      "c":    {"cycles": 17946.3},
-      "neon": {"cycles": 1885.2, "ratio": 9.52}
+      "c": {
+        "cycles": 17946.3
+      },
+      "neon": {
+        "cycles": 1885.2,
+        "ratio": 9.52
+      }
     },
     "subtract": {
-      "c":    {"cycles": 10013.7},
-      "neon": {"cycles": 499.1, "ratio": 20.06}
+      "c": {
+        "cycles": 10013.7
+      },
+      "neon": {
+        "cycles": 499.1,
+        "ratio": 20.06
+      }
     },
     "subtract_16": {
-      "c":    {"cycles": 5219.1},
-      "neon": {"cycles": 490.2, "ratio": 10.65}
+      "c": {
+        "cycles": 5219.1
+      },
+      "neon": {
+        "cycles": 490.2,
+        "ratio": 10.65
+      }
     },
     "xor": {
-      "c":    {"cycles": 9212.9},
-      "neon": {"cycles": 502.2, "ratio": 18.35}
+      "c": {
+        "cycles": 9212.9
+      },
+      "neon": {
+        "cycles": 502.2,
+        "ratio": 18.35
+      }
+    },
+    "add_gradient_pred": {
+      "c": {
+        "cycles": 6330.5
+      }
+    },
+    "add_left_pred_int16": {
+      "c": {
+        "cycles": 4162.2
+      }
+    },
+    "add_median_pred": {
+      "c": {
+        "cycles": 16714.9
+      }
     }
   }
 }
