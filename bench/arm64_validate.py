@@ -88,6 +88,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "mlpdsp":   ["mlp_"],    # test group "mlpdsp" but bench names are "mlp_filter_channel*"
     "takdsp":   ["decorrelate_"],
     "hpeldsp":  ["put_pixels_tab", "avg_pixels_tab", "put_no_rnd_pixels_tab", "avg_no_rnd_pixels_tab"],
+    "dcadsp":   ["lfe_fir"],
 }
 
 # ---------------------------------------------------------------------------

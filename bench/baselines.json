@@ -1255,6 +1255,33 @@
         "cycles": 299.9,
         "ratio": 4.695
       }
+    },
+    "lfe_fir0_float": {
+      "c": {
+        "cycles": 5851.5
+      },
+      "neon": {
+        "cycles": 2015.2,
+        "ratio": 2.904
+      }
+    },
+    "lfe_fir1_float": {
+      "c": {
+        "cycles": 2741.0
+      },
+      "neon": {
+        "cycles": 1466.2,
+        "ratio": 1.869
+      }
+    },
+    "lfe_fir_fixed": {
+      "c": {
+        "cycles": 8517.4
+      },
+      "neon": {
+        "cycles": 4777.1,
+        "ratio": 1.783
+      }
     }
   }
 }

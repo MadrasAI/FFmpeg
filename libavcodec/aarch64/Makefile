@@ -2,6 +2,7 @@
 OBJS-$(CONFIG_ALAC_DECODER)             += aarch64/alacdsp_init_aarch64.o
 OBJS-$(CONFIG_VP3DSP)                   += aarch64/vp3dsp_init_aarch64.o
 OBJS-$(CONFIG_AUDIODSP)                 += aarch64/audiodsp_init_aarch64.o
+OBJS-$(CONFIG_DCA_DECODER)              += aarch64/dcadsp_init_aarch64.o
 OBJS-$(CONFIG_FLAC_DECODER)             += aarch64/flacdsp_init_aarch64.o
 OBJS-$(CONFIG_MLP_DECODER)             += aarch64/mlpdsp_init_aarch64.o
 OBJS-$(CONFIG_TAK_DECODER)             += aarch64/takdsp_init_aarch64.o
@@ -53,6 +54,7 @@ ARMV8-OBJS-$(CONFIG_VIDEODSP)           += aarch64/videodsp.o
 NEON-OBJS-$(CONFIG_ALAC_DECODER)        += aarch64/alacdsp_neon.o
 NEON-OBJS-$(CONFIG_VP3DSP)              += aarch64/vp3dsp_neon.o
 NEON-OBJS-$(CONFIG_AUDIODSP)            += aarch64/audiodsp_neon.o
+NEON-OBJS-$(CONFIG_DCA_DECODER)         += aarch64/dcadsp_neon.o
 NEON-OBJS-$(CONFIG_FLAC_DECODER)        += aarch64/flacdsp_neon.o
 NEON-OBJS-$(CONFIG_MLP_DECODER)         += aarch64/mlpdsp_aarch64.o
 NEON-OBJS-$(CONFIG_TAK_DECODER)         += aarch64/takdsp_neon.o
