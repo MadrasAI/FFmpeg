@@ -69,6 +69,7 @@ typedef struct MLPDSPContext {
 } MLPDSPContext;
 
 void ff_mlpdsp_init(MLPDSPContext *c);
+void ff_mlpdsp_init_aarch64(MLPDSPContext *c);
 void ff_mlpdsp_init_arm(MLPDSPContext *c);
 void ff_mlpdsp_init_x86(MLPDSPContext *c);
 

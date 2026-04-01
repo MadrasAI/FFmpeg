@@ -11,10 +11,10 @@
     "speedup_formula": "c_cycles / neon_cycles",
     "default_regression_threshold": 0.8,
     "notes": [
-      "blockdsp.fill_block_tab[0] neon regression is known — flagged for investigation",
+      "blockdsp.fill_block_tab[0] neon regression is known \u2014 flagged for investigation",
       "flac_lpc skip_threshold entries: dispatch threshold pred_order >= 20; slow by design",
       "vp9 intra pred entries: c baseline not captured (neon-only in this session)",
-      "vf_blend baselines: CAPTURED 2026-03-31 — 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
+      "vf_blend baselines: CAPTURED 2026-03-31 \u2014 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
     ],
     "last_updated": "2026-04-01"
   },
@@ -37,7 +37,7 @@
         "cycles": 24.9,
         "ratio": 0.82,
         "regression": true,
-        "regression_note": "flagged for investigation — 0.82x on Graviton3"
+        "regression_note": "flagged for investigation \u2014 0.82x on Graviton3"
       }
     },
     "blockdsp.fill_block_tab[1]": {
@@ -409,9 +409,9 @@
         "cycles": 9.5,
         "ratio": 0.99,
         "skip_threshold": true,
-        "skip_note": "trivial fill — c ref is single memset; neon overhead at 8x8",
+        "skip_note": "trivial fill \u2014 c ref is single memset; neon overhead at 8x8",
         "regression": true,
-        "regression_note": "sub-10-cycle noise floor — measurements vary 8–11 cycles across runs; NEON slower than C (expected for trivial 8x8 fill)"
+        "regression_note": "sub-10-cycle noise floor \u2014 measurements vary 8\u201311 cycles across runs; NEON slower than C (expected for trivial 8x8 fill)"
       }
     },
     "vp9_dc_128_16x16_8bpp": {
@@ -877,6 +877,15 @@
     "h_loop_filter_unaligned": {
       "c": {
         "cycles": 49.4
+      }
+    },
+    "mlp_filter_channel": {
+      "c": {
+        "cycles": 652.2
+      },
+      "neon": {
+        "cycles": 700.7,
+        "ratio": 0.931
       }
     }
   }
