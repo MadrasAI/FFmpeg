@@ -59,7 +59,9 @@ av_cold void ff_llauddsp_init(LLAudDSPContext *c)
     c->scalarproduct_and_madd_int16 = scalarproduct_and_madd_int16_c;
     c->scalarproduct_and_madd_int32 = scalarproduct_and_madd_int32_c;
 
-#if ARCH_ARM
+#if ARCH_AARCH64
+    ff_llauddsp_init_aarch64(c);
+#elif ARCH_ARM
     ff_llauddsp_init_arm(c);
 #elif ARCH_RISCV
     ff_llauddsp_init_riscv(c);

@@ -44,6 +44,7 @@ typedef struct LLAudDSPContext {
 } LLAudDSPContext;
 
 void ff_llauddsp_init(LLAudDSPContext *c);
+void ff_llauddsp_init_aarch64(LLAudDSPContext *c);
 void ff_llauddsp_init_arm(LLAudDSPContext *c);
 void ff_llauddsp_init_riscv(LLAudDSPContext *c);
 void ff_llauddsp_init_x86(LLAudDSPContext *c);

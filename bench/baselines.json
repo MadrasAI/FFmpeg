@@ -1309,6 +1309,24 @@
         "cycles": 10028.2,
         "ratio": 8.148
       }
+    },
+    "scalarproduct_and_madd_int16": {
+      "c": {
+        "cycles": 1690.0
+      },
+      "neon": {
+        "cycles": 378.4,
+        "ratio": 4.466
+      }
+    },
+    "scalarproduct_and_madd_int32": {
+      "c": {
+        "cycles": 2368.9
+      },
+      "neon": {
+        "cycles": 459.9,
+        "ratio": 5.151
+      }
     }
   }
 }
