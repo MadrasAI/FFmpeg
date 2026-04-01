@@ -92,6 +92,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "g722dsp":  ["g722_apply_qmf"],
     "utvideodsp": ["restore_rgb_planes"],
     "llauddsp": ["scalarproduct_and_madd"],
+    "exrdsp":   ["reorder_pixels", "predictor"],
 }
 
 # ---------------------------------------------------------------------------

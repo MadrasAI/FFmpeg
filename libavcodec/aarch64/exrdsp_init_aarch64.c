@@ -1,4 +1,7 @@
 /*
+ * AArch64 NEON optimised OpenEXR DSP functions
+ * Copyright (c) 2025 FFmpeg contributors
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -16,20 +19,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_EXRDSP_H
-#define AVCODEC_EXRDSP_H
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavcodec/exrdsp.h"
 
-#include <stddef.h>
-#include <stdint.h>
+void ff_reorder_pixels_neon(uint8_t *dst, const uint8_t *src, ptrdiff_t size);
+void ff_predictor_neon(uint8_t *src, ptrdiff_t size);
 
-typedef struct ExrDSPContext {
-    void (*reorder_pixels)(uint8_t *dst, const uint8_t *src, ptrdiff_t size);
-    void (*predictor)(uint8_t *src, ptrdiff_t size);
-} ExrDSPContext;
+av_cold void ff_exrdsp_init_aarch64(ExrDSPContext *c)
+{
+    int cpu_flags = av_get_cpu_flags();
 
-void ff_exrdsp_init(ExrDSPContext *c);
-void ff_exrdsp_init_aarch64(ExrDSPContext *c);
-void ff_exrdsp_init_riscv(ExrDSPContext *c);
-void ff_exrdsp_init_x86(ExrDSPContext *c);
-
-#endif /* AVCODEC_EXRDSP_H */
+    if (have_neon(cpu_flags)) {
+        c->reorder_pixels = ff_reorder_pixels_neon;
+        c->predictor      = ff_predictor_neon;
+    }
+}

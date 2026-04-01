@@ -1327,6 +1327,24 @@
         "cycles": 459.9,
         "ratio": 5.151
       }
+    },
+    "reorder_pixels": {
+      "c": {
+        "cycles": 3458.0
+      },
+      "neon": {
+        "cycles": 323.7,
+        "ratio": 10.683
+      }
+    },
+    "predictor": {
+      "c": {
+        "cycles": 10258.3
+      },
+      "neon": {
+        "cycles": 1920.8,
+        "ratio": 5.341
+      }
     }
   }
 }
