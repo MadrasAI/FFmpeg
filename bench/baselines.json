@@ -887,6 +887,338 @@
         "cycles": 700.7,
         "ratio": 0.931
       }
+    },
+    "put_pixels_tab[0][0]": {
+      "c": {
+        "cycles": 18.8
+      },
+      "neon": {
+        "cycles": 6.9,
+        "ratio": 2.725
+      }
+    },
+    "put_pixels_tab[0][1]": {
+      "c": {
+        "cycles": 56.0
+      },
+      "neon": {
+        "cycles": 12.4,
+        "ratio": 4.516
+      }
+    },
+    "put_pixels_tab[0][2]": {
+      "c": {
+        "cycles": 114.4
+      },
+      "neon": {
+        "cycles": 20.0,
+        "ratio": 5.72
+      }
+    },
+    "put_pixels_tab[0][3]": {
+      "c": {
+        "cycles": 222.2
+      },
+      "neon": {
+        "cycles": 35.1,
+        "ratio": 6.33
+      }
+    },
+    "put_pixels_tab[1][0]": {
+      "c": {
+        "cycles": 12.8
+      },
+      "neon": {
+        "cycles": 7.0,
+        "ratio": 1.829
+      }
+    },
+    "put_pixels_tab[1][1]": {
+      "c": {
+        "cycles": 16.4
+      },
+      "neon": {
+        "cycles": 9.5,
+        "ratio": 1.726
+      }
+    },
+    "put_pixels_tab[1][2]": {
+      "c": {
+        "cycles": 42.3
+      },
+      "neon": {
+        "cycles": 14.1,
+        "ratio": 3.0
+      }
+    },
+    "put_pixels_tab[1][3]": {
+      "c": {
+        "cycles": 113.5
+      },
+      "neon": {
+        "cycles": 20.9,
+        "ratio": 5.431
+      }
+    },
+    "put_pixels_tab[2][0]": {
+      "c": {
+        "cycles": 16.2
+      }
+    },
+    "put_pixels_tab[2][1]": {
+      "c": {
+        "cycles": 31.6
+      }
+    },
+    "put_pixels_tab[2][2]": {
+      "c": {
+        "cycles": 15.6
+      }
+    },
+    "put_pixels_tab[2][3]": {
+      "c": {
+        "cycles": 70.8
+      }
+    },
+    "put_pixels_tab[3][0]": {
+      "c": {
+        "cycles": 11.1
+      }
+    },
+    "put_pixels_tab[3][1]": {
+      "c": {
+        "cycles": 27.7
+      }
+    },
+    "put_pixels_tab[3][2]": {
+      "c": {
+        "cycles": 9.3
+      }
+    },
+    "put_pixels_tab[3][3]": {
+      "c": {
+        "cycles": 38.0
+      }
+    },
+    "avg_pixels_tab[0][0]": {
+      "c": {
+        "cycles": 30.0
+      },
+      "neon": {
+        "cycles": 10.5,
+        "ratio": 2.857
+      }
+    },
+    "avg_pixels_tab[0][1]": {
+      "c": {
+        "cycles": 47.2
+      },
+      "neon": {
+        "cycles": 11.3,
+        "ratio": 4.177
+      }
+    },
+    "avg_pixels_tab[0][2]": {
+      "c": {
+        "cycles": 92.7
+      },
+      "neon": {
+        "cycles": 15.0,
+        "ratio": 6.18
+      }
+    },
+    "avg_pixels_tab[0][3]": {
+      "c": {
+        "cycles": 274.6
+      },
+      "neon": {
+        "cycles": 42.1,
+        "ratio": 6.523
+      }
+    },
+    "avg_pixels_tab[1][0]": {
+      "c": {
+        "cycles": 29.6
+      },
+      "neon": {
+        "cycles": 13.0,
+        "ratio": 2.277
+      }
+    },
+    "avg_pixels_tab[1][1]": {
+      "c": {
+        "cycles": 69.7
+      },
+      "neon": {
+        "cycles": 21.1,
+        "ratio": 3.303
+      }
+    },
+    "avg_pixels_tab[1][2]": {
+      "c": {
+        "cycles": 25.2
+      },
+      "neon": {
+        "cycles": 10.6,
+        "ratio": 2.377
+      }
+    },
+    "avg_pixels_tab[1][3]": {
+      "c": {
+        "cycles": 56.4
+      },
+      "neon": {
+        "cycles": 10.9,
+        "ratio": 5.174
+      }
+    },
+    "avg_pixels_tab[2][0]": {
+      "c": {
+        "cycles": 22.7
+      }
+    },
+    "avg_pixels_tab[2][1]": {
+      "c": {
+        "cycles": 47.0
+      }
+    },
+    "avg_pixels_tab[2][2]": {
+      "c": {
+        "cycles": 27.5
+      }
+    },
+    "avg_pixels_tab[2][3]": {
+      "c": {
+        "cycles": 37.1
+      }
+    },
+    "avg_pixels_tab[3][0]": {
+      "c": {
+        "cycles": 27.7
+      }
+    },
+    "avg_pixels_tab[3][1]": {
+      "c": {
+        "cycles": 15.6
+      }
+    },
+    "avg_pixels_tab[3][2]": {
+      "c": {
+        "cycles": 47.8
+      }
+    },
+    "avg_pixels_tab[3][3]": {
+      "c": {
+        "cycles": 13.4
+      }
+    },
+    "put_no_rnd_pixels_tab[0][0]": {
+      "c": {
+        "cycles": 48.4
+      },
+      "neon": {
+        "cycles": 16.6,
+        "ratio": 2.916
+      }
+    },
+    "put_no_rnd_pixels_tab[0][1]": {
+      "c": {
+        "cycles": 86.7
+      },
+      "neon": {
+        "cycles": 23.0,
+        "ratio": 3.77
+      }
+    },
+    "put_no_rnd_pixels_tab[0][2]": {
+      "c": {
+        "cycles": 82.6
+      },
+      "neon": {
+        "cycles": 14.9,
+        "ratio": 5.544
+      }
+    },
+    "put_no_rnd_pixels_tab[0][3]": {
+      "c": {
+        "cycles": 155.3
+      },
+      "neon": {
+        "cycles": 28.3,
+        "ratio": 5.488
+      }
+    },
+    "put_no_rnd_pixels_tab[1][0]": {
+      "c": {
+        "cycles": 17.4
+      },
+      "neon": {
+        "cycles": 9.3,
+        "ratio": 1.871
+      }
+    },
+    "put_no_rnd_pixels_tab[1][1]": {
+      "c": {
+        "cycles": 16.1
+      },
+      "neon": {
+        "cycles": 9.2,
+        "ratio": 1.75
+      }
+    },
+    "put_no_rnd_pixels_tab[1][2]": {
+      "c": {
+        "cycles": 16.7
+      },
+      "neon": {
+        "cycles": 7.9,
+        "ratio": 2.114
+      }
+    },
+    "put_no_rnd_pixels_tab[1][3]": {
+      "c": {
+        "cycles": 47.9
+      },
+      "neon": {
+        "cycles": 10.4,
+        "ratio": 4.606
+      }
+    },
+    "avg_no_rnd_pixels_tab[0][0]": {
+      "c": {
+        "cycles": 30.5
+      },
+      "neon": {
+        "cycles": 10.3,
+        "ratio": 2.961
+      }
+    },
+    "avg_no_rnd_pixels_tab[0][1]": {
+      "c": {
+        "cycles": 181.2
+      },
+      "neon": {
+        "cycles": 31.7,
+        "ratio": 5.716
+      }
+    },
+    "avg_no_rnd_pixels_tab[0][2]": {
+      "c": {
+        "cycles": 135.2
+      },
+      "neon": {
+        "cycles": 22.5,
+        "ratio": 6.009
+      }
+    },
+    "avg_no_rnd_pixels_tab[0][3]": {
+      "c": {
+        "cycles": 357.5
+      },
+      "neon": {
+        "cycles": 70.1,
+        "ratio": 5.1
+      }
     }
   }
 }

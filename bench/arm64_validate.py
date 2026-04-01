@@ -86,6 +86,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "vp3dsp":   ["v_loop_filter", "h_loop_filter"],  # bench names are v_loop_filter*/h_loop_filter*
     "vf_blend": [""],        # blend mode names (addition, average, …) have no shared prefix
     "mlpdsp":   ["mlp_"],    # test group "mlpdsp" but bench names are "mlp_filter_channel*"
+    "hpeldsp":  ["put_pixels_tab", "avg_pixels_tab", "put_no_rnd_pixels_tab", "avg_no_rnd_pixels_tab"],
 }
 
 # ---------------------------------------------------------------------------
