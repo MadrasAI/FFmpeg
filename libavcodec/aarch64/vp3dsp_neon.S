@@ -112,39 +112,32 @@ function ff_vp3_h_loop_filter_neon, export=1
     ldr         w2,  [x2, #516]
     uxtb        w2,  w2
 
-    /* 4-column × 8-row transpose via vtrn.8/vtrn.16 equivalents.
-     * Each trn1/trn2 pair is in-place using v4 as scratch.          */
-    trn1        v4.8b,  v16.8b, v17.8b
-    trn2        v17.8b, v16.8b, v17.8b
-    mov         v16.8b, v4.8b
-
-    trn1        v4.8b,  v18.8b, v19.8b
-    trn2        v19.8b, v18.8b, v19.8b
-    mov         v18.8b, v4.8b
-
-    trn1        v4.4h,  v16.4h, v18.4h
-    trn2        v18.4h, v16.4h, v18.4h
-    mov         v16.8b, v4.8b
-
-    trn1        v4.4h,  v17.4h, v19.4h
-    trn2        v19.4h, v17.4h, v19.4h
-    mov         v17.8b, v4.8b
+    /* 4-column × 8-row transpose, out-of-place using v20-v23 as scratch.
+     * Stage 1: byte-level interleave (8 insns, was 12 with in-place mov). */
+    trn1        v20.8b, v16.8b, v17.8b
+    trn2        v21.8b, v16.8b, v17.8b
+    trn1        v22.8b, v18.8b, v19.8b
+    trn2        v23.8b, v18.8b, v19.8b
+    /* Stage 2: halfword-level interleave into v16-v19 */
+    trn1        v16.4h, v20.4h, v22.4h
+    trn2        v18.4h, v20.4h, v22.4h
+    trn1        v17.4h, v21.4h, v23.4h
+    trn2        v19.4h, v21.4h, v23.4h
 
     vp3_loop_filter
 
-    /* post-filter transpose: vtrn.8 d0, d1 */
-    trn1        v4.8b,  v0.8b,  v1.8b
-    trn2        v1.8b,  v0.8b,  v1.8b
-    mov         v0.8b,  v4.8b
+    /* post-filter transpose: out-of-place into v20/v21 (2 insns, was 3) */
+    trn1        v20.8b, v0.8b,  v1.8b
+    trn2        v21.8b, v0.8b,  v1.8b
 
-    st1         {v0.h}[0], [x12], x1
-    st1         {v1.h}[0], [x12], x1
-    st1         {v0.h}[1], [x12], x1
-    st1         {v1.h}[1], [x12], x1
-    st1         {v0.h}[2], [x12], x1
-    st1         {v1.h}[2], [x12], x1
-    st1         {v0.h}[3], [x12], x1
-    st1         {v1.h}[3], [x12], x1
+    st1         {v20.h}[0], [x12], x1
+    st1         {v21.h}[0], [x12], x1
+    st1         {v20.h}[1], [x12], x1
+    st1         {v21.h}[1], [x12], x1
+    st1         {v20.h}[2], [x12], x1
+    st1         {v21.h}[2], [x12], x1
+    st1         {v20.h}[3], [x12], x1
+    st1         {v21.h}[3], [x12], x1
     ret
 endfunc
 

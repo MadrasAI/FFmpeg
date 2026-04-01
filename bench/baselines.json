@@ -853,27 +853,27 @@
     },
     "v_loop_filter": {
       "c": {
-        "cycles": 57.8
+        "cycles": 58.2
       },
       "neon": {
-        "cycles": 37.7,
-        "ratio": 1.533
+        "cycles": 36.8,
+        "ratio": 1.582
       }
     },
     "v_loop_filter_unaligned": {
       "c": {
-        "cycles": 57.9
+        "cycles": 58.0
       }
     },
     "h_loop_filter": {
       "c": {
-        "cycles": 48.9
+        "cycles": 49.1
       },
       "neon": {
-        "cycles": 64.5,
-        "ratio": 0.758,
+        "cycles": 61.5,
+        "ratio": 0.798,
         "skip_threshold": true,
-        "skip_note": "AArch64 trn1/trn2/mov overhead vs ARM32 vtrn.8 in-place (3 insns per swap vs 1); structurally inherent"
+        "skip_note": "Out-of-place trn optimization applied (all mov insns eliminated, 12→8 pre-filter + 3→2 post-filter); ratio 0.798x sits at threshold boundary due to AArch64 trn cost + scattered st1 {vN.h}[i] stores — no further scalar-equivalence exists"
       }
     },
     "h_loop_filter_unaligned": {
