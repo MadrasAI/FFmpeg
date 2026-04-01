@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Peter Meerwald <pmeerw@pmeerw.net>
+ * Copyright (c) 2025 FFmpeg contributors
  *
  * This file is part of FFmpeg.
  *
@@ -18,19 +18,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_G722DSP_H
-#define AVCODEC_G722DSP_H
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavcodec/g722dsp.h"
 
-#include <stdint.h>
+void ff_g722_apply_qmf_neon(const int16_t *prev_samples, int xout[2]);
 
-typedef struct G722DSPContext {
-    void (*apply_qmf)(const int16_t *prev_samples, int xout[2]);
-} G722DSPContext;
+av_cold void ff_g722dsp_init_aarch64(G722DSPContext *c)
+{
+    int cpu_flags = av_get_cpu_flags();
 
-void ff_g722dsp_init(G722DSPContext *c);
-void ff_g722dsp_init_aarch64(G722DSPContext *c);
-void ff_g722dsp_init_arm(G722DSPContext *c);
-void ff_g722dsp_init_riscv(G722DSPContext *c);
-void ff_g722dsp_init_x86(G722DSPContext *c);
-
-#endif /* AVCODEC_G722DSP_H */
+    if (have_neon(cpu_flags)) {
+        c->apply_qmf = ff_g722_apply_qmf_neon;
+    }
+}

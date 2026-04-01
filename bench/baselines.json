@@ -1282,6 +1282,15 @@
         "cycles": 4777.1,
         "ratio": 1.783
       }
+    },
+    "g722_apply_qmf": {
+      "c": {
+        "cycles": 20.0
+      },
+      "neon": {
+        "cycles": 8.1,
+        "ratio": 2.469
+      }
     }
   }
 }

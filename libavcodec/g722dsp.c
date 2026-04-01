@@ -69,7 +69,9 @@ av_cold void ff_g722dsp_init(G722DSPContext *c)
 {
     c->apply_qmf = g722_apply_qmf;
 
-#if ARCH_ARM
+#if ARCH_AARCH64
+    ff_g722dsp_init_aarch64(c);
+#elif ARCH_ARM
     ff_g722dsp_init_arm(c);
 #elif ARCH_RISCV
     ff_g722dsp_init_riscv(c);
