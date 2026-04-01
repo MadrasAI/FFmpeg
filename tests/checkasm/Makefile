@@ -131,9 +131,18 @@ run-checkasm:
 
 checkasm: $(CHECKASM)
 
+# ARM64 NEON validation: correctness + perf comparison against bench/baselines.json
+# Requires: sudo sysctl -w kernel.perf_event_paranoid=-1
+# Usage: make bench-validate [MODULE=audiodsp]
+bench-validate: $(CHECKASM)
+	$(Q)python3 $(SRC_PATH)/bench/arm64_validate.py \
+		--checkasm-path $(CHECKASM) \
+		--baselines $(SRC_PATH)/bench/baselines.json \
+		$(if $(MODULE),--module $(MODULE),)
+
 testclean:: checkasmclean
 
 checkasmclean:
 	$(RM) $(CHECKASM) $(CLEANSUFFIXES:%=tests/checkasm/%) $(CLEANSUFFIXES:%=tests/checkasm/$(ARCH)/%)
 
-.PHONY: checkasm
+.PHONY: checkasm bench-validate

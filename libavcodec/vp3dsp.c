@@ -455,7 +455,9 @@ av_cold void ff_vp3dsp_init(VP3DSPContext *c)
     c->v_loop_filter = c->v_loop_filter_unaligned = vp3_v_loop_filter_8_c;
     c->h_loop_filter = c->h_loop_filter_unaligned = vp3_h_loop_filter_8_c;
 
-#if ARCH_ARM
+#if ARCH_AARCH64
+    ff_vp3dsp_init_aarch64(c);
+#elif ARCH_ARM
     ff_vp3dsp_init_arm(c);
 #elif ARCH_PPC
     ff_vp3dsp_init_ppc(c);

@@ -58,6 +58,7 @@ void ff_vp3dsp_idct10_put(uint8_t *dest, ptrdiff_t stride, int16_t *block);
 void ff_vp3dsp_idct10_add(uint8_t *dest, ptrdiff_t stride, int16_t *block);
 
 void ff_vp3dsp_init(VP3DSPContext *c);
+void ff_vp3dsp_init_aarch64(VP3DSPContext *c);
 void ff_vp3dsp_init_arm(VP3DSPContext *c);
 void ff_vp3dsp_init_ppc(VP3DSPContext *c);
 void ff_vp3dsp_init_x86(VP3DSPContext *c);
