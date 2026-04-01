@@ -1291,6 +1291,24 @@
         "cycles": 8.1,
         "ratio": 2.469
       }
+    },
+    "restore_rgb_planes": {
+      "c": {
+        "cycles": 65872.9
+      },
+      "neon": {
+        "cycles": 4527.9,
+        "ratio": 14.548
+      }
+    },
+    "restore_rgb_planes10": {
+      "c": {
+        "cycles": 81713.2
+      },
+      "neon": {
+        "cycles": 10028.2,
+        "ratio": 8.148
+      }
     }
   }
 }
