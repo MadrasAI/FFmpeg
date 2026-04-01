@@ -1219,6 +1219,42 @@
         "cycles": 70.1,
         "ratio": 5.1
       }
+    },
+    "decorrelate_ls": {
+      "c": {
+        "cycles": 1411.1
+      },
+      "neon": {
+        "cycles": 306.4,
+        "ratio": 4.605
+      }
+    },
+    "decorrelate_sf": {
+      "c": {
+        "cycles": 2911.9
+      },
+      "neon": {
+        "cycles": 772.6,
+        "ratio": 3.769
+      }
+    },
+    "decorrelate_sm": {
+      "c": {
+        "cycles": 2048.2
+      },
+      "neon": {
+        "cycles": 468.3,
+        "ratio": 4.374
+      }
+    },
+    "decorrelate_sr": {
+      "c": {
+        "cycles": 1408.1
+      },
+      "neon": {
+        "cycles": 299.9,
+        "ratio": 4.695
+      }
     }
   }
 }

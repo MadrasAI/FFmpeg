@@ -77,7 +77,9 @@ av_cold void ff_takdsp_init(TAKDSPContext *c)
     c->decorrelate_sm = decorrelate_sm;
     c->decorrelate_sf = decorrelate_sf;
 
-#if ARCH_RISCV
+#if ARCH_AARCH64
+    ff_takdsp_init_aarch64(c);
+#elif ARCH_RISCV
     ff_takdsp_init_riscv(c);
 #elif ARCH_X86 && HAVE_X86ASM
     ff_takdsp_init_x86(c);
