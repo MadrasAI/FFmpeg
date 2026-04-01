@@ -126,18 +126,17 @@ function ff_vp3_h_loop_filter_neon, export=1
 
     vp3_loop_filter
 
-    /* post-filter transpose: out-of-place into v20/v21 (2 insns, was 3) */
-    trn1        v20.8b, v0.8b,  v1.8b
-    trn2        v21.8b, v0.8b,  v1.8b
-
-    st1         {v20.h}[0], [x12], x1
-    st1         {v21.h}[0], [x12], x1
-    st1         {v20.h}[1], [x12], x1
-    st1         {v21.h}[1], [x12], x1
-    st1         {v20.h}[2], [x12], x1
-    st1         {v21.h}[2], [x12], x1
-    st1         {v20.h}[3], [x12], x1
-    st1         {v21.h}[3], [x12], x1
+    /* ST2 single-element stores: writes v0[n]→[x12] (src[-1]) and
+     * v1[n]→[x12+1] (src[0]) per row, then x12 += stride.
+     * Eliminates the post-filter trn1/trn2 transpose entirely.        */
+    st2         {v0.b, v1.b}[0], [x12], x1
+    st2         {v0.b, v1.b}[1], [x12], x1
+    st2         {v0.b, v1.b}[2], [x12], x1
+    st2         {v0.b, v1.b}[3], [x12], x1
+    st2         {v0.b, v1.b}[4], [x12], x1
+    st2         {v0.b, v1.b}[5], [x12], x1
+    st2         {v0.b, v1.b}[6], [x12], x1
+    st2         {v0.b, v1.b}[7], [x12], x1
     ret
 endfunc
 
