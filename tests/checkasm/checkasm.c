@@ -220,6 +220,9 @@ static const struct {
     #if CONFIG_LPC
         { "lpc", checkasm_check_lpc },
     #endif
+    #if CONFIG_MLP_DECODER
+        { "mlpdsp", checkasm_check_mlpdsp },
+    #endif
     #if CONFIG_ME_CMP
         { "motion", checkasm_check_motion },
     #endif
