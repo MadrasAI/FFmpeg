@@ -33,6 +33,7 @@ typedef struct HuffYUVEncDSPContext {
 } HuffYUVEncDSPContext;
 
 void ff_huffyuvencdsp_init(HuffYUVEncDSPContext *c, int bpp, int width);
+void ff_huffyuvencdsp_init_aarch64(HuffYUVEncDSPContext *c, int bpp, int width);
 void ff_huffyuvencdsp_init_x86(HuffYUVEncDSPContext *c, int bpp, int width);
 
 #endif /* AVCODEC_HUFFYUVENCDSP_H */

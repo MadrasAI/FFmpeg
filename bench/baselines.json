@@ -16,7 +16,7 @@
       "vp9 intra pred entries: c baseline not captured (neon-only in this session)",
       "vf_blend baselines: CAPTURED 2026-03-31 \u2014 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
     ],
-    "last_updated": "2026-04-01"
+    "last_updated": "2026-04-02"
   },
   "functions": {
     "blockdsp.clear_block": {
@@ -1344,6 +1344,42 @@
       "neon": {
         "cycles": 1920.8,
         "ratio": 5.341
+      }
+    },
+    "sub_hfyu_median_pred_int16_9bpp": {
+      "c": {
+        "cycles": 5735.8
+      },
+      "neon": {
+        "cycles": 1036.6,
+        "ratio": 5.533
+      }
+    },
+    "sub_hfyu_median_pred_int16_9bpp_aligned": {
+      "c": {
+        "cycles": 5761.8
+      },
+      "neon": {
+        "cycles": 1020.6,
+        "ratio": 5.646
+      }
+    },
+    "sub_hfyu_median_pred_int16_16bpp": {
+      "c": {
+        "cycles": 5729.4
+      },
+      "neon": {
+        "cycles": 1039.5,
+        "ratio": 5.512
+      }
+    },
+    "sub_hfyu_median_pred_int16_16bpp_aligned": {
+      "c": {
+        "cycles": 5766.6
+      },
+      "neon": {
+        "cycles": 1018.8,
+        "ratio": 5.66
       }
     }
   }
