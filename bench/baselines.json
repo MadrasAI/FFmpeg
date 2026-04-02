@@ -1348,38 +1348,38 @@
     },
     "sub_hfyu_median_pred_int16_9bpp": {
       "c": {
-        "cycles": 5735.8
+        "cycles": 4698.3
       },
       "neon": {
-        "cycles": 1036.6,
-        "ratio": 5.533
+        "cycles": 659.0,
+        "ratio": 7.129
       }
     },
     "sub_hfyu_median_pred_int16_9bpp_aligned": {
       "c": {
-        "cycles": 5761.8
+        "cycles": 4706.9
       },
       "neon": {
-        "cycles": 1020.6,
-        "ratio": 5.646
+        "cycles": 645.2,
+        "ratio": 7.295
       }
     },
     "sub_hfyu_median_pred_int16_16bpp": {
       "c": {
-        "cycles": 5729.4
+        "cycles": 4708.5
       },
       "neon": {
-        "cycles": 1039.5,
-        "ratio": 5.512
+        "cycles": 659.0,
+        "ratio": 7.145
       }
     },
     "sub_hfyu_median_pred_int16_16bpp_aligned": {
       "c": {
-        "cycles": 5766.6
+        "cycles": 4703.5
       },
       "neon": {
-        "cycles": 1018.8,
-        "ratio": 5.66
+        "cycles": 645.1,
+        "ratio": 7.291
       }
     }
   }
