@@ -299,7 +299,7 @@ function vp3_idct_end_\type\()_neon
 
     /* Final butterfly outputs → v16..v23 */
     add         v2.8h,  v20.8h, v23.8h  // Gd  = E+G
-    add         v17.8h, v1.8h,  v24.8h  // v17 = Bd  (≡ q9)
+    add         v17.8h, v17.8h, v24.8h  // v17 = Bd  (≡ q9)
     sub         v20.8h, v20.8h, v23.8h  // Ed  = E−G
     sub         v3.8h,  v16.8h, v18.8h  // Fd  = F−Ad
     add         v18.8h, v16.8h, v18.8h  // Add = F+Ad  (≡ q10)
