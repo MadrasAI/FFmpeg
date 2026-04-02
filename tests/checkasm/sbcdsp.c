@@ -98,6 +98,7 @@ static void check_sbc_calc_scalefactors(const SBCDSPContext *const sbcdsp)
 
             call_ref(sb_sample_f, scale_factor_ref, blocks, ch, subbands);
             call_new(sb_sample_f, scale_factor_new, blocks, ch, subbands);
+
             for (int i = 0; i < ch; ++i)
                 for (int j = 0; j < subbands; ++j)
                     if (scale_factor_ref[i][j] != scale_factor_new[i][j])

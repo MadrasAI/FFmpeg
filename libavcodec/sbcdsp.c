@@ -380,7 +380,9 @@ av_cold void ff_sbcdsp_init(SBCDSPContext *s)
     s->sbc_calc_scalefactors = sbc_calc_scalefactors;
     s->sbc_calc_scalefactors_j = sbc_calc_scalefactors_j;
 
-#if ARCH_ARM
+#if ARCH_AARCH64
+    ff_sbcdsp_init_aarch64(s);
+#elif ARCH_ARM
     ff_sbcdsp_init_arm(s);
 #elif ARCH_X86 && HAVE_X86ASM
     ff_sbcdsp_init_x86(s);

@@ -87,6 +87,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "vf_blend": [""],        # blend mode names (addition, average, …) have no shared prefix
     "mlpdsp":   ["mlp_"],    # test group "mlpdsp" but bench names are "mlp_filter_channel*"
     "takdsp":   ["decorrelate_"],
+    "sbcdsp":   ["sbc_analyze_", "calc_scalefactors_"],
     "hpeldsp":  ["put_pixels_tab", "avg_pixels_tab", "put_no_rnd_pixels_tab", "avg_no_rnd_pixels_tab"],
     "dcadsp":   ["lfe_fir"],
     "g722dsp":  ["g722_apply_qmf"],

@@ -1381,6 +1381,60 @@
         "cycles": 645.1,
         "ratio": 7.291
       }
+    },
+    "sbc_analyze_4": {
+      "c": {
+        "cycles": 51.4
+      },
+      "neon": {
+        "cycles": 13.4,
+        "ratio": 3.836
+      }
+    },
+    "sbc_analyze_8": {
+      "c": {
+        "cycles": 140.7
+      },
+      "neon": {
+        "cycles": 35.0,
+        "ratio": 4.02
+      }
+    },
+    "calc_scalefactors_1ch_4subbands": {
+      "c": {
+        "cycles": 76.6
+      },
+      "neon": {
+        "cycles": 15.9,
+        "ratio": 4.818
+      }
+    },
+    "calc_scalefactors_1ch_8subbands": {
+      "c": {
+        "cycles": 149.3
+      },
+      "neon": {
+        "cycles": 25.4,
+        "ratio": 5.878
+      }
+    },
+    "calc_scalefactors_2ch_4subbands": {
+      "c": {
+        "cycles": 150.4
+      },
+      "neon": {
+        "cycles": 25.4,
+        "ratio": 5.921
+      }
+    },
+    "calc_scalefactors_2ch_8subbands": {
+      "c": {
+        "cycles": 296.2
+      },
+      "neon": {
+        "cycles": 46.1,
+        "ratio": 6.425
+      }
     }
   }
 }
