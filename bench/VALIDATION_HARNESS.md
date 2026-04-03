@@ -127,7 +127,7 @@ handles them automatically.
 
 ---
 
-## Ported module status (2026-04-01)
+## Ported module status (2026-04-02)
 
 | Module | Correctness | Perf gate | Key speedups |
 |---|---|---|---|
@@ -147,6 +147,7 @@ handles them automatically.
 | utvideodsp | PASS | PASS | restore_rgb_planes + 10-bit |
 | llauddsp | PASS 2/2 | PASS | int16: 4.53x, int32: 4.97x |
 | exrdsp | PASS 2/2 | PASS | reorder_pixels: 10.66x, predictor: 5.35x |
+| sbcdsp | PASS 6/6 | PASS 12/12 | sbc_analyze_4/8: 3.84–4.04x; calc_scalefactors: 5.88–7.44x |
 
 ---
 
