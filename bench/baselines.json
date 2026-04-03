@@ -1606,6 +1606,15 @@
         "cycles": 103.6,
         "ratio": 2.597
       }
+    },
+    "rv34_idct_dc_add": {
+      "c": {
+        "cycles": 35.5
+      },
+      "neon": {
+        "cycles": 20.5,
+        "ratio": 1.732
+      }
     }
   }
 }
