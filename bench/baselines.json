@@ -1641,6 +1641,33 @@
         "cycles": 50.2,
         "ratio": 1.114
       }
+    },
+    "diff_bytes": {
+      "c": {
+        "cycles": 46.0
+      },
+      "neon": {
+        "cycles": 11.5,
+        "ratio": 4.0
+      }
+    },
+    "sub_left_predict": {
+      "c": {
+        "cycles": 20084.6
+      },
+      "neon": {
+        "cycles": 2092.5,
+        "ratio": 9.598
+      }
+    },
+    "sub_median_pred": {
+      "c": {
+        "cycles": 503.2
+      },
+      "neon": {
+        "cycles": 40.4,
+        "ratio": 12.455
+      }
     }
   }
 }

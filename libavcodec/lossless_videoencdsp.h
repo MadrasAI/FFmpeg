@@ -39,6 +39,7 @@ typedef struct LLVidEncDSPContext {
 } LLVidEncDSPContext;
 
 void ff_llvidencdsp_init(LLVidEncDSPContext *c);
+void ff_llvidencdsp_init_aarch64(LLVidEncDSPContext *c);
 void ff_llvidencdsp_init_riscv(LLVidEncDSPContext *c);
 void ff_llvidencdsp_init_x86(LLVidEncDSPContext *c);
 

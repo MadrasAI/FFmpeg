@@ -95,6 +95,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "llauddsp": ["scalarproduct_and_madd"],
     "exrdsp":         ["reorder_pixels", "predictor"],
     "huffyuvencdsp":  ["sub_hfyu_median_pred_int16"],
+    "llvidencdsp":    ["diff_bytes", "sub_left_predict", "sub_median_pred"],
     "float_dsp":      ["vector_", "butterflies_", "scalarproduct_"],
     "rv34dsp":        ["rv34_idct_dc_add"],   # rv34_inv_transform_dc kept C-only (0.45x on AArch64 scalar)
     "fixed_dsp":      ["vector_fmul_fixed", "vector_fmul_add_fixed", "vector_fmul_reverse_fixed",
