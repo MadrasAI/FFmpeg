@@ -16,7 +16,7 @@
       "vp9 intra pred entries: c baseline not captured (neon-only in this session)",
       "vf_blend baselines: CAPTURED 2026-03-31 \u2014 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
     ],
-    "last_updated": "2026-04-02"
+    "last_updated": "2026-04-03"
   },
   "functions": {
     "blockdsp.clear_block": {
@@ -1434,6 +1434,114 @@
       "neon": {
         "cycles": 46.1,
         "ratio": 6.425
+      }
+    },
+    "vector_dmac_scalar": {
+      "c": {
+        "cycles": 287.2
+      },
+      "neon": {
+        "cycles": 174.3,
+        "ratio": 1.648
+      }
+    },
+    "vector_dmul": {
+      "c": {
+        "cycles": 267.9
+      },
+      "neon": {
+        "cycles": 156.6,
+        "ratio": 1.711
+      }
+    },
+    "vector_dmul_scalar": {
+      "c": {
+        "cycles": 265.2
+      },
+      "neon": {
+        "cycles": 115.9,
+        "ratio": 2.288
+      }
+    },
+    "vector_fmac_scalar": {
+      "c": {
+        "cycles": 298.1
+      },
+      "neon": {
+        "cycles": 84.1,
+        "ratio": 3.545
+      }
+    },
+    "vector_fmul": {
+      "c": {
+        "cycles": 267.6
+      },
+      "neon": {
+        "cycles": 81.2,
+        "ratio": 3.296
+      }
+    },
+    "vector_fmul_add": {
+      "c": {
+        "cycles": 349.8
+      },
+      "neon": {
+        "cycles": 107.4,
+        "ratio": 3.257
+      }
+    },
+    "vector_fmul_reverse": {
+      "c": {
+        "cycles": 269.6
+      },
+      "neon": {
+        "cycles": 125.5,
+        "ratio": 2.148
+      }
+    },
+    "vector_fmul_scalar": {
+      "c": {
+        "cycles": 270.6
+      },
+      "neon": {
+        "cycles": 61.2,
+        "ratio": 4.422
+      }
+    },
+    "vector_fmul_window": {
+      "c": {
+        "cycles": 347.6
+      },
+      "neon": {
+        "cycles": 194.5,
+        "ratio": 1.787
+      }
+    },
+    "butterflies_float": {
+      "c": {
+        "cycles": 512.1
+      },
+      "neon": {
+        "cycles": 151.8,
+        "ratio": 3.374
+      }
+    },
+    "scalarproduct_double": {
+      "c": {
+        "cycles": 461.1
+      },
+      "neon": {
+        "cycles": 125.9,
+        "ratio": 3.662
+      }
+    },
+    "scalarproduct_float": {
+      "c": {
+        "cycles": 464.1
+      },
+      "neon": {
+        "cycles": 97.5,
+        "ratio": 4.76
       }
     }
   }

@@ -200,3 +200,53 @@ function ff_scalarproduct_float_neon, export=1
         faddp           s0,      v0.2s
         ret
 endfunc
+
+function ff_vector_dmul_neon, export=1
+1:      subs            w3,  w3,  #8
+        ld1             {v0.2d, v1.2d, v2.2d, v3.2d}, [x1], #64
+        ld1             {v4.2d, v5.2d, v6.2d, v7.2d}, [x2], #64
+        fmul            v0.2d,  v0.2d,  v4.2d
+        fmul            v1.2d,  v1.2d,  v5.2d
+        fmul            v2.2d,  v2.2d,  v6.2d
+        fmul            v3.2d,  v3.2d,  v7.2d
+        st1             {v0.2d, v1.2d, v2.2d, v3.2d}, [x0], #64
+        b.ne            1b
+        ret
+endfunc
+
+function ff_vector_dmac_scalar_neon, export=1
+        mov             x3,  #-32
+1:      subs            w2,  w2,  #8
+        ld1             {v16.2d, v17.2d}, [x0], #32
+        ld1             {v18.2d, v19.2d}, [x0], x3
+        ld1             {v4.2d,  v5.2d},  [x1], #32
+        ld1             {v6.2d,  v7.2d},  [x1], #32
+        fmla            v16.2d, v4.2d,  v0.d[0]
+        fmla            v17.2d, v5.2d,  v0.d[0]
+        fmla            v18.2d, v6.2d,  v0.d[0]
+        fmla            v19.2d, v7.2d,  v0.d[0]
+        st1             {v16.2d, v17.2d}, [x0], #32
+        st1             {v18.2d, v19.2d}, [x0], #32
+        b.ne            1b
+        ret
+endfunc
+
+function ff_scalarproduct_double_neon, export=1
+        movi            v16.16b, #0
+        movi            v17.16b, #0
+        movi            v18.16b, #0
+        movi            v19.16b, #0
+1:      ld1             {v0.2d, v1.2d, v2.2d, v3.2d}, [x0], #64
+        ld1             {v4.2d, v5.2d, v6.2d, v7.2d}, [x1], #64
+        subs            x2,  x2,  #8
+        fmla            v16.2d, v0.2d,  v4.2d
+        fmla            v17.2d, v1.2d,  v5.2d
+        fmla            v18.2d, v2.2d,  v6.2d
+        fmla            v19.2d, v3.2d,  v7.2d
+        b.gt            1b
+        fadd            v16.2d, v16.2d, v17.2d
+        fadd            v18.2d, v18.2d, v19.2d
+        fadd            v16.2d, v16.2d, v18.2d
+        faddp           d0,     v16.2d
+        ret
+endfunc

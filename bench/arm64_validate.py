@@ -95,6 +95,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "llauddsp": ["scalarproduct_and_madd"],
     "exrdsp":         ["reorder_pixels", "predictor"],
     "huffyuvencdsp":  ["sub_hfyu_median_pred_int16"],
+    "float_dsp":      ["vector_", "butterflies_", "scalarproduct_"],
 }
 
 # ---------------------------------------------------------------------------
