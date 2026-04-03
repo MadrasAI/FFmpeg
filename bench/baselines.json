@@ -1615,6 +1615,24 @@
         "cycles": 20.5,
         "ratio": 1.732
       }
+    },
+    "h263dsp.h_loop_filter": {
+      "c": {
+        "cycles": 58.3
+      },
+      "neon": {
+        "cycles": 71.5,
+        "ratio": 0.702
+      }
+    },
+    "h263dsp.v_loop_filter": {
+      "c": {
+        "cycles": 55.9
+      },
+      "neon": {
+        "cycles": 50.2,
+        "ratio": 1.114
+      }
     }
   }
 }
