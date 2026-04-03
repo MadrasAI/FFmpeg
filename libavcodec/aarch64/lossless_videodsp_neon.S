@@ -97,3 +97,127 @@ function ff_add_left_pred_neon, export=1
         mov     w0,  w9
         ret
 endfunc
+
+/*
+ * void ff_add_gradient_pred_neon(uint8_t *src, ptrdiff_t stride, ptrdiff_t width)
+ *
+ * In-place gradient predictor for lossless video coding.
+ * src[i] = (src[i-stride] - src[i-stride-1] + src[i-1] + src[i]) & 0xFF
+ * where src[i-1] is the UPDATED output of the previous iteration.
+ *
+ * Reformulated as a prefix sum: define g[i] = above[i] - above_left[i] + diff[i].
+ * Then out[i] = (carry + g[0] + g[1] + ... + g[i]) & 0xFF,
+ * with carry = src[-1] (pixel immediately left of the row start).
+ *
+ * x0=src (current row, read+write), x1=stride (ptrdiff_t), x2=width (ptrdiff_t)
+ * stride is ptrdiff_t (64-bit) — no sxtw needed.
+ * void return — no mov w0.
+ */
+function ff_add_gradient_pred_neon, export=1
+        movi    v31.16b, #0                 // zero vector for ext prefix scan
+
+        ldrb    w9,  [x0, #-1]              // initial carry = src[-1]
+        sub     x3,  x0,  x1               // x3 = above row (src - stride)
+        sub     x4,  x3,  #1               // x4 = above_left row (src - stride - 1)
+
+        subs    x2,  x2,  #16
+        b.lt    2f
+1:
+        ld1     {v1.16b}, [x3], #16         // above[0..15]
+        ld1     {v2.16b}, [x4], #16         // above_left[0..15]
+        ld1     {v3.16b}, [x0]              // diff[0..15] (current row, not yet updated)
+
+        sub     v1.16b, v1.16b, v2.16b      // above - above_left
+        add     v1.16b, v1.16b, v3.16b      // g[i] = above[i] - above_left[i] + diff[i]
+
+        // 4-step Hillis-Steele prefix scan (in-place, same as add_left_pred_neon)
+        ext     v2.16b, v31.16b, v1.16b, #15  // shift-by-1
+        add     v1.16b, v1.16b, v2.16b
+        ext     v2.16b, v31.16b, v1.16b, #14  // shift-by-2
+        add     v1.16b, v1.16b, v2.16b
+        ext     v2.16b, v31.16b, v1.16b, #12  // shift-by-4
+        add     v1.16b, v1.16b, v2.16b
+        ext     v2.16b, v31.16b, v1.16b, #8   // shift-by-8
+        add     v1.16b, v1.16b, v2.16b
+
+        dup     v0.16b,  w9                  // broadcast carry
+        add     v0.16b,  v0.16b, v1.16b      // out[i] = carry + prefix_sum[i]
+
+        st1     {v0.16b}, [x0], #16
+        umov    w9,  v0.b[15]                // new carry = last output byte (uint8)
+
+        subs    x2,  x2,  #16
+        b.ge    1b
+2:
+        adds    x2,  x2,  #16
+        b.eq    4f
+3:
+        ldrb    w10, [x3], #1                // above
+        ldrb    w11, [x4], #1                // above_left
+        ldrb    w12, [x0]                    // diff
+        add     w9,  w9,  w10
+        sub     w9,  w9,  w11
+        add     w9,  w9,  w12
+        uxtb    w9,  w9
+        strb    w9,  [x0], #1
+        subs    x2,  x2,  #1
+        b.ne    3b
+4:
+        ret
+endfunc
+
+/*
+ * int ff_add_left_pred_int16_neon(uint16_t *dst, const uint16_t *src,
+ *                                  unsigned mask, ptrdiff_t w, unsigned acc)
+ *
+ * Cumulative sum with mask: dst[i] = acc = (acc + src[i]) & mask.
+ * Returns final acc (masked).
+ *
+ * x0=dst, x1=src, w2=mask, x3=w (ptrdiff_t — use 64-bit), w4=acc (initial carry)
+ *
+ * Vectorized as an 8-element uint16 prefix scan per iteration (3 ext+add steps),
+ * then add carry and apply mask. Mask is applied BEFORE extracting carry.
+ */
+function ff_add_left_pred_int16_neon, export=1
+        movi    v31.16b, #0                 // zero vector for ext
+        dup     v28.8h,  w2                 // mask broadcast (16-bit)
+        mov     w9,  w4                     // w9 = carry (acc)
+
+        subs    x3,  x3,  #8
+        b.lt    2f
+1:
+        ld1     {v1.8h}, [x1], #16          // 8 × uint16 input elements
+
+        // 3-step prefix scan for 8 uint16 lanes
+        // shift-by-1 element (2 bytes): ext #(16-2) = #14
+        ext     v2.16b, v31.16b, v1.16b, #14
+        add     v1.8h,  v1.8h,  v2.8h
+        // shift-by-2 elements (4 bytes): ext #(16-4) = #12
+        ext     v2.16b, v31.16b, v1.16b, #12
+        add     v1.8h,  v1.8h,  v2.8h
+        // shift-by-4 elements (8 bytes): ext #(16-8) = #8
+        ext     v2.16b, v31.16b, v1.16b, #8
+        add     v1.8h,  v1.8h,  v2.8h
+
+        dup     v0.8h,   w9                  // broadcast carry
+        add     v0.8h,   v0.8h,  v1.8h       // out[i] = carry + prefix_sum[i]
+        and     v0.16b,  v0.16b, v28.16b      // apply mask (BEFORE extracting carry)
+        st1     {v0.8h}, [x0], #16
+        umov    w9,  v0.h[7]                  // new carry = last masked output
+
+        subs    x3,  x3,  #8
+        b.ge    1b
+2:
+        adds    x3,  x3,  #8
+        b.eq    4f
+3:
+        ldrh    w10, [x1], #2
+        add     w9,  w9,  w10
+        and     w9,  w9,  w2
+        strh    w9,  [x0], #2
+        subs    x3,  x3,  #1
+        b.ne    3b
+4:
+        mov     w0,  w9
+        ret
+endfunc

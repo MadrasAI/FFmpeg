@@ -29,13 +29,18 @@
 void ff_add_bytes_neon(uint8_t *dst, uint8_t *src, ptrdiff_t w);
 int  ff_add_left_pred_neon(uint8_t *dst, const uint8_t *src,
                            ptrdiff_t w, int left);
+void ff_add_gradient_pred_neon(uint8_t *src, ptrdiff_t stride, ptrdiff_t width);
+int  ff_add_left_pred_int16_neon(uint16_t *dst, const uint16_t *src,
+                                 unsigned mask, ptrdiff_t w, unsigned acc);
 
 av_cold void ff_llviddsp_init_aarch64(LLVidDSPContext *c)
 {
     int cpu_flags = av_get_cpu_flags();
 
     if (have_neon(cpu_flags)) {
-        c->add_bytes     = ff_add_bytes_neon;
-        c->add_left_pred = ff_add_left_pred_neon;
+        c->add_bytes          = ff_add_bytes_neon;
+        c->add_left_pred      = ff_add_left_pred_neon;
+        c->add_gradient_pred  = ff_add_gradient_pred_neon;
+        c->add_left_pred_int16 = ff_add_left_pred_int16_neon;
     }
 }

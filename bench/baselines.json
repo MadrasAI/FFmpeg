@@ -302,29 +302,29 @@
     },
     "add_bytes": {
       "c": {
-        "cycles": 698.0
+        "cycles": 696.2
       },
       "neon": {
-        "cycles": 154.7,
-        "ratio": 4.512
+        "cycles": 155.3,
+        "ratio": 4.483
       }
     },
     "add_left_pred_rnd_acc": {
       "c": {
-        "cycles": 2138.6
+        "cycles": 2139.2
       },
       "neon": {
-        "cycles": 935.7,
-        "ratio": 2.286
+        "cycles": 935.5,
+        "ratio": 2.287
       }
     },
     "add_left_pred_zero": {
       "c": {
-        "cycles": 2139.2
+        "cycles": 2136.9
       },
       "neon": {
-        "cycles": 936.0,
-        "ratio": 2.285
+        "cycles": 935.6,
+        "ratio": 2.284
       }
     },
     "vp9_avg4_8bpp": {
@@ -710,17 +710,25 @@
     },
     "add_gradient_pred": {
       "c": {
-        "cycles": 6330.5
+        "cycles": 6329.8
+      },
+      "neon": {
+        "cycles": 949.1,
+        "ratio": 6.669
       }
     },
     "add_left_pred_int16": {
       "c": {
-        "cycles": 4162.2
+        "cycles": 4161.8
+      },
+      "neon": {
+        "cycles": 2390.4,
+        "ratio": 1.741
       }
     },
     "add_median_pred": {
       "c": {
-        "cycles": 16714.9
+        "cycles": 16716.4
       }
     },
     "xor_16": {
