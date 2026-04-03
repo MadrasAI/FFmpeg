@@ -96,6 +96,9 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "exrdsp":         ["reorder_pixels", "predictor"],
     "huffyuvencdsp":  ["sub_hfyu_median_pred_int16"],
     "float_dsp":      ["vector_", "butterflies_", "scalarproduct_"],
+    "fixed_dsp":      ["vector_fmul_fixed", "vector_fmul_add_fixed", "vector_fmul_reverse_fixed",
+                        "vector_fmul_window_fixed", "vector_fmul_window_scaled_fixed",
+                        "butterflies_fixed", "scalarproduct_fixed"],
 }
 
 # ---------------------------------------------------------------------------

@@ -1543,6 +1543,69 @@
         "cycles": 97.5,
         "ratio": 4.76
       }
+    },
+    "vector_fmul_fixed": {
+      "c": {
+        "cycles": 351.1
+      },
+      "neon": {
+        "cycles": 77.1,
+        "ratio": 4.554
+      }
+    },
+    "vector_fmul_add_fixed": {
+      "c": {
+        "cycles": 444.0
+      },
+      "neon": {
+        "cycles": 128.8,
+        "ratio": 3.447
+      }
+    },
+    "vector_fmul_reverse_fixed": {
+      "c": {
+        "cycles": 404.2
+      },
+      "neon": {
+        "cycles": 150.4,
+        "ratio": 2.688
+      }
+    },
+    "vector_fmul_window_fixed": {
+      "c": {
+        "cycles": 417.0
+      },
+      "neon": {
+        "cycles": 341.1,
+        "ratio": 1.223
+      }
+    },
+    "vector_fmul_window_scaled_fixed": {
+      "c": {
+        "cycles": 917.8
+      },
+      "neon": {
+        "cycles": 461.1,
+        "ratio": 1.99
+      }
+    },
+    "butterflies_fixed": {
+      "c": {
+        "cycles": 512.0
+      },
+      "neon": {
+        "cycles": 124.5,
+        "ratio": 4.112
+      }
+    },
+    "scalarproduct_fixed": {
+      "c": {
+        "cycles": 269.0
+      },
+      "neon": {
+        "cycles": 103.6,
+        "ratio": 2.597
+      }
     }
   }
 }
