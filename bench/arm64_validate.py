@@ -101,6 +101,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "fixed_dsp":      ["vector_fmul_fixed", "vector_fmul_add_fixed", "vector_fmul_reverse_fixed",
                         "vector_fmul_window_fixed", "vector_fmul_window_scaled_fixed",
                         "butterflies_fixed", "scalarproduct_fixed"],
+    "motion":         ["hadamard8_diff"],
 }
 
 # ---------------------------------------------------------------------------

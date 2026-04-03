@@ -1677,3 +1677,225 @@ endfunc
 
 DISABLE_DOTPROD
 #endif
+
+/*
+ * ff_hadamard8_diff8x8_neon / ff_hadamard8_intra8x8_neon
+ *
+ * 8x8 SATD (Sum of Absolute Transformed Differences) via Walsh-Hadamard Transform.
+ *
+ * Algorithm:
+ *   1. Load 8 rows of 8 uint8 pixels; compute int16 row differences (src-dst).
+ *      Intra variant: zero-extend src only (no dst subtraction).
+ *   2. Row WHT: 3-stage butterfly on v0-v7 (.8h), using v16 as scratch.
+ *      Stage pairs: (0,4)(1,5)(2,6)(3,7), (0,2)(1,3)(4,6)(5,7), (0,1)(2,3)(4,5)(6,7).
+ *   3. 8x8 int16 transpose via three phases of trn1/trn2 into v16-v23:
+ *      Phase 1 (.8h):  trn1/trn2 on row pairs → v16-v23 (adjacent int16 interleave)
+ *      Phase 2 (.4s):  trn1/trn2 on v16-v23 groups → v0-v7 (32-bit chunk interleave)
+ *      Phase 3 (.2d):  trn1/trn2 on v0-v7 groups → v16-v23 (64-bit half interleave)
+ *      After phase 3 (bit-reversal permutation):
+ *        v16=col0, v17=col4, v18=col2, v19=col6, v20=col1, v21=col5, v22=col3, v23=col7
+ *      Reorder to sequential: v0=col0, v1=col1, v2=col2, v3=col3,
+ *                             v4=col4, v5=col5, v6=col6, v7=col7
+ *   4. Column WHT: same 3-stage butterfly on v0-v7 (now columns).
+ *   5. [Intra only] Save v0.h[0] and v0.h[4] for DC correction.
+ *   6. abs v0-v7 (.8h), accumulate into int32 via uaddl/uaddl2 (avoids uint16 overflow),
+ *      reduce with addv, return in w0.
+ *   7. [Intra only] sum -= abs(v0.h[0] + v0.h[4])
+ *
+ * Register usage: v0-v7 (data), v16-v23 (transpose), v24-v31 (accumulation scratch).
+ * No v8-v15 used — no callee-save required.
+ *
+ * x0=MpegEncContext* (unused), x1=dst/src1, x2=src/dummy, x3=stride, w4=h (unused, always 8)
+ */
+
+/* 3-stage in-place Walsh-Hadamard Transform on v0-v7 (.8h), v16 as scratch.
+ * Stage 1: butterfly pairs (0,4),(1,5),(2,6),(3,7)
+ * Stage 2: butterfly pairs (0,2),(1,3),(4,6),(5,7)
+ * Stage 3: butterfly pairs (0,1),(2,3),(4,5),(6,7)
+ */
+.macro HADAMARD8_1D
+        // Stage 1: stride-4 pairs
+        add             v16.8h, v0.8h, v4.8h
+        sub             v4.8h,  v0.8h, v4.8h
+        mov             v0.16b, v16.16b
+        add             v16.8h, v1.8h, v5.8h
+        sub             v5.8h,  v1.8h, v5.8h
+        mov             v1.16b, v16.16b
+        add             v16.8h, v2.8h, v6.8h
+        sub             v6.8h,  v2.8h, v6.8h
+        mov             v2.16b, v16.16b
+        add             v16.8h, v3.8h, v7.8h
+        sub             v7.8h,  v3.8h, v7.8h
+        mov             v3.16b, v16.16b
+        // Stage 2: stride-2 pairs
+        add             v16.8h, v0.8h, v2.8h
+        sub             v2.8h,  v0.8h, v2.8h
+        mov             v0.16b, v16.16b
+        add             v16.8h, v1.8h, v3.8h
+        sub             v3.8h,  v1.8h, v3.8h
+        mov             v1.16b, v16.16b
+        add             v16.8h, v4.8h, v6.8h
+        sub             v6.8h,  v4.8h, v6.8h
+        mov             v4.16b, v16.16b
+        add             v16.8h, v5.8h, v7.8h
+        sub             v7.8h,  v5.8h, v7.8h
+        mov             v5.16b, v16.16b
+        // Stage 3: stride-1 pairs
+        add             v16.8h, v0.8h, v1.8h
+        sub             v1.8h,  v0.8h, v1.8h
+        mov             v0.16b, v16.16b
+        add             v16.8h, v2.8h, v3.8h
+        sub             v3.8h,  v2.8h, v3.8h
+        mov             v2.16b, v16.16b
+        add             v16.8h, v4.8h, v5.8h
+        sub             v5.8h,  v4.8h, v5.8h
+        mov             v4.16b, v16.16b
+        add             v16.8h, v6.8h, v7.8h
+        sub             v7.8h,  v6.8h, v7.8h
+        mov             v6.16b, v16.16b
+.endm
+
+/* 8x8 int16 transpose: v0-v7 (rows) → v0-v7 (columns).
+ * Phase 1 (.8h) → v16-v23; Phase 2 (.4s) → v0-v7; Phase 3 (.2d) → v16-v23.
+ * Final reorder: v16=col0,v20=col1,v18=col2,v22=col3,v17=col4,v21=col5,v19=col6,v23=col7
+ */
+.macro TRANSPOSE8x8_16
+        // Phase 1: adjacent int16 interleave
+        trn1            v16.8h, v0.8h, v1.8h
+        trn2            v17.8h, v0.8h, v1.8h
+        trn1            v18.8h, v2.8h, v3.8h
+        trn2            v19.8h, v2.8h, v3.8h
+        trn1            v20.8h, v4.8h, v5.8h
+        trn2            v21.8h, v4.8h, v5.8h
+        trn1            v22.8h, v6.8h, v7.8h
+        trn2            v23.8h, v6.8h, v7.8h
+        // Phase 2: 32-bit chunk interleave
+        trn1            v0.4s,  v16.4s, v18.4s
+        trn2            v1.4s,  v16.4s, v18.4s
+        trn1            v2.4s,  v17.4s, v19.4s
+        trn2            v3.4s,  v17.4s, v19.4s
+        trn1            v4.4s,  v20.4s, v22.4s
+        trn2            v5.4s,  v20.4s, v22.4s
+        trn1            v6.4s,  v21.4s, v23.4s
+        trn2            v7.4s,  v21.4s, v23.4s
+        // Phase 3: 64-bit half interleave → columns in bit-reversal order
+        // v16=col0, v17=col4, v18=col2, v19=col6, v20=col1, v21=col5, v22=col3, v23=col7
+        trn1            v16.2d, v0.2d,  v4.2d
+        trn2            v17.2d, v0.2d,  v4.2d
+        trn1            v18.2d, v1.2d,  v5.2d
+        trn2            v19.2d, v1.2d,  v5.2d
+        trn1            v20.2d, v2.2d,  v6.2d
+        trn2            v21.2d, v2.2d,  v6.2d
+        trn1            v22.2d, v3.2d,  v7.2d
+        trn2            v23.2d, v3.2d,  v7.2d
+        // Reorder to sequential columns in v0-v7
+        mov             v0.16b, v16.16b
+        mov             v1.16b, v20.16b
+        mov             v2.16b, v18.16b
+        mov             v3.16b, v22.16b
+        mov             v4.16b, v17.16b
+        mov             v5.16b, v21.16b
+        mov             v6.16b, v19.16b
+        mov             v7.16b, v23.16b
+.endm
+
+/* Accumulate abs of v0-v7 (.8h) into 32-bit sum, return in w0. */
+.macro ABSSUM8_32
+        abs             v0.8h,  v0.8h
+        abs             v1.8h,  v1.8h
+        abs             v2.8h,  v2.8h
+        abs             v3.8h,  v3.8h
+        abs             v4.8h,  v4.8h
+        abs             v5.8h,  v5.8h
+        abs             v6.8h,  v6.8h
+        abs             v7.8h,  v7.8h
+        uaddl           v24.4s, v0.4h,  v1.4h
+        uaddl2          v25.4s, v0.8h,  v1.8h
+        add             v24.4s, v24.4s, v25.4s
+        uaddl           v25.4s, v2.4h,  v3.4h
+        uaddl2          v26.4s, v2.8h,  v3.8h
+        add             v25.4s, v25.4s, v26.4s
+        add             v24.4s, v24.4s, v25.4s
+        uaddl           v25.4s, v4.4h,  v5.4h
+        uaddl2          v26.4s, v4.8h,  v5.8h
+        add             v25.4s, v25.4s, v26.4s
+        uaddl           v26.4s, v6.4h,  v7.4h
+        uaddl2          v27.4s, v6.8h,  v7.8h
+        add             v26.4s, v26.4s, v27.4s
+        add             v25.4s, v25.4s, v26.4s
+        add             v24.4s, v24.4s, v25.4s
+        addv            s0,     v24.4s
+        umov            w0,     v0.s[0]
+.endm
+
+function ff_hadamard8_diff8x8_neon, export=1
+        // x0=unused, x1=dst, x2=src, x3=stride, w4=h (always 8)
+        ld1             {v16.8b}, [x1], x3      // dst row 0
+        ld1             {v17.8b}, [x2], x3      // src row 0
+        usubl           v0.8h,  v17.8b, v16.8b  // row0: src-dst
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v1.8h,  v17.8b, v16.8b
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v2.8h,  v17.8b, v16.8b
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v3.8h,  v17.8b, v16.8b
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v4.8h,  v17.8b, v16.8b
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v5.8h,  v17.8b, v16.8b
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v6.8h,  v17.8b, v16.8b
+        ld1             {v16.8b}, [x1], x3
+        ld1             {v17.8b}, [x2], x3
+        usubl           v7.8h,  v17.8b, v16.8b
+
+        HADAMARD8_1D
+        TRANSPOSE8x8_16
+        HADAMARD8_1D
+        ABSSUM8_32
+        ret
+endfunc
+
+function ff_hadamard8_intra8x8_neon, export=1
+        // x0=unused, x1=src, x2=dummy (ignored), x3=stride, w4=h (always 8)
+        ld1             {v16.8b}, [x1], x3      // src row 0
+        uxtl            v0.8h,  v16.8b           // zero-extend to int16
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v1.8h,  v16.8b
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v2.8h,  v16.8b
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v3.8h,  v16.8b
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v4.8h,  v16.8b
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v5.8h,  v16.8b
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v6.8h,  v16.8b
+        ld1             {v16.8b}, [x1], x3
+        uxtl            v7.8h,  v16.8b
+
+        HADAMARD8_1D
+        TRANSPOSE8x8_16
+        HADAMARD8_1D
+
+        // DC correction: sum -= abs(temp[0] + temp[4*8])
+        // After C's 2-stage column butterfly: temp[0]=top-4-rows-sum, temp[32]=bottom-4-rows-sum
+        // abs(temp[0]+temp[32]) = abs(global pixel sum) = abs(v0.h[0]) after full 3-stage NEON WHT
+        // (v0.h[0] after second HADAMARD8_1D = 2D_WHT DC = sum of all pixels)
+        smov            w5,  v0.h[0]
+
+        ABSSUM8_32
+
+        // sum -= abs(global pixel sum)
+        cmp             w5,  #0
+        cneg            w5,  w5,  lt
+        sub             w0,  w0,  w5
+        ret
+endfunc

@@ -77,12 +77,44 @@ int vsse8_neon(MPVEncContext *c, const uint8_t *s1, const uint8_t *s2,
 int vsse_intra8_neon(MPVEncContext *c, const uint8_t *s, const uint8_t *dummy,
                      ptrdiff_t stride, int h);
 
+int ff_hadamard8_diff8x8_neon(MPVEncContext *s, const uint8_t *dst,
+                              const uint8_t *src, ptrdiff_t stride, int h);
+int ff_hadamard8_intra8x8_neon(MPVEncContext *s, const uint8_t *src,
+                               const uint8_t *dummy, ptrdiff_t stride, int h);
+
 #if HAVE_DOTPROD
 int sse16_neon_dotprod(MPVEncContext *v, const uint8_t *pix1, const uint8_t *pix2,
                        ptrdiff_t stride, int h);
 int vsse_intra16_neon_dotprod(MPVEncContext *c, const uint8_t *s1, const uint8_t *s2,
                               ptrdiff_t stride, int h);
 #endif
+
+static int hadamard8_diff16_neon(MPVEncContext *s, const uint8_t *dst,
+                                 const uint8_t *src, ptrdiff_t stride, int h)
+{
+    int score = ff_hadamard8_diff8x8_neon(s, dst,     src,     stride, 8);
+    score     += ff_hadamard8_diff8x8_neon(s, dst + 8, src + 8, stride, 8);
+    if (h == 16) {
+        dst   += 8 * stride;
+        src   += 8 * stride;
+        score += ff_hadamard8_diff8x8_neon(s, dst,     src,     stride, 8);
+        score += ff_hadamard8_diff8x8_neon(s, dst + 8, src + 8, stride, 8);
+    }
+    return score;
+}
+
+static int hadamard8_intra16_neon(MPVEncContext *s, const uint8_t *src,
+                                   const uint8_t *dummy, ptrdiff_t stride, int h)
+{
+    int score = ff_hadamard8_intra8x8_neon(s, src,     dummy, stride, 8);
+    score     += ff_hadamard8_intra8x8_neon(s, src + 8, dummy, stride, 8);
+    if (h == 16) {
+        src   += 8 * stride;
+        score += ff_hadamard8_intra8x8_neon(s, src,     dummy, stride, 8);
+        score += ff_hadamard8_intra8x8_neon(s, src + 8, dummy, stride, 8);
+    }
+    return score;
+}
 
 av_cold void ff_me_cmp_init_aarch64(MECmpContext *c, AVCodecContext *avctx)
 {
@@ -119,6 +151,11 @@ av_cold void ff_me_cmp_init_aarch64(MECmpContext *c, AVCodecContext *avctx)
 
         c->median_sad[0] = pix_median_abs16_neon;
         c->median_sad[1] = pix_median_abs8_neon;
+
+        c->hadamard8_diff[0] = hadamard8_diff16_neon;
+        c->hadamard8_diff[1] = ff_hadamard8_diff8x8_neon;
+        c->hadamard8_diff[4] = hadamard8_intra16_neon;
+        c->hadamard8_diff[5] = ff_hadamard8_intra8x8_neon;
     }
 
 #if HAVE_DOTPROD

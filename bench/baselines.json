@@ -1668,6 +1668,42 @@
         "cycles": 40.4,
         "ratio": 12.455
       }
+    },
+    "hadamard8_diff_0": {
+      "c": {
+        "cycles": 378.0
+      },
+      "neon": {
+        "cycles": 111.1,
+        "ratio": 3.402
+      }
+    },
+    "hadamard8_diff_1": {
+      "c": {
+        "cycles": 188.5
+      },
+      "neon": {
+        "cycles": 52.5,
+        "ratio": 3.59
+      }
+    },
+    "hadamard8_diff_4": {
+      "c": {
+        "cycles": 333.4
+      },
+      "neon": {
+        "cycles": 109.4,
+        "ratio": 3.048
+      }
+    },
+    "hadamard8_diff_5": {
+      "c": {
+        "cycles": 166.2
+      },
+      "neon": {
+        "cycles": 54.1,
+        "ratio": 3.072
+      }
     }
   }
 }
