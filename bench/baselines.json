@@ -1935,6 +1935,15 @@
         "cycles": 316.8,
         "ratio": 4.539
       }
+    },
+    "filter_diag4": {
+      "c": {
+        "cycles": 680.8
+      },
+      "neon": {
+        "cycles": 199.8,
+        "ratio": 3.407
+      }
     }
   }
 }

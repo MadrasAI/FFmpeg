@@ -66,5 +66,7 @@ av_cold void ff_vp6dsp_init(VP6DSPContext *s)
 
 #if ARCH_X86 && HAVE_X86ASM
     ff_vp6dsp_init_x86(s);
+#elif ARCH_AARCH64
+    ff_vp6dsp_init_aarch64(s);
 #endif
 }

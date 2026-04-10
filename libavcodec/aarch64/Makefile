@@ -50,6 +50,7 @@ OBJS-$(CONFIG_LLVIDENCDSP)              += aarch64/llvidencdsp_init_aarch64.o
 OBJS-$(CONFIG_RV34DSP)                  += aarch64/rv34dsp_init_aarch64.o
 OBJS-$(CONFIG_RV40_DECODER)             += aarch64/rv40dsp_init_aarch64.o
 OBJS-$(CONFIG_VC1DSP)                   += aarch64/vc1dsp_init_aarch64.o
+OBJS-$(CONFIG_VP6_DECODER)              += aarch64/vp6dsp_init_aarch64.o
 OBJS-$(CONFIG_VORBIS_DECODER)           += aarch64/vorbisdsp_init.o
 OBJS-$(CONFIG_VP9_DECODER)              += aarch64/vp9dsp_init_10bpp_aarch64.o \
                                            aarch64/vp9dsp_init_12bpp_aarch64.o \
@@ -115,6 +116,7 @@ NEON-OBJS-$(CONFIG_VP8DSP)              += aarch64/vp8dsp_neon.o
 NEON-OBJS-$(CONFIG_AAC_DECODER)         += aarch64/aacpsdsp_neon.o
 NEON-OBJS-$(CONFIG_DCA_DECODER)         += aarch64/synth_filter_neon.o
 NEON-OBJS-$(CONFIG_OPUS_DECODER)        += aarch64/opusdsp_neon.o
+NEON-OBJS-$(CONFIG_VP6_DECODER)         += aarch64/vp6dsp_neon.o
 NEON-OBJS-$(CONFIG_VORBIS_DECODER)      += aarch64/vorbisdsp_neon.o
 NEON-OBJS-$(CONFIG_VP9_DECODER)         += aarch64/vp9intrapred_neon.o          \
                                            aarch64/vp9itxfm_16bpp_neon.o       \

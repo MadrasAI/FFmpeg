@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010 Mans Rullgard <mans@mansr.com>
+ * Copyright (c) 2026 Ramaseshan M S
  *
  * This file is part of FFmpeg.
  *
@@ -18,26 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_VP56DSP_H
-#define AVCODEC_VP56DSP_H
-
-#include <stddef.h>
 #include <stdint.h>
 
-typedef struct VP5DSPContext {
-    void (*edge_filter_hor)(uint8_t *yuv, ptrdiff_t stride, int t);
-    void (*edge_filter_ver)(uint8_t *yuv, ptrdiff_t stride, int t);
-} VP5DSPContext;
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavcodec/vp56dsp.h"
 
-typedef struct VP6DSPContext {
-    void (*vp6_filter_diag4)(uint8_t *dst, const uint8_t *src, ptrdiff_t stride,
-                             const int16_t *h_weights,const int16_t *v_weights);
-} VP6DSPContext;
+void ff_vp6_filter_diag4_neon(uint8_t *dst, const uint8_t *src,
+                               ptrdiff_t stride,
+                               const int16_t *h_weights,
+                               const int16_t *v_weights);
 
-void ff_vp5dsp_init(VP5DSPContext *s);
-
-void ff_vp6dsp_init(VP6DSPContext *s);
-void ff_vp6dsp_init_x86(VP6DSPContext *s);
-void ff_vp6dsp_init_aarch64(VP6DSPContext *s);
-
-#endif /* AVCODEC_VP56DSP_H */
+av_cold void ff_vp6dsp_init_aarch64(VP6DSPContext *s)
+{
+    int cpu_flags = av_get_cpu_flags();
+    if (have_neon(cpu_flags))
+        s->vp6_filter_diag4 = ff_vp6_filter_diag4_neon;
+}
