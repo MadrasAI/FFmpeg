@@ -102,6 +102,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
                         "vector_fmul_window_fixed", "vector_fmul_window_scaled_fixed",
                         "butterflies_fixed", "scalarproduct_fixed"],
     "motion":         ["hadamard8_diff"],
+    "mpegvideoencdsp": ["pix_sum", "pix_norm1", "denoise_dct", "add_8x8basis", "draw_edges_"],
 }
 
 # ---------------------------------------------------------------------------

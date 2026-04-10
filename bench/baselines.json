@@ -16,7 +16,7 @@
       "vp9 intra pred entries: c baseline not captured (neon-only in this session)",
       "vf_blend baselines: CAPTURED 2026-03-31 \u2014 31 functions (17 8-bit + 14 16-bit), Graviton3 PMU hardware backend"
     ],
-    "last_updated": "2026-04-03"
+    "last_updated": "2026-04-10"
   },
   "functions": {
     "blockdsp.clear_block": {
@@ -1703,6 +1703,201 @@
       "neon": {
         "cycles": 54.1,
         "ratio": 3.072
+      }
+    },
+    "pix_sum": {
+      "c": {
+        "cycles": 218.8
+      },
+      "neon": {
+        "cycles": 17.4,
+        "ratio": 12.575
+      }
+    },
+    "pix_sum_negstride": {
+      "c": {
+        "cycles": 218.7
+      },
+      "neon": {
+        "cycles": 17.3,
+        "ratio": 12.642
+      }
+    },
+    "pix_norm1": {
+      "c": {
+        "cycles": 150.4
+      },
+      "neon": {
+        "cycles": 36.2,
+        "ratio": 4.155
+      },
+      "dotprod": {
+        "cycles": 14.9
+      }
+    },
+    "pix_norm1_negstride": {
+      "c": {
+        "cycles": 151.1
+      },
+      "neon": {
+        "cycles": 36.3,
+        "ratio": 4.163
+      },
+      "dotprod": {
+        "cycles": 14.9
+      }
+    },
+    "denoise_dct": {
+      "c": {
+        "cycles": 115.2
+      },
+      "neon": {
+        "cycles": 32.6,
+        "ratio": 3.534
+      }
+    },
+    "add_8x8basis": {
+      "c": {
+        "cycles": 117.3
+      },
+      "neon": {
+        "cycles": 43.3,
+        "ratio": 2.709
+      }
+    },
+    "draw_edges_8_1724_4": {
+      "c": {
+        "cycles": 2790.4
+      },
+      "neon": {
+        "cycles": 3528.5,
+        "ratio": 0.791
+      }
+    },
+    "draw_edges_8_1724_8": {
+      "c": {
+        "cycles": 2851.8
+      },
+      "neon": {
+        "cycles": 3553.4,
+        "ratio": 0.803
+      }
+    },
+    "draw_edges_8_1724_16": {
+      "c": {
+        "cycles": 2995.1
+      },
+      "neon": {
+        "cycles": 3666.4,
+        "ratio": 0.817
+      }
+    },
+    "draw_edges_128_407_4": {
+      "c": {
+        "cycles": 984.7
+      },
+      "neon": {
+        "cycles": 1048.7,
+        "ratio": 0.939
+      }
+    },
+    "draw_edges_128_407_8": {
+      "c": {
+        "cycles": 1094.5
+      },
+      "neon": {
+        "cycles": 1155.4,
+        "ratio": 0.947
+      }
+    },
+    "draw_edges_128_407_16": {
+      "c": {
+        "cycles": 1199.0
+      },
+      "neon": {
+        "cycles": 1137.7,
+        "ratio": 1.054
+      }
+    },
+    "draw_edges_1080_31_4": {
+      "c": {
+        "cycles": 406.5
+      },
+      "neon": {
+        "cycles": 404.6,
+        "ratio": 1.005
+      }
+    },
+    "draw_edges_1080_31_8": {
+      "c": {
+        "cycles": 752.2
+      },
+      "neon": {
+        "cycles": 762.6,
+        "ratio": 0.986
+      }
+    },
+    "draw_edges_1080_31_16": {
+      "c": {
+        "cycles": 1529.3
+      },
+      "neon": {
+        "cycles": 1534.7,
+        "ratio": 0.996
+      }
+    },
+    "draw_edges_1920_4_4": {
+      "c": {
+        "cycles": 655.2
+      },
+      "neon": {
+        "cycles": 663.6,
+        "ratio": 0.987
+      }
+    },
+    "draw_edges_1920_4_4_negstride": {
+      "c": {
+        "cycles": 659.1
+      },
+      "neon": {
+        "cycles": 662.6,
+        "ratio": 0.995
+      }
+    },
+    "draw_edges_1920_4_8": {
+      "c": {
+        "cycles": 1225.8
+      },
+      "neon": {
+        "cycles": 1228.4,
+        "ratio": 0.998
+      }
+    },
+    "draw_edges_1920_4_8_negstride": {
+      "c": {
+        "cycles": 1225.6
+      },
+      "neon": {
+        "cycles": 1227.4,
+        "ratio": 0.999
+      }
+    },
+    "draw_edges_1920_4_16": {
+      "c": {
+        "cycles": 2248.7
+      },
+      "neon": {
+        "cycles": 2247.1,
+        "ratio": 1.001
+      }
+    },
+    "draw_edges_1920_4_16_negstride": {
+      "c": {
+        "cycles": 2251.7
+      },
+      "neon": {
+        "cycles": 2250.8,
+        "ratio": 1.0
       }
     }
   }
