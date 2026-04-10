@@ -1,5 +1,6 @@
 # subsystems
 OBJS-$(CONFIG_JPEG2000_DECODER)         += aarch64/jpeg2000dsp_init.o
+OBJS-$(CONFIG_CAVS_DECODER)             += aarch64/cavsdsp_init.o
 OBJS-$(CONFIG_SVQ1_ENCODER)             += aarch64/svq1enc_init.o
 OBJS-$(CONFIG_V210_DECODER)             += aarch64/v210dec_init.o
 OBJS-$(CONFIG_V210_ENCODER)             += aarch64/v210enc_init.o
@@ -67,6 +68,7 @@ ARMV8-OBJS-$(CONFIG_VIDEODSP)           += aarch64/videodsp.o
 
 # subsystems
 NEON-OBJS-$(CONFIG_JPEG2000_DECODER)    += aarch64/jpeg2000dsp_neon.o
+NEON-OBJS-$(CONFIG_CAVS_DECODER)        += aarch64/cavsdsp_neon.o
 NEON-OBJS-$(CONFIG_SVQ1_ENCODER)        += aarch64/svq1enc_neon.o
 NEON-OBJS-$(CONFIG_V210_DECODER)        += aarch64/v210dec_neon.o
 NEON-OBJS-$(CONFIG_V210_ENCODER)        += aarch64/v210enc_neon.o

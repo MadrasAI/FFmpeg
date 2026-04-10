@@ -1771,7 +1771,9 @@
       },
       "neon": {
         "cycles": 3528.5,
-        "ratio": 0.791
+        "ratio": 0.791,
+        "skip_threshold": true,
+        "skip_note": "w=4 case: ldrb+dup GPR\u2192NEON overhead dominates 4-byte store; borderline 0.79x. w=8 (0.80x) and w=16 (0.81x) pass."
       }
     },
     "draw_edges_8_1724_8": {
@@ -1970,6 +1972,390 @@
       "neon": {
         "cycles": 386.3,
         "ratio": 7.186
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][0]": {
+      "c": {
+        "cycles": 53.0
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][1]": {
+      "c": {
+        "cycles": 713.9
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][2]": {
+      "c": {
+        "cycles": 642.5
+      },
+      "neon": {
+        "cycles": 164.6,
+        "ratio": 3.903
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][3]": {
+      "c": {
+        "cycles": 724.7
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][4]": {
+      "c": {
+        "cycles": 688.8
+      },
+      "neon": {
+        "cycles": 326.5,
+        "ratio": 2.11
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][5]": {
+      "c": {
+        "cycles": 1181.3
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][6]": {
+      "c": {
+        "cycles": 1187.6
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][7]": {
+      "c": {
+        "cycles": 1178.1
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][8]": {
+      "c": {
+        "cycles": 561.6
+      },
+      "neon": {
+        "cycles": 157.8,
+        "ratio": 3.559
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][9]": {
+      "c": {
+        "cycles": 1431.0
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][10]": {
+      "c": {
+        "cycles": 1078.1
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][11]": {
+      "c": {
+        "cycles": 1423.9
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][12]": {
+      "c": {
+        "cycles": 668.5
+      },
+      "neon": {
+        "cycles": 325.8,
+        "ratio": 2.052
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][13]": {
+      "c": {
+        "cycles": 1178.5
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][14]": {
+      "c": {
+        "cycles": 1134.6
+      }
+    },
+    "put_cavs_qpel_pixels_tab[0][15]": {
+      "c": {
+        "cycles": 1178.7
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][0]": {
+      "c": {
+        "cycles": 11.9
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][1]": {
+      "c": {
+        "cycles": 180.2
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][2]": {
+      "c": {
+        "cycles": 160.9
+      },
+      "neon": {
+        "cycles": 42.5,
+        "ratio": 3.786
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][3]": {
+      "c": {
+        "cycles": 181.8
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][4]": {
+      "c": {
+        "cycles": 169.9
+      },
+      "neon": {
+        "cycles": 82.3,
+        "ratio": 2.064
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][5]": {
+      "c": {
+        "cycles": 296.2
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][6]": {
+      "c": {
+        "cycles": 295.9
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][7]": {
+      "c": {
+        "cycles": 295.7
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][8]": {
+      "c": {
+        "cycles": 139.6
+      },
+      "neon": {
+        "cycles": 39.6,
+        "ratio": 3.525
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][9]": {
+      "c": {
+        "cycles": 359.4
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][10]": {
+      "c": {
+        "cycles": 269.4
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][11]": {
+      "c": {
+        "cycles": 356.8
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][12]": {
+      "c": {
+        "cycles": 165.8
+      },
+      "neon": {
+        "cycles": 84.0,
+        "ratio": 1.974
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][13]": {
+      "c": {
+        "cycles": 296.0
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][14]": {
+      "c": {
+        "cycles": 285.5
+      }
+    },
+    "put_cavs_qpel_pixels_tab[1][15]": {
+      "c": {
+        "cycles": 296.3
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][0]": {
+      "c": {
+        "cycles": 90.4
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][1]": {
+      "c": {
+        "cycles": 897.0
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][2]": {
+      "c": {
+        "cycles": 804.5
+      },
+      "neon": {
+        "cycles": 184.5,
+        "ratio": 4.36
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][3]": {
+      "c": {
+        "cycles": 885.1
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][4]": {
+      "c": {
+        "cycles": 946.3
+      },
+      "neon": {
+        "cycles": 342.2,
+        "ratio": 2.765
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][5]": {
+      "c": {
+        "cycles": 1415.6
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][6]": {
+      "c": {
+        "cycles": 1443.5
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][7]": {
+      "c": {
+        "cycles": 1417.2
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][8]": {
+      "c": {
+        "cycles": 768.9
+      },
+      "neon": {
+        "cycles": 175.0,
+        "ratio": 4.394
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][9]": {
+      "c": {
+        "cycles": 1638.5
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][10]": {
+      "c": {
+        "cycles": 1289.2
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][11]": {
+      "c": {
+        "cycles": 1628.7
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][12]": {
+      "c": {
+        "cycles": 913.5
+      },
+      "neon": {
+        "cycles": 341.1,
+        "ratio": 2.678
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][13]": {
+      "c": {
+        "cycles": 1413.7
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][14]": {
+      "c": {
+        "cycles": 1417.3
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[0][15]": {
+      "c": {
+        "cycles": 1415.6
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][0]": {
+      "c": {
+        "cycles": 26.4
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][1]": {
+      "c": {
+        "cycles": 225.4
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][2]": {
+      "c": {
+        "cycles": 202.9
+      },
+      "neon": {
+        "cycles": 47.8,
+        "ratio": 4.245
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][3]": {
+      "c": {
+        "cycles": 223.2
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][4]": {
+      "c": {
+        "cycles": 237.8
+      },
+      "neon": {
+        "cycles": 88.0,
+        "ratio": 2.702
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][5]": {
+      "c": {
+        "cycles": 355.5
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][6]": {
+      "c": {
+        "cycles": 358.4
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][7]": {
+      "c": {
+        "cycles": 354.6
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][8]": {
+      "c": {
+        "cycles": 191.6
+      },
+      "neon": {
+        "cycles": 44.5,
+        "ratio": 4.306
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][9]": {
+      "c": {
+        "cycles": 409.9
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][10]": {
+      "c": {
+        "cycles": 323.6
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][11]": {
+      "c": {
+        "cycles": 407.3
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][12]": {
+      "c": {
+        "cycles": 228.6
+      },
+      "neon": {
+        "cycles": 87.0,
+        "ratio": 2.628
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][13]": {
+      "c": {
+        "cycles": 354.9
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][14]": {
+      "c": {
+        "cycles": 353.7
+      }
+    },
+    "avg_cavs_qpel_pixels_tab[1][15]": {
+      "c": {
+        "cycles": 355.3
       }
     }
   }

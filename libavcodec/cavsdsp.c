@@ -580,4 +580,7 @@ av_cold void ff_cavsdsp_init(CAVSDSPContext* c)
 #if ARCH_X86 && HAVE_X86ASM
     ff_cavsdsp_init_x86(c);
 #endif
+#if ARCH_AARCH64
+    ff_cavsdsp_init_aarch64(c);
+#endif
 }

@@ -40,5 +40,6 @@ typedef struct CAVSDSPContext {
 
 void ff_cavsdsp_init(CAVSDSPContext* c);
 void ff_cavsdsp_init_x86(CAVSDSPContext* c);
+void ff_cavsdsp_init_aarch64(CAVSDSPContext* c);
 
 #endif /* AVCODEC_CAVSDSP_H */
