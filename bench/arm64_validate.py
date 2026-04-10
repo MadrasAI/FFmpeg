@@ -114,6 +114,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "pixelutils":           ["sad_"],
     "scene_sad":            ["scene_sad"],
     "hevc_add_res":         ["hevc_add_res_"],
+    "hevc_idct":            ["hevc_idct_"],
 }
 
 # ---------------------------------------------------------------------------
