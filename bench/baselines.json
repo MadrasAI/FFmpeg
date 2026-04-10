@@ -2557,6 +2557,117 @@
         "cycles": 82.9,
         "ratio": 5.563
       }
+    },
+    "sad_2x2_0": {
+      "c": {
+        "cycles": 7.4
+      }
+    },
+    "sad_2x2_1": {
+      "c": {
+        "cycles": 7.4
+      }
+    },
+    "sad_2x2_2": {
+      "c": {
+        "cycles": 7.3
+      }
+    },
+    "sad_4x4_0": {
+      "c": {
+        "cycles": 18.8
+      }
+    },
+    "sad_4x4_1": {
+      "c": {
+        "cycles": 19.0
+      }
+    },
+    "sad_4x4_2": {
+      "c": {
+        "cycles": 18.8
+      }
+    },
+    "sad_8x8_0": {
+      "c": {
+        "cycles": 68.9
+      },
+      "neon": {
+        "cycles": 14.9,
+        "ratio": 4.624
+      }
+    },
+    "sad_8x8_1": {
+      "c": {
+        "cycles": 69.1
+      },
+      "neon": {
+        "cycles": 14.3,
+        "ratio": 4.832
+      }
+    },
+    "sad_8x8_2": {
+      "c": {
+        "cycles": 69.0
+      },
+      "neon": {
+        "cycles": 14.0,
+        "ratio": 4.929
+      }
+    },
+    "sad_16x16_0": {
+      "c": {
+        "cycles": 262.4
+      },
+      "neon": {
+        "cycles": 30.8,
+        "ratio": 8.519
+      }
+    },
+    "sad_16x16_1": {
+      "c": {
+        "cycles": 262.7
+      },
+      "neon": {
+        "cycles": 29.4,
+        "ratio": 8.935
+      }
+    },
+    "sad_16x16_2": {
+      "c": {
+        "cycles": 262.9
+      },
+      "neon": {
+        "cycles": 28.8,
+        "ratio": 9.128
+      }
+    },
+    "sad_32x32_0": {
+      "c": {
+        "cycles": 1768.9
+      },
+      "neon": {
+        "cycles": 118.9,
+        "ratio": 14.877
+      }
+    },
+    "sad_32x32_1": {
+      "c": {
+        "cycles": 1763.8
+      },
+      "neon": {
+        "cycles": 114.1,
+        "ratio": 15.458
+      }
+    },
+    "sad_32x32_2": {
+      "c": {
+        "cycles": 1936.6
+      },
+      "neon": {
+        "cycles": 113.4,
+        "ratio": 17.078
+      }
     }
   }
 }

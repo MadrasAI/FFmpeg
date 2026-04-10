@@ -111,6 +111,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "cavsdsp":         ["put_cavs_qpel_pixels_tab", "avg_cavs_qpel_pixels_tab"],
     "mpegvideo_unquantize": ["dct_unquantize_"],
     "h264chroma":           ["put_h264_chroma_", "avg_h264_chroma_"],
+    "pixelutils":           ["sad_"],
 }
 
 # ---------------------------------------------------------------------------

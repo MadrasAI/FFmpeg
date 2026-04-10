@@ -55,6 +55,48 @@ function ff_pixelutils_sad16_neon, export=1
         ret
 endfunc
 
+function ff_pixelutils_sad32_neon, export=1
+        // x0           uint8_t *pix1
+        // x1           ptrdiff_t stride1
+        // x2           uint8_t *pix2
+        // x3           ptrdiff_t stride2
+        movi            v16.8h, #0
+        movi            v17.8h, #0
+        mov             w4, 32
+1:
+        ld1             {v0.16b, v1.16b}, [x0], x1
+        ld1             {v4.16b, v5.16b}, [x2], x3
+        ld1             {v2.16b, v3.16b}, [x0], x1
+        ld1             {v6.16b, v7.16b}, [x2], x3
+        uabal           v16.8h, v0.8b, v4.8b
+        uabal2          v17.8h, v0.16b, v4.16b
+        uabal           v16.8h, v1.8b, v5.8b
+        uabal2          v17.8h, v1.16b, v5.16b
+        ld1             {v0.16b, v1.16b}, [x0], x1
+        ld1             {v4.16b, v5.16b}, [x2], x3
+        uabal           v16.8h, v2.8b, v6.8b
+        uabal2          v17.8h, v2.16b, v6.16b
+        uabal           v16.8h, v3.8b, v7.8b
+        uabal2          v17.8h, v3.16b, v7.16b
+        ld1             {v2.16b, v3.16b}, [x0], x1
+        ld1             {v6.16b, v7.16b}, [x2], x3
+        subs            w4, w4, #4
+        uabal           v16.8h, v0.8b, v4.8b
+        uabal2          v17.8h, v0.16b, v4.16b
+        uabal           v16.8h, v1.8b, v5.8b
+        uabal2          v17.8h, v1.16b, v5.16b
+        uabal           v16.8h, v2.8b, v6.8b
+        uabal2          v17.8h, v2.16b, v6.16b
+        uabal           v16.8h, v3.8b, v7.8b
+        uabal2          v17.8h, v3.16b, v7.16b
+        b.gt            1b
+
+        add             v16.8h, v16.8h, v17.8h
+        uaddlv          s16, v16.8h
+        fmov            w0, s16
+        ret
+endfunc
+
 function ff_pixelutils_sad8_neon, export=1
         // x0           uint8_t *pix1
         // x1           ptrdiff_t stride1
