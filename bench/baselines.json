@@ -2722,6 +2722,170 @@
         "cycles": 16514.2,
         "ratio": 28.74
       }
+    },
+    "hevc_add_res_4x4_8": {
+      "c": {
+        "cycles": 35.1
+      },
+      "neon": {
+        "cycles": 27.3,
+        "ratio": 1.286
+      }
+    },
+    "hevc_add_res_4x4_9": {
+      "c": {
+        "cycles": 31.7
+      },
+      "neon": {
+        "cycles": 20.3,
+        "ratio": 1.562
+      }
+    },
+    "hevc_add_res_4x4_10": {
+      "c": {
+        "cycles": 32.0
+      },
+      "neon": {
+        "cycles": 20.3,
+        "ratio": 1.576
+      }
+    },
+    "hevc_add_res_4x4_11": {
+      "c": {
+        "cycles": 35.5
+      }
+    },
+    "hevc_add_res_4x4_12": {
+      "c": {
+        "cycles": 32.0
+      },
+      "neon": {
+        "cycles": 20.1,
+        "ratio": 1.592
+      }
+    },
+    "hevc_add_res_8x8_8": {
+      "c": {
+        "cycles": 134.1
+      },
+      "neon": {
+        "cycles": 33.6,
+        "ratio": 3.991
+      }
+    },
+    "hevc_add_res_8x8_9": {
+      "c": {
+        "cycles": 124.3
+      },
+      "neon": {
+        "cycles": 15.7,
+        "ratio": 7.917
+      }
+    },
+    "hevc_add_res_8x8_10": {
+      "c": {
+        "cycles": 124.0
+      },
+      "neon": {
+        "cycles": 15.6,
+        "ratio": 7.949
+      }
+    },
+    "hevc_add_res_8x8_11": {
+      "c": {
+        "cycles": 135.2
+      }
+    },
+    "hevc_add_res_8x8_12": {
+      "c": {
+        "cycles": 124.4
+      },
+      "neon": {
+        "cycles": 15.5,
+        "ratio": 8.026
+      }
+    },
+    "hevc_add_res_16x16_8": {
+      "c": {
+        "cycles": 526.4
+      },
+      "neon": {
+        "cycles": 47.2,
+        "ratio": 11.153
+      }
+    },
+    "hevc_add_res_16x16_9": {
+      "c": {
+        "cycles": 484.9
+      },
+      "neon": {
+        "cycles": 57.6,
+        "ratio": 8.418
+      }
+    },
+    "hevc_add_res_16x16_10": {
+      "c": {
+        "cycles": 486.0
+      },
+      "neon": {
+        "cycles": 57.2,
+        "ratio": 8.497
+      }
+    },
+    "hevc_add_res_16x16_11": {
+      "c": {
+        "cycles": 529.0
+      }
+    },
+    "hevc_add_res_16x16_12": {
+      "c": {
+        "cycles": 485.8
+      },
+      "neon": {
+        "cycles": 57.5,
+        "ratio": 8.449
+      }
+    },
+    "hevc_add_res_32x32_8": {
+      "c": {
+        "cycles": 2128.1
+      },
+      "neon": {
+        "cycles": 206.8,
+        "ratio": 10.291
+      }
+    },
+    "hevc_add_res_32x32_9": {
+      "c": {
+        "cycles": 2502.6
+      },
+      "neon": {
+        "cycles": 236.8,
+        "ratio": 10.568
+      }
+    },
+    "hevc_add_res_32x32_10": {
+      "c": {
+        "cycles": 2513.1
+      },
+      "neon": {
+        "cycles": 235.7,
+        "ratio": 10.662
+      }
+    },
+    "hevc_add_res_32x32_11": {
+      "c": {
+        "cycles": 2148.5
+      }
+    },
+    "hevc_add_res_32x32_12": {
+      "c": {
+        "cycles": 2505.6
+      },
+      "neon": {
+        "cycles": 235.9,
+        "ratio": 10.621
+      }
     }
   }
 }

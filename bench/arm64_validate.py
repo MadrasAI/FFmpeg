@@ -113,6 +113,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "h264chroma":           ["put_h264_chroma_", "avg_h264_chroma_"],
     "pixelutils":           ["sad_"],
     "scene_sad":            ["scene_sad"],
+    "hevc_add_res":         ["hevc_add_res_"],
 }
 
 # ---------------------------------------------------------------------------

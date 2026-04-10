@@ -163,6 +163,7 @@ function ff_hevc_add_residual_32x32_\bitdepth\()_neon, export=1
 endfunc
 .endm
 
+add_res 9
 add_res 10
 add_res 12
 
