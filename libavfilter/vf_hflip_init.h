@@ -104,6 +104,8 @@ av_unused static int ff_hflip_init(FlipContext *s, int step[4], int nb_planes)
     }
 #if ARCH_X86 && HAVE_X86ASM
     ff_hflip_init_x86(s, step, nb_planes);
+#elif ARCH_AARCH64 && HAVE_NEON
+    ff_hflip_init_aarch64(s, step, nb_planes);
 #endif
 
     return 0;

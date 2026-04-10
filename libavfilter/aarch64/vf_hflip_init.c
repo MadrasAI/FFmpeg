@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2007 Benoit Fouet
- * Copyright (c) 2010 Stefano Sabatini
+ * Copyright (c) 2026 Ramaseshan M S
  *
  * This file is part of FFmpeg.
  *
@@ -19,21 +18,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFILTER_HFLIP_H
-#define AVFILTER_HFLIP_H
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavfilter/hflip.h"
 
-#include <stdint.h>
+void ff_hflip_byte_neon(const uint8_t *src, uint8_t *dst, int w);
+void ff_hflip_short_neon(const uint8_t *src, uint8_t *dst, int w);
 
-typedef struct FlipContext {
-    int max_step[4];    ///< max pixel step for each plane, expressed as a number of bytes
-    int bayer_plus1;    ///< 1 .. not a Bayer input format, 2 .. Bayer input format
-    int planewidth[4];  ///< width of each plane
-    int planeheight[4]; ///< height of each plane
-
-    void (*flip_line[4])(const uint8_t *src, uint8_t *dst, int w);
-} FlipContext;
-
-void ff_hflip_init_x86(FlipContext *s, int step[4], int nb_planes);
-void ff_hflip_init_aarch64(FlipContext *s, int step[4], int nb_planes);
-
-#endif /* AVFILTER_HFLIP_H */
+av_cold void ff_hflip_init_aarch64(FlipContext *s, int step[4], int nb_planes)
+{
+    int cpu_flags = av_get_cpu_flags();
+    if (have_neon(cpu_flags)) {
+        for (int i = 0; i < nb_planes; i++) {
+            switch (step[i]) {
+            case 1: s->flip_line[i] = ff_hflip_byte_neon;  break;
+            case 2: s->flip_line[i] = ff_hflip_short_neon; break;
+            }
+        }
+    }
+}
