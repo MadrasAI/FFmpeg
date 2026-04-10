@@ -85,6 +85,8 @@ av_unused av_cold static void ff_v210enc_init(V210EncContext *s)
 
 #if ARCH_X86 && HAVE_X86ASM
     ff_v210enc_init_x86(s);
+#elif ARCH_AARCH64 && HAVE_NEON
+    ff_v210enc_init_aarch64(s);
 #endif
 }
 

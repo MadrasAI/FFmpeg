@@ -1899,6 +1899,24 @@
         "cycles": 2250.8,
         "ratio": 1.0
       }
+    },
+    "v210_planar_pack_8": {
+      "c": {
+        "cycles": 1269.6
+      },
+      "neon": {
+        "cycles": 939.2,
+        "ratio": 1.352
+      }
+    },
+    "v210_planar_pack_10": {
+      "c": {
+        "cycles": 1135.3
+      },
+      "neon": {
+        "cycles": 1148.5,
+        "ratio": 0.989
+      }
     }
   }
 }
