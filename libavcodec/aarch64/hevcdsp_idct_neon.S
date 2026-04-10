@@ -820,9 +820,11 @@ endfunc
 
 idct_4x4 8
 idct_4x4 10
+idct_4x4 12
 
 idct_8x8 8
 idct_8x8 10
+idct_8x8 12
 
 tr_16x4 firstpass, 7, 512, 1
 tr_16x4 secondpass_8, 20 - 8, 512, 1

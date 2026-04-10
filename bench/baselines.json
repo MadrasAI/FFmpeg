@@ -2889,210 +2889,218 @@
     },
     "hevc_idct_4x4_8": {
       "c": {
-        "cycles": 71.6
+        "cycles": 71.4
       },
       "neon": {
-        "cycles": 50.1,
-        "ratio": 1.429
+        "cycles": 50.2,
+        "ratio": 1.422
       }
     },
     "hevc_idct_4x4_10": {
       "c": {
-        "cycles": 71.2
+        "cycles": 71.4
       },
       "neon": {
-        "cycles": 50.3,
-        "ratio": 1.416
+        "cycles": 50.5,
+        "ratio": 1.414
       }
     },
     "hevc_idct_4x4_12": {
       "c": {
         "cycles": 71.1
+      },
+      "neon": {
+        "cycles": 50.5,
+        "ratio": 1.408
       }
     },
     "hevc_idct_4x4_dc_8": {
       "c": {
-        "cycles": 11.8
+        "cycles": 11.0
       },
       "neon": {
-        "cycles": 12.4,
-        "ratio": 0.952
+        "cycles": 12.3,
+        "ratio": 0.894
       }
     },
     "hevc_idct_4x4_dc_10": {
       "c": {
-        "cycles": 11.8
+        "cycles": 11.1
       },
       "neon": {
         "cycles": 12.4,
-        "ratio": 0.952
+        "ratio": 0.895
       }
     },
     "hevc_idct_4x4_dc_12": {
       "c": {
-        "cycles": 11.9
+        "cycles": 11.5
       },
       "neon": {
         "cycles": 12.4,
-        "ratio": 0.96
+        "ratio": 0.927
       }
     },
     "hevc_idct_8x8_8": {
       "c": {
-        "cycles": 711.7
+        "cycles": 709.5
       },
       "neon": {
-        "cycles": 111.1,
-        "ratio": 6.406
+        "cycles": 111.3,
+        "ratio": 6.375
       }
     },
     "hevc_idct_8x8_10": {
       "c": {
-        "cycles": 712.4
+        "cycles": 709.9
       },
       "neon": {
         "cycles": 111.0,
-        "ratio": 6.418
+        "ratio": 6.395
       }
     },
     "hevc_idct_8x8_12": {
       "c": {
-        "cycles": 697.0
+        "cycles": 699.3
+      },
+      "neon": {
+        "cycles": 111.2,
+        "ratio": 6.289
       }
     },
     "hevc_idct_8x8_dc_8": {
       "c": {
-        "cycles": 35.2
+        "cycles": 35.1
       },
       "neon": {
-        "cycles": 12.8,
-        "ratio": 2.75
+        "cycles": 12.9,
+        "ratio": 2.721
       }
     },
     "hevc_idct_8x8_dc_10": {
       "c": {
-        "cycles": 34.9
+        "cycles": 35.1
       },
       "neon": {
-        "cycles": 13.0,
-        "ratio": 2.685
+        "cycles": 12.9,
+        "ratio": 2.721
       }
     },
     "hevc_idct_8x8_dc_12": {
       "c": {
-        "cycles": 35.2
+        "cycles": 35.4
       },
       "neon": {
-        "cycles": 12.9,
-        "ratio": 2.729
+        "cycles": 13.0,
+        "ratio": 2.723
       }
     },
     "hevc_idct_16x16_8": {
       "c": {
-        "cycles": 4140.2
+        "cycles": 4176.0
       },
       "neon": {
-        "cycles": 901.7,
-        "ratio": 4.592
+        "cycles": 900.8,
+        "ratio": 4.636
       }
     },
     "hevc_idct_16x16_10": {
       "c": {
-        "cycles": 4132.4
+        "cycles": 4165.4
       },
       "neon": {
-        "cycles": 904.7,
-        "ratio": 4.568
+        "cycles": 901.5,
+        "ratio": 4.621
       }
     },
     "hevc_idct_16x16_12": {
       "c": {
-        "cycles": 4241.3
+        "cycles": 4268.3
       },
       "neon": {
-        "cycles": 901.7,
-        "ratio": 4.704
+        "cycles": 904.2,
+        "ratio": 4.721
       }
     },
     "hevc_idct_16x16_dc_8": {
       "c": {
-        "cycles": 132.1
+        "cycles": 132.3
       },
       "neon": {
-        "cycles": 16.4,
-        "ratio": 8.055
+        "cycles": 16.9,
+        "ratio": 7.828
       }
     },
     "hevc_idct_16x16_dc_10": {
       "c": {
-        "cycles": 131.9
+        "cycles": 132.3
       },
       "neon": {
-        "cycles": 16.3,
-        "ratio": 8.092
+        "cycles": 17.0,
+        "ratio": 7.782
       }
     },
     "hevc_idct_16x16_dc_12": {
       "c": {
-        "cycles": 132.1
+        "cycles": 132.4
       },
       "neon": {
-        "cycles": 16.3,
-        "ratio": 8.104
+        "cycles": 16.9,
+        "ratio": 7.834
       }
     },
     "hevc_idct_32x32_8": {
       "c": {
-        "cycles": 29467.7
+        "cycles": 29461.0
       },
       "neon": {
-        "cycles": 5684.3,
-        "ratio": 5.184
+        "cycles": 5709.3,
+        "ratio": 5.16
       }
     },
     "hevc_idct_32x32_10": {
       "c": {
-        "cycles": 29508.3
+        "cycles": 29434.7
       },
       "neon": {
-        "cycles": 5691.8,
-        "ratio": 5.184
+        "cycles": 5696.1,
+        "ratio": 5.168
       }
     },
     "hevc_idct_32x32_12": {
       "c": {
-        "cycles": 38219.4
+        "cycles": 38227.2
       },
       "neon": {
-        "cycles": 5714.7,
-        "ratio": 6.688
+        "cycles": 5857.9,
+        "ratio": 6.526
       }
     },
     "hevc_idct_32x32_dc_8": {
       "c": {
-        "cycles": 1111.4
+        "cycles": 1111.0
       },
       "neon": {
-        "cycles": 64.4,
-        "ratio": 17.258
+        "cycles": 65.1,
+        "ratio": 17.066
       }
     },
     "hevc_idct_32x32_dc_10": {
       "c": {
-        "cycles": 1111.2
+        "cycles": 1110.5
       },
       "neon": {
-        "cycles": 64.4,
-        "ratio": 17.255
+        "cycles": 65.2,
+        "ratio": 17.032
       }
     },
     "hevc_idct_32x32_dc_12": {
       "c": {
-        "cycles": 1111.1
+        "cycles": 1111.4
       },
       "neon": {
-        "cycles": 64.4,
-        "ratio": 17.253
+        "cycles": 65.2,
+        "ratio": 17.046
       }
     }
   }
