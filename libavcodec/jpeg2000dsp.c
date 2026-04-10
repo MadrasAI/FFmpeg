@@ -100,5 +100,7 @@ av_cold void ff_jpeg2000dsp_init(Jpeg2000DSPContext *c)
     ff_jpeg2000dsp_init_riscv(c);
 #elif ARCH_X86 && HAVE_X86ASM
     ff_jpeg2000dsp_init_x86(c);
+#elif ARCH_AARCH64 && HAVE_NEON
+    ff_jpeg2000dsp_init_aarch64(c);
 #endif
 }

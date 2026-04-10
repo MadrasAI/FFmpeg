@@ -1,7 +1,5 @@
 /*
- * JPEG 2000 DSP functions
- * Copyright (c) 2007 Kamil Nowosad
- * Copyright (c) 2013 Nicolas Bertrand <nicoinattendu@gmail.com>
+ * Copyright (c) 2026 Ramaseshan M S
  *
  * This file is part of FFmpeg.
  *
@@ -20,21 +18,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_JPEG2000DSP_H
-#define AVCODEC_JPEG2000DSP_H
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavcodec/jpeg2000dsp.h"
 
-#include <stdint.h>
-#include "jpeg2000dwt.h"
+void ff_rct_int_neon(void *src0, void *src1, void *src2, int csize);
+void ff_ict_float_neon(void *src0, void *src1, void *src2, int csize);
 
-typedef struct Jpeg2000DSPContext {
-    void (*mct_decode[FF_DWT_NB])(void *src0, void *src1, void *src2, int csize);
-} Jpeg2000DSPContext;
-
-extern const float ff_jpeg2000_f_ict_params[4];
-
-void ff_jpeg2000dsp_init(Jpeg2000DSPContext *c);
-void ff_jpeg2000dsp_init_riscv(Jpeg2000DSPContext *c);
-void ff_jpeg2000dsp_init_x86(Jpeg2000DSPContext *c);
-void ff_jpeg2000dsp_init_aarch64(Jpeg2000DSPContext *c);
-
-#endif /* AVCODEC_JPEG2000DSP_H */
+av_cold void ff_jpeg2000dsp_init_aarch64(Jpeg2000DSPContext *c)
+{
+    int cpu_flags = av_get_cpu_flags();
+    if (have_neon(cpu_flags)) {
+        c->mct_decode[FF_DWT53]  = ff_rct_int_neon;
+        c->mct_decode[FF_DWT97]  = ff_ict_float_neon;
+    }
+}
