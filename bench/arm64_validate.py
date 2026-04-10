@@ -107,6 +107,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "v210dec":         ["v210_unpack"],
     "svq1enc":         ["ssd_int8_vs_int16"],
     "vp6dsp":          ["filter_diag4"],
+    "diracdsp":        [""],              # bench names have diracdsp. prefix; use --bench (no filter)
 }
 
 # ---------------------------------------------------------------------------

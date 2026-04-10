@@ -1944,6 +1944,33 @@
         "cycles": 199.8,
         "ratio": 3.407
       }
+    },
+    "diracdsp.add_dirac_obmc_8": {
+      "c": {
+        "cycles": 701.9
+      },
+      "neon": {
+        "cycles": 129.5,
+        "ratio": 5.42
+      }
+    },
+    "diracdsp.add_dirac_obmc_16": {
+      "c": {
+        "cycles": 1377.4
+      },
+      "neon": {
+        "cycles": 221.9,
+        "ratio": 6.207
+      }
+    },
+    "diracdsp.add_dirac_obmc_32": {
+      "c": {
+        "cycles": 2776.1
+      },
+      "neon": {
+        "cycles": 386.3,
+        "ratio": 7.186
+      }
     }
   }
 }

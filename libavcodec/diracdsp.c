@@ -249,5 +249,7 @@ av_cold void ff_diracdsp_init(DiracDSPContext *c)
 
 #if ARCH_X86 && HAVE_X86ASM
     ff_diracdsp_init_x86(c);
+#elif ARCH_AARCH64
+    ff_diracdsp_init_aarch64(c);
 #endif
 }
