@@ -298,7 +298,7 @@ static void asmgen_process(SwsAArch64Context *s, const SwsAArch64OpImplParams *p
 
     aarch64_op_impl_func_name(func_name, sizeof(func_name), p);
 
-    rasm_func_begin(r, func_name, true);
+    rasm_func_begin(r, func_name, true, false);
 
     /* Function prologue */
     RasmOp saved_regs[MAX_SAVED_REGS];
@@ -341,7 +341,7 @@ static void asmgen_process_return(SwsAArch64Context *s, const SwsAArch64OpImplPa
 
     aarch64_op_impl_func_name(func_name, sizeof(func_name), p);
 
-    rasm_func_begin(r, func_name, true);
+    rasm_func_begin(r, func_name, true, true);
 
     /* Reset impl to first kernel. */
     i_mov(r, s->impl, s->op1_impl);         CMT("impl = op1_impl;");
@@ -851,7 +851,7 @@ static void asmgen_op_pack(SwsAArch64Context *s, const SwsAArch64OpImplParams *p
 }
 
 /*********************************************************************/
-/* logical left shift of raw pixel values by (u8) */
+/* logical left shift of raw pixel values */
 /* AARCH64_SWS_OP_LSHIFT */
 
 static void asmgen_op_lshift(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
@@ -865,7 +865,7 @@ static void asmgen_op_lshift(SwsAArch64Context *s, const SwsAArch64OpImplParams 
 }
 
 /*********************************************************************/
-/* right shift of raw pixel values by (u8) */
+/* right shift of raw pixel values */
 /* AARCH64_SWS_OP_RSHIFT */
 
 static void asmgen_op_rshift(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
@@ -1012,7 +1012,7 @@ static void asmgen_op_expand(SwsAArch64Context *s, const SwsAArch64OpImplParams 
 }
 
 /*********************************************************************/
-/* numeric minimum (q4) */
+/* numeric minimum */
 /* AARCH64_SWS_OP_MIN */
 
 static void asmgen_op_min(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
@@ -1036,7 +1036,7 @@ static void asmgen_op_min(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
 }
 
 /*********************************************************************/
-/* numeric maximum (q4) */
+/* numeric maximum */
 /* AARCH64_SWS_OP_MAX */
 
 static void asmgen_op_max(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
@@ -1060,7 +1060,7 @@ static void asmgen_op_max(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
 }
 
 /*********************************************************************/
-/* multiplication by scalar (q) */
+/* multiplication by scalar */
 /* AARCH64_SWS_OP_SCALE */
 
 static void asmgen_op_scale(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
@@ -1348,7 +1348,7 @@ static void asmgen_op_cps(SwsAArch64Context *s, const SwsAArch64OpImplParams *p)
 
     char func_name[128];
     aarch64_op_impl_func_name(func_name, sizeof(func_name), p);
-    rasm_func_begin(r, func_name, true);
+    rasm_func_begin(r, func_name, true, true);
 
     /**
      * Set up vector register dimensions and reshape all vectors
