@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2026 Ramaseshan M S
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -16,24 +18,21 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVFILTER_IDETDSP_H
-#define AVFILTER_IDETDSP_H
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavfilter/vf_idetdsp.h"
 
-#include <stdint.h>
+int ff_idet_filter_line_neon(const uint8_t *a, const uint8_t *b,
+                             const uint8_t *c, int w);
+int ff_idet_filter_line_16bit_neon(const uint8_t *a, const uint8_t *b,
+                                   const uint8_t *c, int w);
 
-typedef int (*ff_idet_filter_func)(const uint8_t *a, const uint8_t *b, const uint8_t *c, int w);
-
-typedef struct IDETDSPContext {
-    ff_idet_filter_func filter_line;
-} IDETDSPContext;
-
-void ff_idet_dsp_init(IDETDSPContext *idet, int depth);
-
-void ff_idet_dsp_init_x86(IDETDSPContext *idet, int depth);
-void ff_idet_dsp_init_aarch64(IDETDSPContext *idet, int depth);
-
-/* main fall-back for left-over */
-int ff_idet_filter_line_c(const uint8_t *a, const uint8_t *b, const uint8_t *c, int w);
-int ff_idet_filter_line_c_16bit(const uint8_t *a, const uint8_t *b, const uint8_t *c, int w);
-
-#endif /* AVFILTER_IDETDSP_H */
+av_cold void ff_idet_dsp_init_aarch64(IDETDSPContext *dsp, int depth)
+{
+    int cpu_flags = av_get_cpu_flags();
+    if (have_neon(cpu_flags)) {
+        dsp->filter_line = depth > 8 ? ff_idet_filter_line_16bit_neon
+                                     : ff_idet_filter_line_neon;
+    }
+}

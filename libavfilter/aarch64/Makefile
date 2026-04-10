@@ -1,4 +1,5 @@
 OBJS-$(CONFIG_BLACKDETECT_FILTER)            += aarch64/vf_blackdetect_init.o
+OBJS-$(CONFIG_IDET_FILTER)                   += aarch64/vf_idetdsp_init.o
 OBJS-$(CONFIG_AFIR_FILTER)                   += aarch64/af_afir_init.o
 OBJS-$(CONFIG_GBLUR_FILTER)                  += aarch64/vf_gblur_init.o
 OBJS-$(CONFIG_HFLIP_FILTER)                  += aarch64/vf_hflip_init.o
@@ -11,6 +12,7 @@ OBJS-$(CONFIG_SCENE_SAD)                     += aarch64/scene_sad_init.o
 OBJS-$(CONFIG_THRESHOLD_FILTER)              += aarch64/vf_threshold_init.o
 
 NEON-OBJS-$(CONFIG_BLACKDETECT_FILTER)       += aarch64/vf_blackdetect_neon.o
+NEON-OBJS-$(CONFIG_IDET_FILTER)              += aarch64/vf_idetdsp_neon.o
 NEON-OBJS-$(CONFIG_AFIR_FILTER)              += aarch64/af_afir_neon.o
 NEON-OBJS-$(CONFIG_GBLUR_FILTER)             += aarch64/vf_gblur_neon.o
 NEON-OBJS-$(CONFIG_HFLIP_FILTER)             += aarch64/vf_hflip_neon.o
