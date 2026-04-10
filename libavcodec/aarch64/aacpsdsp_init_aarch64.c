@@ -34,6 +34,12 @@ void ff_ps_stereo_interpolate_neon(float (*l)[2], float (*r)[2],
 void ff_ps_stereo_interpolate_ipdopd_neon(float (*l)[2], float (*r)[2],
                                           float h[2][4], float h_step[2][4],
                                           int len);
+void ff_ps_hybrid_synthesis_deint_neon(float out[2][38][64],
+                                       float (*restrict in)[32][2],
+                                       int i, int len);
+void ff_ps_hybrid_analysis_ileave_neon(float (*restrict out)[32][2],
+                                       float L[2][38][64],
+                                       int i, int len);
 
 av_cold void ff_psdsp_init_aarch64(PSDSPContext *s)
 {
@@ -43,6 +49,8 @@ av_cold void ff_psdsp_init_aarch64(PSDSPContext *s)
         s->add_squares           = ff_ps_add_squares_neon;
         s->mul_pair_single       = ff_ps_mul_pair_single_neon;
         s->hybrid_analysis       = ff_ps_hybrid_analysis_neon;
+        s->hybrid_synthesis_deint = ff_ps_hybrid_synthesis_deint_neon;
+        s->hybrid_analysis_ileave = ff_ps_hybrid_analysis_ileave_neon;
         s->stereo_interpolate[0] = ff_ps_stereo_interpolate_neon;
         s->stereo_interpolate[1] = ff_ps_stereo_interpolate_ipdopd_neon;
     }

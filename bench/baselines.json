@@ -3102,6 +3102,69 @@
         "cycles": 65.2,
         "ratio": 17.046
       }
+    },
+    "ps_add_squares": {
+      "c": {
+        "cycles": 7498.4
+      },
+      "neon": {
+        "cycles": 2066.6,
+        "ratio": 3.628
+      }
+    },
+    "ps_hybrid_analysis": {
+      "c": {
+        "cycles": 549.1
+      },
+      "neon": {
+        "cycles": 212.9,
+        "ratio": 2.579
+      }
+    },
+    "ps_hybrid_analysis_ileave": {
+      "c": {
+        "cycles": 3503.6
+      },
+      "neon": {
+        "cycles": 2613.8,
+        "ratio": 1.34
+      }
+    },
+    "ps_hybrid_synthesis_deint": {
+      "c": {
+        "cycles": 6363.0
+      },
+      "neon": {
+        "cycles": 1730.5,
+        "ratio": 3.677
+      }
+    },
+    "ps_mul_pair_single": {
+      "c": {
+        "cycles": 8209.6
+      },
+      "neon": {
+        "cycles": 2075.8,
+        "ratio": 3.955
+      }
+    },
+    "ps_stereo_interpolate": {
+      "c": {
+        "cycles": 28699.1
+      },
+      "neon": {
+        "cycles": 15247.6,
+        "ratio": 1.882
+      }
+    },
+    "ps_stereo_interpolate_ipdopd": {
+      "c": {
+        "cycles": 48146.1
+      },
+      "neon": {
+        "cycles": 23351.0,
+        "ratio": 2.062
+      }
     }
   }
 }

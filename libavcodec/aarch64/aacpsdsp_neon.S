@@ -146,3 +146,167 @@ function ff_ps_hybrid_analysis_neon, export=1
         b.gt            1b
         ret
 endfunc
+
+// void ff_ps_hybrid_synthesis_deint_neon(float out[2][38][64],
+//                                        float (*in)[32][2],
+//                                        int i, int len)
+//
+// For each column i (from arg_i to 63), scatter in[i][n][0..1] → out[0..1][n][i].
+// 4-wide: process 4 columns at a time using zip1/zip2 deinterleave + 16-byte stores.
+//
+// Register map:
+//  x0  = out[0][0][i]  (base for column i, advances +16 per 4-wide group)
+//  x1  = in[i][0][0]   (base for current i-group, advances +1024 per 4-wide group)
+//  w2  = 64 - i        (remaining column count, decrements by 4 per group)
+//  w3  = len           (constant: number of n-values)
+//  x4  = 256           (output stride: 64 floats × 4 bytes = bytes per n-row)
+//  x5  = out[1][0][i]  (= x0 + 38×256, same column offsets as x0)
+function ff_ps_hybrid_synthesis_deint_neon, export=1
+        lsl             w4, w2, #2              // w4 = i*4 (zero-extended to x4)
+        lsl             w5, w2, #8              // w5 = i*256 (zero-extended to x5)
+        add             x0, x0, x4              // out += i*4
+        add             x1, x1, x5              // in  += i*256
+        neg             w2, w2
+        add             w2, w2, #64             // w2 = 64 - i (remaining columns)
+        mov             x4, #256                // output row stride
+        add             x5, x0, #8192           // x5 = out + 8192 ...
+        add             x5, x5, #1536           //    = out + 9728 = out[1][0][i]
+
+        // Scalar prefix: handle (64-i)%4 columns to align to 4-wide boundary
+        ands            w6, w2, #3              // w6 = remainder (0..3)
+        sub             w2, w2, w6              // w2 = 4-aligned column count
+        cbz             w6, 4f
+
+1:      // scalar loop: 1 column per outer iteration
+        mov             x7, x1
+        mov             x8, x0
+        mov             x9, x5
+        mov             w10, w3
+2:
+        ld1             {v0.2s}, [x7], #8       // in[i][n][re, im]
+        st1             {v0.s}[0], [x8], x4     // out[0][n][i], advance row
+        st1             {v0.s}[1], [x9], x4     // out[1][n][i], advance row
+        subs            w10, w10, #1
+        b.gt            2b
+        add             x0, x0, #4              // next column in out[0]
+        add             x5, x5, #4              // next column in out[1]
+        add             x1, x1, #256            // next i in in[]
+        subs            w6, w6, #1
+        b.gt            1b
+
+4:      // 4-wide main loop
+        cbz             w2, 8f
+
+5:
+        mov             x13, x1                 // save in[i] base before inner loop
+        add             x7, x1, #256            // in[i+1][0][0]
+        add             x8, x1, #512            // in[i+2][0][0]
+        add             x9, x1, #768            // in[i+3][0][0]
+        mov             x10, x0                 // snapshot out[0] row pointer
+        mov             x11, x5                 // snapshot out[1] row pointer
+        mov             w12, w3
+
+6:
+        ld1             {v0.2s}, [x1], #8       // {re0, im0}
+        ld1             {v1.2s}, [x7], #8       // {re1, im1}
+        ld1             {v2.2s}, [x8], #8       // {re2, im2}
+        ld1             {v3.2s}, [x9], #8       // {re3, im3}
+        zip1            v4.2s, v0.2s, v1.2s     // {re0, re1}
+        zip1            v5.2s, v2.2s, v3.2s     // {re2, re3}
+        zip2            v16.2s, v0.2s, v1.2s    // {im0, im1}
+        zip2            v17.2s, v2.2s, v3.2s    // {im2, im3}
+        mov             v4.d[1], v5.d[0]        // v4  = {re0, re1, re2, re3}
+        mov             v16.d[1], v17.d[0]      // v16 = {im0, im1, im2, im3}
+        st1             {v4.4s}, [x10], x4      // out[0][n][i..i+3], advance by 256
+        st1             {v16.4s}, [x11], x4     // out[1][n][i..i+3], advance by 256
+        subs            w12, w12, #1
+        b.gt            6b
+
+        add             x1, x13, #1024          // in: skip 4 rows (4×256)
+        add             x0, x0, #16             // out[0]: advance 4 columns
+        add             x5, x5, #16             // out[1]: advance 4 columns
+        subs            w2, w2, #4
+        b.gt            5b
+
+8:
+        ret
+endfunc
+
+// void ff_ps_hybrid_analysis_ileave_neon(float (*out)[32][2],
+//                                         float L[2][38][64],
+//                                         int i, int len)
+//
+// For each column i (from arg_i to 63), gather L[0..1][j][i] → out[i][j][0..1].
+// 4-wide: load contiguous L[0/1][j][i..i+3], scatter via st2 single-element to
+// 4 separate out[i+k] streams.
+//
+// Register map:
+//  x0  = out[i][0][0]  (advances +1024 per 4-wide group = 4 rows × 256)
+//  x1  = L[0][0][i]    (= L + i*4, advances +16 per 4-wide group = 4 columns)
+//  w2  = 64 - i
+//  w3  = len
+//  x4  = 256           (L read stride: 64 floats × 4 bytes)
+//  x5  = L[1][0][i]    (= x1 + 38×256 = x1 + 9728)
+function ff_ps_hybrid_analysis_ileave_neon, export=1
+        lsl             w4, w2, #8              // w4 = i*256 (zero-extended to x4)
+        lsl             w5, w2, #2              // w5 = i*4 (zero-extended to x5)
+        add             x0, x0, x4              // out += i*256
+        add             x1, x1, x5              // L   += i*4
+        neg             w2, w2
+        add             w2, w2, #64             // w2 = 64 - i
+        mov             x4, #256                // L read stride
+        add             x5, x1, #8192           // x5 = L + 8192 ...
+        add             x5, x5, #1536           //    = L + 9728 = L[1][0][i]
+
+        ands            w6, w2, #3
+        sub             w2, w2, w6
+        cbz             w6, 4f
+
+1:      // scalar: 1 column per outer iteration
+        mov             x7, x1                  // L[0][0][i]
+        mov             x8, x5                  // L[1][0][i]
+        mov             x9, x0                  // out[i][0][0]
+        mov             w10, w3
+2:
+        ld1             {v0.s}[0], [x7], x4     // L[0][j][i], advance to j+1
+        ld1             {v0.s}[1], [x8], x4     // L[1][j][i], advance to j+1
+        st1             {v0.2s}, [x9], #8       // out[i][j][0..1]
+        subs            w10, w10, #1
+        b.gt            2b
+        add             x0, x0, #256            // next out[i+1]
+        add             x1, x1, #4              // next L column
+        add             x5, x5, #4
+        subs            w6, w6, #1
+        b.gt            1b
+
+4:      // 4-wide main loop
+        cbz             w2, 8f
+
+5:
+        mov             x12, x0                 // save out[i] base
+        add             x6, x0, #256            // out[i+1][0][0]
+        add             x7, x0, #512            // out[i+2][0][0]
+        add             x8, x0, #768            // out[i+3][0][0]
+        mov             x9, x1                  // save L[0] base
+        mov             x10, x5                 // save L[1] base
+        mov             w11, w3
+
+6:
+        ld1             {v0.4s}, [x1], x4       // L[0][j][i..i+3], advance to j+1
+        ld1             {v1.4s}, [x5], x4       // L[1][j][i..i+3], advance to j+1
+        st2             {v0.s, v1.s}[0], [x0], #8   // out[i][j][re,im]
+        st2             {v0.s, v1.s}[1], [x6], #8   // out[i+1][j][re,im]
+        st2             {v0.s, v1.s}[2], [x7], #8   // out[i+2][j][re,im]
+        st2             {v0.s, v1.s}[3], [x8], #8   // out[i+3][j][re,im]
+        subs            w11, w11, #1
+        b.gt            6b
+
+        add             x0, x12, #1024          // out[i+4][0][0]
+        add             x1, x9,  #16            // L[0][0][i+4]
+        add             x5, x10, #16            // L[1][0][i+4]
+        subs            w2, w2, #4
+        b.gt            5b
+
+8:
+        ret
+endfunc
