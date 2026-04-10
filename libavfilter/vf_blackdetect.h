@@ -30,6 +30,7 @@ typedef unsigned (*ff_blackdetect_fn)(const uint8_t *src, ptrdiff_t stride,
 
 ff_blackdetect_fn ff_blackdetect_get_fn_riscv(int depth);
 ff_blackdetect_fn ff_blackdetect_get_fn_x86(int depth);
+ff_blackdetect_fn ff_blackdetect_get_fn_aarch64(int depth);
 
 static unsigned count_pixels8_c(const uint8_t *src, ptrdiff_t stride,
                                 ptrdiff_t width, ptrdiff_t height,
@@ -67,6 +68,8 @@ static inline ff_blackdetect_fn ff_blackdetect_get_fn(int depth)
     fn = ff_blackdetect_get_fn_riscv(depth);
 #elif ARCH_X86 && HAVE_X86ASM
     fn = ff_blackdetect_get_fn_x86(depth);
+#elif ARCH_AARCH64 && HAVE_NEON
+    fn = ff_blackdetect_get_fn_aarch64(depth);
 #else
     fn = NULL;
 #endif
