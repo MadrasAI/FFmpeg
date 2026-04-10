@@ -117,6 +117,8 @@ av_unused static void ff_gblur_init(GBlurContext *s)
     s->postscale_slice = postscale_c;
 #if ARCH_X86 && HAVE_X86ASM
     ff_gblur_init_x86(s);
+#elif ARCH_AARCH64 && HAVE_NEON
+    ff_gblur_init_aarch64(s);
 #endif
 }
 

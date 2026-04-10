@@ -58,4 +58,5 @@ typedef struct GBlurContext {
 } GBlurContext;
 
 void ff_gblur_init_x86(GBlurContext *s);
+void ff_gblur_init_aarch64(GBlurContext *s);
 #endif
