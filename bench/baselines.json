@@ -2411,6 +2411,152 @@
         "cycles": 29.8,
         "ratio": 2.292
       }
+    },
+    "put_h264_chroma_mc2_8": {
+      "c": {
+        "cycles": 103.1
+      },
+      "neon": {
+        "cycles": 106.5,
+        "ratio": 0.968
+      }
+    },
+    "put_h264_chroma_mc2_9": {
+      "c": {
+        "cycles": 103.0
+      }
+    },
+    "put_h264_chroma_mc2_10": {
+      "c": {
+        "cycles": 103.0
+      }
+    },
+    "put_h264_chroma_mc4_8": {
+      "c": {
+        "cycles": 211.8
+      },
+      "neon": {
+        "cycles": 61.7,
+        "ratio": 3.433
+      }
+    },
+    "put_h264_chroma_mc4_9": {
+      "c": {
+        "cycles": 207.1
+      },
+      "neon": {
+        "cycles": 61.3,
+        "ratio": 3.378
+      }
+    },
+    "put_h264_chroma_mc4_10": {
+      "c": {
+        "cycles": 206.8
+      },
+      "neon": {
+        "cycles": 61.3,
+        "ratio": 3.374
+      }
+    },
+    "put_h264_chroma_mc8_8": {
+      "c": {
+        "cycles": 400.5
+      },
+      "neon": {
+        "cycles": 47.9,
+        "ratio": 8.361
+      }
+    },
+    "put_h264_chroma_mc8_9": {
+      "c": {
+        "cycles": 404.1
+      },
+      "neon": {
+        "cycles": 61.7,
+        "ratio": 6.549
+      }
+    },
+    "put_h264_chroma_mc8_10": {
+      "c": {
+        "cycles": 403.9
+      },
+      "neon": {
+        "cycles": 62.0,
+        "ratio": 6.515
+      }
+    },
+    "avg_h264_chroma_mc2_8": {
+      "c": {
+        "cycles": 116.0
+      },
+      "neon": {
+        "cycles": 108.1,
+        "ratio": 1.073
+      }
+    },
+    "avg_h264_chroma_mc2_9": {
+      "c": {
+        "cycles": 110.6
+      }
+    },
+    "avg_h264_chroma_mc2_10": {
+      "c": {
+        "cycles": 110.6
+      }
+    },
+    "avg_h264_chroma_mc4_8": {
+      "c": {
+        "cycles": 237.2
+      },
+      "neon": {
+        "cycles": 71.8,
+        "ratio": 3.304
+      }
+    },
+    "avg_h264_chroma_mc4_9": {
+      "c": {
+        "cycles": 255.1
+      },
+      "neon": {
+        "cycles": 72.5,
+        "ratio": 3.519
+      }
+    },
+    "avg_h264_chroma_mc4_10": {
+      "c": {
+        "cycles": 255.3
+      },
+      "neon": {
+        "cycles": 72.8,
+        "ratio": 3.507
+      }
+    },
+    "avg_h264_chroma_mc8_8": {
+      "c": {
+        "cycles": 468.5
+      },
+      "neon": {
+        "cycles": 56.8,
+        "ratio": 8.248
+      }
+    },
+    "avg_h264_chroma_mc8_9": {
+      "c": {
+        "cycles": 461.2
+      },
+      "neon": {
+        "cycles": 83.0,
+        "ratio": 5.557
+      }
+    },
+    "avg_h264_chroma_mc8_10": {
+      "c": {
+        "cycles": 461.2
+      },
+      "neon": {
+        "cycles": 82.9,
+        "ratio": 5.563
+      }
     }
   }
 }
