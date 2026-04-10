@@ -117,12 +117,15 @@ static void process_c(EQParameters *param, uint8_t *dst, int dst_stride,
 }
 
 void ff_eq_init_x86(EQContext *eq);
+void ff_eq_init_aarch64(EQContext *eq);
 
 av_unused static void ff_eq_init(EQContext *eq)
 {
     eq->process = process_c;
 #if ARCH_X86 && HAVE_X86ASM
     ff_eq_init_x86(eq);
+#elif ARCH_AARCH64 && HAVE_NEON
+    ff_eq_init_aarch64(eq);
 #endif
 }
 
