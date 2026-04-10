@@ -1,4 +1,6 @@
 /*
+ * Copyright (c) 2026 Ramaseshan M S
+ *
  * This file is part of FFmpeg.
  *
  * FFmpeg is free software; you can redistribute it and/or
@@ -16,23 +18,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
 
-#ifndef AVCODEC_V210DEC_H
-#define AVCODEC_V210DEC_H
+#include "libavutil/attributes.h"
+#include "libavutil/cpu.h"
+#include "libavutil/aarch64/cpu.h"
+#include "libavcodec/v210dec.h"
 
-#include "libavutil/log.h"
-#include "libavutil/opt.h"
+void ff_v210_planar_unpack_neon(const uint32_t *src, uint16_t *y,
+                                uint16_t *u, uint16_t *v, int width);
 
-
-typedef struct {
-    AVClass *av_class;
-    int custom_stride;
-    int aligned_input;
-    int thread_count;
-    int stride_warning_shown;
-    void (*unpack_frame)(const uint32_t *src, uint16_t *y, uint16_t *u, uint16_t *v, int width);
-} V210DecContext;
-
-void ff_v210_x86_init(V210DecContext *s);
-void ff_v210dec_init_aarch64(V210DecContext *s);
-
-#endif /* AVCODEC_V210DEC_H */
+av_cold void ff_v210dec_init_aarch64(V210DecContext *s)
+{
+    int cpu_flags = av_get_cpu_flags();
+    if (have_neon(cpu_flags))
+        s->unpack_frame = ff_v210_planar_unpack_neon;
+}
