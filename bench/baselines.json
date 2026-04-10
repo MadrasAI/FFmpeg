@@ -2668,6 +2668,60 @@
         "cycles": 113.4,
         "ratio": 17.078
       }
+    },
+    "scene_sad8": {
+      "c": {
+        "cycles": 601998.7
+      },
+      "neon": {
+        "cycles": 8395.1,
+        "ratio": 71.708
+      }
+    },
+    "scene_sad10": {
+      "c": {
+        "cycles": 474638.3
+      },
+      "neon": {
+        "cycles": 16512.3,
+        "ratio": 28.745
+      }
+    },
+    "scene_sad12": {
+      "c": {
+        "cycles": 472311.1
+      },
+      "neon": {
+        "cycles": 16511.4,
+        "ratio": 28.605
+      }
+    },
+    "scene_sad14": {
+      "c": {
+        "cycles": 476206.8
+      },
+      "neon": {
+        "cycles": 16510.9,
+        "ratio": 28.842
+      }
+    },
+    "scene_sad15": {
+      "c": {
+        "cycles": 475530.7
+      },
+      "neon": {
+        "cycles": 16512.0,
+        "ratio": 28.799
+      }
+    },
+    "scene_sad16": {
+      "c": {
+        "cycles": 474619.9
+      },
+      "neon": {
+        "cycles": 16514.2,
+        "ratio": 28.74
+      }
     }
   }
 }

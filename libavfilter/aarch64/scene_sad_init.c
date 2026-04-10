@@ -76,7 +76,7 @@ ff_scene_sad_fn ff_scene_sad_get_fn_aarch64(int depth)
     if (have_neon(cpu_flags)) {
         if (depth <= 8)
             return scene_sad8_neon;
-        else if (depth <= 15)   /* 16-bit routine safe up to 15 bits */
+        else if (depth <= 16)   /* uabd.8h is unsigned: safe for full uint16 range */
             return scene_sad16_neon;
     }
     return NULL;
