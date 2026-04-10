@@ -30,6 +30,7 @@ typedef struct SVQ1EncDSPContext {
                              intptr_t size);
 } SVQ1EncDSPContext;
 
+void ff_svq1enc_init_aarch64(SVQ1EncDSPContext *c);
 void ff_svq1enc_init_ppc(SVQ1EncDSPContext *c);
 void ff_svq1enc_init_riscv(SVQ1EncDSPContext *c);
 void ff_svq1enc_init_x86(SVQ1EncDSPContext *c);
@@ -48,7 +49,9 @@ static inline void ff_svq1enc_init(SVQ1EncDSPContext *c)
 {
     c->ssd_int8_vs_int16 = ssd_int8_vs_int16_c;
 
-#if ARCH_PPC
+#if ARCH_AARCH64 && HAVE_NEON
+    ff_svq1enc_init_aarch64(c);
+#elif ARCH_PPC
     ff_svq1enc_init_ppc(c);
 #elif ARCH_RISCV
     ff_svq1enc_init_riscv(c);

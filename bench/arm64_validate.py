@@ -105,6 +105,7 @@ MODULE_BENCH_PATTERNS: dict[str, list[str]] = {
     "mpegvideoencdsp": ["pix_sum", "pix_norm1", "denoise_dct", "add_8x8basis", "draw_edges_"],
     "v210enc":         ["v210_planar_pack_"],
     "v210dec":         ["v210_unpack"],
+    "svq1enc":         ["ssd_int8_vs_int16"],
 }
 
 # ---------------------------------------------------------------------------

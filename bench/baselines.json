@@ -1926,6 +1926,15 @@
         "cycles": 1625.7,
         "ratio": 1.255
       }
+    },
+    "ssd_int8_vs_int16": {
+      "c": {
+        "cycles": 1438.0
+      },
+      "neon": {
+        "cycles": 316.8,
+        "ratio": 4.539
+      }
     }
   }
 }
