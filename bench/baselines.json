@@ -2357,6 +2357,60 @@
       "c": {
         "cycles": 355.3
       }
+    },
+    "dct_unquantize_h263_inter": {
+      "c": {
+        "cycles": 80.0
+      },
+      "neon": {
+        "cycles": 20.9,
+        "ratio": 3.828
+      }
+    },
+    "dct_unquantize_h263_intra": {
+      "c": {
+        "cycles": 77.5
+      },
+      "neon": {
+        "cycles": 30.1,
+        "ratio": 2.575
+      }
+    },
+    "dct_unquantize_mpeg1_inter": {
+      "c": {
+        "cycles": 225.3
+      },
+      "neon": {
+        "cycles": 33.0,
+        "ratio": 6.827
+      }
+    },
+    "dct_unquantize_mpeg1_intra": {
+      "c": {
+        "cycles": 158.4
+      },
+      "neon": {
+        "cycles": 36.8,
+        "ratio": 4.304
+      }
+    },
+    "dct_unquantize_mpeg2_inter": {
+      "c": {
+        "cycles": 153.6
+      },
+      "neon": {
+        "cycles": 30.3,
+        "ratio": 5.069
+      }
+    },
+    "dct_unquantize_mpeg2_intra": {
+      "c": {
+        "cycles": 68.3
+      },
+      "neon": {
+        "cycles": 29.8,
+        "ratio": 2.292
+      }
     }
   }
 }
